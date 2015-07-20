@@ -1,0 +1,26 @@
+project(surface)
+cmake_minimum_required(VERSION 2.8)
+
+# Set make parameters, and supply source files.
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
+
+# Output binary executable to same dir as sources, so
+# assets can be referenced OK.
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_executable(surface common.c renderer.c assets.c player.c input.c main.c background.c weapon.c enemy.c scripting.c scripts.c)
+
+# Leverage CMake to discover the SDL module.
+INCLUDE(FindPkgConfig)
+
+# Dependencies.
+PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+PKG_SEARCH_MODULE(SDL2IMAGE REQUIRED SDL2_image)
+PKG_SEARCH_MODULE(SDL2MIXER REQUIRED SDL2_mixer)
+INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${SDL2IMAGE_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${SDL2MIXER_INCLUDE_DIRS})
+
+# Note: '-lm' to include glibm for math.h (glibc in included by default for stdio.h etc).
+TARGET_LINK_LIBRARIES(surface -lm ${SDL2_LIBRARIES} ${SDL2MIXER_LIBRARIES} ${SDL2IMAGE_LIBRARIES})

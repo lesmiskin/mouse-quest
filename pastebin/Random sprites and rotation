@@ -1,0 +1,41 @@
+void spawnBoulder(int x) {
+	//Limit Prop count to array size.
+	if(propCount == propLimit) propCount = 0;
+
+	//TODO: Can't we stream the filename into a char pointer?
+
+/*	//Pick random sprite.
+//	char filename[255];
+	char *files[] = {
+		"disk-01.png",
+//		"disk-1.png",
+// 		"boulder-1.png",
+// 		"boulder-2.png",
+// //		"boulder-3.png",
+// 		"spider.png"
+	};
+	int rand = random(0, (sizeof(files) / sizeof(char*)) - 1);
+	char *filename = files[rand];
+*/
+//	sprintf(filename, "boulder-%d.png", );
+
+	char *filename = "disk-01.png";
+
+	//Build sprite and offset spawn based on size (so we don't "pop" into view from the top of screen)
+//	SDL_RendererFlip randomOrientation = (SDL_RendererFlip)random(0, 2) | (SDL_RendererFlip)random(0, 2);
+	SDL_RendererFlip randomOrientation = 0 | (SDL_RendererFlip)random(0, 2);
+	Asset spriteAsset = getAsset(filename);
+	Sprite defaultSprite = 	makeSprite(spriteAsset.texture, zeroCoord(), randomOrientation);
+	Sprite hitSprite = makeSprite(spriteAsset.flicker, zeroCoord(), randomOrientation);
+	double hiddenStartPos = -defaultSprite.size.y;
+
+	//Build it.
+	Prop boulder = {
+		makeCoord(x, hiddenStartPos),
+		defaultSprite,
+		hitSprite
+	};
+
+	//Add it to the list of renderables.
+	props[propCount++] = boulder;
+};
