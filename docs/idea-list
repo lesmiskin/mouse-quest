@@ -1,0 +1,48 @@
+OUTSTANDING ACTION POINTS
+* Random, blinking stars [Galaxian]
+* Parallax stars [Defender]
+
+***********************************************************
+
+OUTSTANDING GAME EXAMPLES
+* Intro sequence [Bubble Bobble]
+* Scrolling, blinking background [Galaxian]
+
+TITLE / START SCREEN / 'SCORE TABLE'
+* Roll-call of enemies, with sprites and nicknames [Pacman]
+* Score table of powerups [Scramble]
+* Shows powerups and what they're worth in points [Pacman]
+* (Great layout example: Pacman)
+* Simple logo and author text [Arkanoid; Space Invaders]
+* Scrolling stars keep going behind the text [Galaxian]
+* Simple roll-call and story text combo [Galaxian]
+
+PRE-GAME SCREEN
+* Simple animated sequence with story text [Bubble bobble]
+* Wishing player 'good luck!' [Bubble bobble; Tyrian]
+* Acts as intermediate screen to prompt for more players, and to load credits [Pacman]
+
+PRE-GAME PAUSE
+* 'Ready!' message while short music riff plays [Pacman, Arkanoid, Bubble Bobble]
+* Acts as a wee break for the player to ready themselves.
+
+IN-GAME PAUSES
+* When ghost is eaten, gives player a break, and to examine score [Pacman]
+
+DEATH PAUSES
+* Whole game stops, Pacman reduces into a pop with music [Pacman]
+* Keen stops, funny animation pause, then fly off [Commander Keen]
+
+POST-LEVEL PAUSE
+* Score counts up [Mario, Wolfenstein, Doom]
+
+POINTS
+* Ice creams, cherries as bonuses [Bubble Bobble, Pacman]
+
+BACKGROUND SCOLLING
+* Parallax effect between stars [Defender]
+
+EXPLOSIONS
+* Concise, small animatation in style desired [Arkanoid]
+* Momentum-driven dots [Defender]
+* Dots pallete shift hue during expansion [Defender]
