@@ -86,6 +86,7 @@ void scriptGameFrame(void) {
 					staticBackground = true;
 					intro_StrafeInc = 0;
 					intro_mikeStafeDir = -1;
+					play("intro-presents.wav");
 					break;
 
 				case INTRO_BATTLE_CUE:
@@ -96,6 +97,7 @@ void scriptGameFrame(void) {
 					playerOrigin.y = screenBounds.y + 16;
 					showMike = true;
 					showBackground = false;
+					playMusic("intro-battle-3.ogg", 1);
 					break;
 				case INTRO_BATTLE_MIKE_ENTER:
 					scriptCommand(CMD_PLAYER_UP);
@@ -146,7 +148,8 @@ void scriptGameFrame(void) {
 						spawnEnemy(spacer += 40, 135, roll[i]);
 					}
 
-					play("Powerup8.wav");
+					playMusic("title.ogg", 1);
+//					play("Powerup8.wav");
 					break;
 				case TITLE_LOOP:
 					//Begin game when fire button is pressed.
@@ -163,6 +166,7 @@ void scriptGameFrame(void) {
 				resetEnemies();
 				resetBackground();
 				showMike = true;
+				playMusic("level-01.ogg", -1);
 			}
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
@@ -259,11 +263,11 @@ void initScripts(void) {
 	intro.scenes[INTRO_CUE] = 						newCueStep();
 	intro.scenes[INTRO_LOGO] = 						newTimedStep(SCENE_LOOP, 1000, FADE_BOTH);
 	intro.scenes[INTRO_BATTLE_CUE] = 				newCueStep();
-	intro.scenes[INTRO_BATTLE_PRELUDE] = 			newTimedStep(SCENE_LOOP, 500, FADE_IN);
+	intro.scenes[INTRO_BATTLE_PRELUDE] = 			newTimedStep(SCENE_LOOP, 3000, FADE_IN);
 	intro.scenes[INTRO_BATTLE_MIKE_ENTER] = 		newTimedStep(SCENE_LOOP, 200, FADE_NONE);
-	intro.scenes[INTRO_BATTLE_MIKE_PAUSE] = 		newTimedStep(SCENE_LOOP, 750, FADE_NONE);
+	intro.scenes[INTRO_BATTLE_MIKE_PAUSE] = 		newTimedStep(SCENE_LOOP, 2000, FADE_NONE);
 	intro.scenes[INTRO_BATTLE_MIKE_FIRE] = 			newTimedStep(SCENE_LOOP, 1400, FADE_NONE);
-	intro.scenes[INTRO_BATTLE_MIKE_GLOAT] = 		newTimedStep(SCENE_LOOP, 1000, FADE_NONE);
+	intro.scenes[INTRO_BATTLE_MIKE_GLOAT] = 		newTimedStep(SCENE_LOOP, 2000, FADE_NONE);
 	intro.scenes[INTRO_BATTLE_MIKE_DEPART_CUE] = 	newCueStep();
 	intro.scenes[INTRO_BATTLE_MIKE_DEPART] = 		newTimedStep(SCENE_LOOP, 800, FADE_OUT);
 	intro.scenes[INTRO_TITLE_CUE] = 				newStateStep(STATE_TITLE);
@@ -271,7 +275,7 @@ void initScripts(void) {
 	scripts[STATE_INTRO] = intro;
 
 	title.scenes[TITLE_CUE] = 						newCueStep();
-	title.scenes[TITLE_LOOP] = 						newTimedStep(SCENE_LOOP, 10000, FADE_BOTH);
+	title.scenes[TITLE_LOOP] = 						newTimedStep(SCENE_LOOP, 7500, FADE_BOTH);
 	title.scenes[TITLE_INTRO_CUE] = 				newStateStep(STATE_INTRO);
 	title.totalScenes = TITLE_INTRO_CUE+1;
 	scripts[STATE_TITLE] = title;

@@ -21,6 +21,18 @@ static Asset *assets;
 static int assetCount;
 static SoundAsset *sounds;
 static int soundCount;
+static MusicAsset *music;
+static int musicCount;
+
+MusicAsset getMusic(char *path) {
+	//Loop through register until key is found, or we've exhausted the array's iteration.
+	for(int i=0; i < musicCount; i++) {
+		if(strcmp(music[i].key, path) == 0)			//if strings match.
+			return music[i];
+	}
+
+	fatalError("Could not find Asset in register", path);
+}
 
 SoundAsset getSound(char *path) {
 	//Loop through register until key is found, or we've exhausted the array's iteration.
@@ -30,6 +42,10 @@ SoundAsset getSound(char *path) {
 	}
 
 	fatalError("Could not find Asset in register", path);
+}
+
+void playMusic(char* path, int loops) {
+	Mix_PlayMusic(getMusic(path).music, loops);
 }
 
 void play(char* path) {
@@ -101,9 +117,8 @@ void shutdownAssets(void) {
 	free(assetPath);
 	free(assets);
 
-	for(int i=0; i < soundCount; i++) {
-		Mix_FreeChunk(sounds[i].sound);
-	}
+	for(int i=0; i < soundCount; i++) Mix_FreeChunk(sounds[i].sound);
+	for(int i=0; i < musicCount; i++) Mix_FreeMusic(music[i].music);
 
 	free(sounds);
 }
@@ -258,26 +273,29 @@ static void loadImages(void) {
 }
 
 static void loadSounds(void) {
+	const int SOUND_VOLUME = 12;
+
 	SoundDef defs[] = {
-		{ "Powerup8.wav", SDL_MIX_MAXVOLUME },
-		{ "warp.wav", SDL_MIX_MAXVOLUME },
-		{ "start.wav", SDL_MIX_MAXVOLUME },
-		{ "Hit_Hurt10.wav", SDL_MIX_MAXVOLUME },
-		{ "Hit_Hurt9.wav", SDL_MIX_MAXVOLUME },
-		{ "Laser_Shoot34.wav", 32 },
-		{ "Laser_Shoot18.wav", 48 },
-		{ "Laser_Shoot5.wav", 32 },
-		{ "Explosion14.wav", SDL_MIX_MAXVOLUME },
-		{ "Explosion3.wav", SDL_MIX_MAXVOLUME },
-		{ "Explosion2.wav", SDL_MIX_MAXVOLUME },
-		{ "Explosion.wav", SDL_MIX_MAXVOLUME }
+		{ "intro-presents.wav", SOUND_VOLUME * 2 },
+		{ "Powerup8.wav", SOUND_VOLUME },
+		{ "warp.wav", SOUND_VOLUME },
+		{ "start.wav", SOUND_VOLUME },
+		{ "Hit_Hurt10.wav", SOUND_VOLUME },
+		{ "Hit_Hurt9.wav", SOUND_VOLUME },
+		{ "Laser_Shoot34.wav", SOUND_VOLUME / 2 },
+		{ "Laser_Shoot18.wav", SOUND_VOLUME / 1.5 },
+		{ "Laser_Shoot5.wav", SOUND_VOLUME / 2 },
+		{ "Explosion14.wav", SOUND_VOLUME },
+		{ "Explosion3.wav", SOUND_VOLUME },
+		{ "Explosion2.wav", SOUND_VOLUME },
+		{ "Explosion.wav", SOUND_VOLUME }
 	};
 
 	soundCount = sizeof(defs) / sizeof(SoundDef);
 	sounds = malloc(sizeof(SoundAsset) * soundCount);
 
 	for(int i=0; i < soundCount; i++) {
-		//Load sound.
+		//Load music.
 		char* path = combineStrings(assetPath, defs[i].filename);
 		Mix_Chunk* chunk = Mix_LoadWAV(path);
 		if(!chunk) fatalError("Could not find Asset on disk", path);
@@ -292,9 +310,40 @@ static void loadSounds(void) {
 		};
 		sounds[i] = snd;
 	}
+}//TODO
+
+//TODO: Lots of duplication in music+sound loading.
+//TODO: Stop 'tic' static on end of sound loop.
+//TODO: Don't need music volume (introduce MusicDef?)
+
+static void loadMusic(void) {
+	SoundDef defs[] = {
+		{ "intro-battle.ogg", SDL_MIX_MAXVOLUME },
+		{ "intro-battle-3.ogg", SDL_MIX_MAXVOLUME },
+		{ "level-01.ogg", SDL_MIX_MAXVOLUME },
+		{ "title.ogg", SDL_MIX_MAXVOLUME }
+	};
+
+	musicCount = sizeof(defs) / sizeof(SoundDef);
+	music = malloc(sizeof(MusicAsset) * musicCount);
+
+	for(int i=0; i < musicCount; i++) {
+		//Load music.
+		char* path = combineStrings(assetPath, defs[i].filename);
+		Mix_Music* chunk = Mix_LoadMUS(path);
+		if(!chunk) fatalError("Could not find Asset on disk", path);
+
+		//Add to register
+		MusicAsset snd = {
+			defs[i].filename,
+			chunk
+		};
+		music[i] = snd;
+	}
 }
 
 void initAssets(void) {
 	loadImages();
 	loadSounds();
+	loadMusic();
 }
