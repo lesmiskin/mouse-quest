@@ -61,15 +61,18 @@
 [DONE] Sounds(!)
 [DONE] Cooler explosion sprite (core with shockwave - simple white and blue).
 [DONE] Stop interaction during into and title.
+[DONE] Fade in & out.
+[DONE] Distinguish presses from holds.
+[DONE] ~ Fade to operate on Hertz basis, not increment.
+[DONE] ~ Convert all magic number array sizes to shared #define's.
 
-Fade in & out.
-Distinguish presses from holds.
-~ Fade to operate on Hertz basis, not increment.
-~ Notion of 'init' for states vs. scripts seems a bit pants / unclear. Make every state change a simple script?
-~ Can we merge 'stateInitialised' with sceneStarted?
+Favicon for binary file
+Favicon for SDL window decoration
+Inexpensive USB MIDI keyboard and some basic drum+bass beats.
+Inexpensive USB gamepad and analog controls.
+Mike to use analog movement in intro sequence for smoother presentation.
 
-
-~ Convert all magic number array sizes to shared #define's.
+Graceful fade out on user-initiated state change (e.g. skip to title, game start, game end etc).
 
 
 RELEASE 0.1 - July 12th 2015
@@ -81,9 +84,6 @@ RELEASE 0.1 - July 12th 2015
 - Score (50 points per enemy, live counter, shows at end of level)
 - Configured enemy placements
 
-
-Differentiate presses from holds, to stop bypassing sequences by holding 'fire'
-Fade in and out.
 
 ~ Some graphical artifacts on state change - timing issue with inits and rendering?
 
