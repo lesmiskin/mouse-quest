@@ -126,6 +126,9 @@ void shutdownAssets(void) {
 static void loadImages(void) {
 	//Define assets to be loaded.
 	AssetDef definitions[] = {
+		{ "life.png", false, false, false },
+		{ "life-half.png", false, false, false },
+		{ "life-none.png", false, false, false },
 		{ "lm-presents.png", false, false, false },
 		{ "super-streak.png", false, false, false },
 		{ "super-fleck.png", false, false, false },

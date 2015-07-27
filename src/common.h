@@ -4,7 +4,7 @@
 #include "SDL.h"
 #include <stdbool.h>
 
-//#define DEBUG_T500
+#define DEBUG_T500
 
 //MISC
 extern const int ANIMATION_HZ;

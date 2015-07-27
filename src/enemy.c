@@ -18,7 +18,7 @@ typedef struct {
 	EnemyType enemyType;
 } EnemyShot;
 
-#define MAX_SHOTS 10
+#define MAX_SHOTS 20
 
 static int gameTime;
 Enemy enemies[MAX_ENEMIES];
@@ -34,11 +34,12 @@ static const int CD_IDLE_FRAMES = 4;
 static const int DEATH_FRAMES = 7;
 static const double ENEMY_HEALTH = 4.0;
 static const double HIT_KNOCKBACK = 5.0;
+static const double COLLIDE_DAMAGE = 0.5;
 
 static EnemyShot enemyShots[MAX_SHOTS];
 static int enemyShotCount;
 static const double SHOT_HZ = 1000 / 0.5;
-static const double SHOT_DAMAGE = 10.0;
+static const double SHOT_DAMAGE = 0.5;
 static const double SHOT_SPEED = 2.0;
 static const int ENEMY_SHOT_BOUND = 24;
 static const int MAX_VIRUS_SHOT_FRAMES = 4;
@@ -356,7 +357,7 @@ void enemyGameFrame(void) {
 		if(playerState != PSTATE_DYING) {
 			Rect enemyBound = makeSquareBounds(enemies[i].parallax, ENEMY_BOUND);
 			if(inBounds(playerOrigin, enemyBound)) {
-				collidePlayer(enemies[i].strength);
+				collidePlayer(COLLIDE_DAMAGE);
 				collideEnemy(&enemies[i], playerStrength);
 			}
 		}

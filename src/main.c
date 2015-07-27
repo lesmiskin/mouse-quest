@@ -13,6 +13,7 @@
 #include "enemy.h"
 #include "scripting.h"
 #include "scripts.h"
+#include "hud.h"
 
 static const char *GAME_TITLE = "Mouse Quest";
 static const bool FULLSCREEN = false;
@@ -98,6 +99,7 @@ int main()  {
 			playerGameFrame();
 			enemyGameFrame();
 			pewGameFrame();
+			hudGameFrame();
 		}
 
 		//Animation frame
@@ -117,6 +119,7 @@ int main()  {
  			enemyRenderFrame();
 			pewRenderFrame();
 			playerRenderFrame();
+			hudRenderFrame();
 			faderRenderFrame();
 			updateCanvas();
 		}

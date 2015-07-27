@@ -17,6 +17,7 @@ extern bool playerDying;
 extern void collidePlayer(double strength);
 extern void hitPlayer(double damage);
 extern double playerStrength;
+extern double playerHealth;
 extern Coord playerOrigin;
 extern void playerInit(void);
 extern void playerAnimate(void);

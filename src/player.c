@@ -35,8 +35,8 @@ static bool isDying() {
 bool showMike;
 double intervalFrames;
 Coord playerOrigin;
-double playerStrength = 100.0;
-static double playerHealth;
+double playerStrength = 8.0;
+double playerHealth;
 static const double PLAYER_MAX_SPEED = 4.0;
 static const double MOMENTUM_INC_DIVISOR = 10;
 static const int ANIMATION_FRAMES = 8;
@@ -59,6 +59,7 @@ static double BUBBLE_TIME_SECONDS = 1.5;
 static bool BUBBLE_FINISHED = false;
 static long bubbleLastTime;
 static char frameName[50];
+static long lastHitTime;
 
 void collidePlayer(double strength) {
 	hitPlayer(strength * 3);
@@ -75,6 +76,8 @@ void hitPlayer(double damage) {
 		playerOrigin.y += HIT_KNOCKBACK;
 	}
 }
+
+static int fuck;
 
 //Perform an animation sceneNumber.
 void playerAnimate(void) {
@@ -106,8 +109,8 @@ void playerAnimate(void) {
 	else{
 		//If hit - switch to hit version.
 		if(hitAnimate) {
-			frameVersion = ASSET_HIT;
-			hitAnimate = false;
+//			frameVersion = ASSET_HIT;
+//			hitAnimate = false;
 		}
 
 		//Shooting.
