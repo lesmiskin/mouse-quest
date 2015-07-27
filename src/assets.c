@@ -273,7 +273,7 @@ static void loadImages(void) {
 }
 
 static void loadSounds(void) {
-	const int SOUND_VOLUME = 12;
+	const int SOUND_VOLUME = 12 ;
 
 	SoundDef defs[] = {
 		{ "intro-presents.wav", SOUND_VOLUME * 2 },
@@ -310,32 +310,32 @@ static void loadSounds(void) {
 		};
 		sounds[i] = snd;
 	}
-}//TODO
+}
 
 //TODO: Lots of duplication in music+sound loading.
 //TODO: Stop 'tic' static on end of sound loop.
-//TODO: Don't need music volume (introduce MusicDef?)
 
 static void loadMusic(void) {
-	SoundDef defs[] = {
-		{ "intro-battle.ogg", SDL_MIX_MAXVOLUME },
-		{ "intro-battle-3.ogg", SDL_MIX_MAXVOLUME },
-		{ "level-01.ogg", SDL_MIX_MAXVOLUME },
-		{ "title.ogg", SDL_MIX_MAXVOLUME }
+	char* defs[] = {
+		"intro-battle.ogg",
+		"intro-battle-3.ogg",
+		"level-01.ogg",
+		"level-01c.ogg",
+		"title.ogg"
 	};
 
-	musicCount = sizeof(defs) / sizeof(SoundDef);
+	musicCount = sizeof(defs) / sizeof(char*);
 	music = malloc(sizeof(MusicAsset) * musicCount);
 
 	for(int i=0; i < musicCount; i++) {
 		//Load music.
-		char* path = combineStrings(assetPath, defs[i].filename);
+		char* path = combineStrings(assetPath, defs[i]);
 		Mix_Music* chunk = Mix_LoadMUS(path);
 		if(!chunk) fatalError("Could not find Asset on disk", path);
 
 		//Add to register
 		MusicAsset snd = {
-			defs[i].filename,
+			defs[i],
 			chunk
 		};
 		music[i] = snd;

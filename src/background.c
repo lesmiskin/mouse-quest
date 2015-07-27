@@ -21,7 +21,7 @@ double bgOffset;
 bool showBackground;
 bool staticBackground;
 
-#define MAX_PLANETS 2
+#define MAX_PLANETS 4
 static Sprite spaceSprite;
 static const double SCROLL_SPEED = 0.5;			//TODO: Should be in FPS.
 static Planet planets[MAX_PLANETS];
@@ -41,7 +41,7 @@ static int PLANET_SPEED_MIN = 6;				//will /10
 static int PLANET_SPEED_MAX = 6;
 static int PLANET_BOUND = 32;
 
-#define MAX_PLATFORMS 3
+#define MAX_PLATFORMS 4
 static long lastPlatformTime;
 static double nextPlatformSpawnSeconds;
 static int PLATFORM_SPAWN_MIN_SECONDS = 5;
@@ -156,8 +156,8 @@ void backgroundRenderFrame(void) {
 
 	//Blit the fader overlay to the screen.
 	SDL_Rect faderDestination = {
-			0, 0,
-			(int)windowSize.x, (int)windowSize.y
+		0, 0,
+		(int)windowSize.x, (int)windowSize.y
 	};
 
 	//Don't do planet or platform rendering for static backgrounds.
@@ -220,7 +220,6 @@ Platform makePlatform(Coord origin) {
 
 	//Make transparent (initially)
 	SDL_SetTextureBlendMode(canvas, SDL_BLENDMODE_BLEND);
-	SDL_RenderFillRect(renderer, NULL);
 
 	Platform p;
 	p.origin = origin;

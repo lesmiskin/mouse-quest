@@ -166,7 +166,7 @@ void scriptGameFrame(void) {
 				resetEnemies();
 				resetBackground();
 				showMike = true;
-				playMusic("level-01.ogg", -1);
+				playMusic("level-01c.ogg", -1);
 			}
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
