@@ -4,10 +4,19 @@
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL_mixer.h"
 
+#define ASSET_VERSIONS 5
+typedef enum {
+	ASSET_DEFAULT = 0,
+	ASSET_HIT = 1,
+	ASSET_SHADOW = 2,
+	ASSET_SUPER = 3,
+	ASSET_ALPHA = 4
+} AssetVersion;
+
 typedef struct {
 	char* key;
 	SDL_Texture* texture;
-	SDL_Texture* textures[4];
+	SDL_Texture* textures[ASSET_VERSIONS];
 } Asset;
 
 typedef struct {
@@ -20,13 +29,6 @@ typedef struct {
 	Mix_Music*music;
 } MusicAsset;
 
-//Adjust the size of Asset.textures[] if items added or removed.
-typedef enum {
-	ASSET_DEFAULT = 0,
-	ASSET_HIT = 1,
-	ASSET_SHADOW = 2,
-	ASSET_SUPER = 3
-} AssetVersion;
 
 extern void initAssets(void);
 extern SDL_Texture *getTexture(char *path);

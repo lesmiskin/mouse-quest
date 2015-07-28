@@ -9,12 +9,17 @@
 [DONE] Added temporary invincibility when hit ('pain recovery')
 [DONE] Fixed flickering Mike when returning to titlescreen after dying.
 [DONE] Fixed erroneous explosion frame at conclusion of Mike's death.
+[DONE] Added fade-out flicker appearance during pain recovery.
+[DONE] Added skeletal 'shock' animation frame for player hit.
 
 Focus the game window once launched.
+~ Architecture: Ensure we don't change game state in render/animate frame methods.
 ~ PCB boards need to be darker colour.
 ~ Can't hear kick drum properly during intro.
 ~ Normalise drum volumes of title and levels.
 ~ Reduce clap volume in titlescreen and intro.
+~ Convert asset def bools to flags.
+~ Asset hit/super version creation: Change to SDL modulation to skip need for surface copying.
 Weapon powerups
 Level ending
 Game over

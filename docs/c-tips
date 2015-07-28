@@ -1,0 +1,1 @@
+Variables with non-static scope are never zero-initialised, and are undefined(!) - http://stackoverflow.com/questions/3845353/what-will-be-the-default-value-of-an-uninitialized-boolean-value-in-c

@@ -62,6 +62,7 @@ static long lastHitTime;
 static bool pain;
 static bool flickerPain;
 static const int PAIN_RECOVER_TIME = 2000;
+static bool painShocked;
 
 void hitPlayer(double damage) {
 	//Don't take damage during pain recovery time.
@@ -74,6 +75,7 @@ void hitPlayer(double damage) {
 
 	lastHitTime = clock();
 	pain = true;
+	painShocked = 0;
 
 	//Apply knockback, but only if we're within bounds.
 	Coord predicted = addCoords(playerOrigin, deriveCoord(playerOrigin, 0, HIT_KNOCKBACK));
@@ -97,7 +99,6 @@ void playerAnimate(void) {
 		//Start to die - reset animation frames.
 		if(!begunDying) {
 			animationInc = 1;
-			pain = false;
 			begunDying = true;
 		}
 		//Flag if completely dead, and stop any further logic.
@@ -109,15 +110,19 @@ void playerAnimate(void) {
 
 		animGroupName = "exp-%02d.png";
 	}
+	//Pain: In shock (change frame)
+	else if(pain && !painShocked) {
+		animGroupName = "mike-shock3.png";
+		painShocked = true;
+	}
 	//Idle frames.
 	else{
-		//Pain flicker
+		//Pain: Flicker during recovery time.
 		if(pain) {
 			if(flickerPain) {
-				hideMike = true;
+				frameVersion = ASSET_ALPHA;
 				flickerPain = false;
 			}else{
-				hideMike = false;
 				flickerPain = true;
 			}
 		}
@@ -162,6 +167,7 @@ void playerAnimate(void) {
 
 	//Now, assign it.
 	SDL_Texture* texture = getTextureVersion(frameFile, frameVersion);
+
 	bodySprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
 }
 
@@ -276,13 +282,12 @@ void playerGameFrame(void) {
 	//Flag for death sequence.
 	if(playerHealth <= 0) {
 		playerState = PSTATE_DYING;
+		pain = false;
 		return;
 	}
 
 	//Recover from pain invincibility.
 	if(pain && due(lastHitTime, PAIN_RECOVER_TIME)) {
-		hideMike = false;
-		flickerPain = false;
 		pain = false;
 	}
 
