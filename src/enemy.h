@@ -38,7 +38,6 @@ typedef struct {
 #define MAX_ENEMIES 20
 extern void resetEnemies();
 extern void spawnEnemy(int x, int y, EnemyType type);
-extern void collideEnemy(Enemy* enemy, double strength);
 extern void hitEnemy(Enemy* enemy, double damage);
 extern const int ENEMY_BOUND;
 extern void hit(Enemy p);

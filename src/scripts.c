@@ -82,7 +82,7 @@ void scriptGameFrame(void) {
 					resetPlayer();
 					resetEnemies();
 					resetBackground();
-					showMike = false;
+					useMike = false;
 					staticBackground = true;
 					intro_StrafeInc = 0;
 					intro_mikeStafeDir = -1;
@@ -95,7 +95,7 @@ void scriptGameFrame(void) {
 					spawnEnemy(110, random(40, 65), random(0, sizeof(EnemyType)));
 					spawnEnemy(140, random(40, 65), random(0, sizeof(EnemyType)));
 					playerOrigin.y = screenBounds.y + 16;
-					showMike = true;
+					useMike = true;
 					showBackground = false;
 					playMusic("intro-battle-3.ogg", 1);
 					break;
@@ -134,7 +134,7 @@ void scriptGameFrame(void) {
 					resetPlayer();
 					resetEnemies();
 					resetBackground();
-					showMike = true;
+					useMike = true;
 					staticBackground = true;
 					game_messageTime = clock();
 					title_logoLocation = makeCoord((screenBounds.x/2) - 3, screenBounds.y/4);
@@ -165,7 +165,7 @@ void scriptGameFrame(void) {
 				resetPlayer();
 				resetEnemies();
 				resetBackground();
-				showMike = true;
+				useMike = true;
 				playMusic("level-01c.ogg", -1);
 			}
 			//Skip to titlescreen if fire button pressed.

@@ -4,7 +4,6 @@
 #include "assets.h"
 #include "renderer.h"
 #include "input.h"
-#include "common.h"
 
 //NB: There is a conceptual distinction between realtime and animated effects. e.g. movment is realtime, whereas the
 // animation frames are not. This is consistent with the presentation of Tyrian, and rotating powerups/weapons in
@@ -32,7 +31,8 @@ static bool isDying() {
 	return playerState == PSTATE_DYING;
 }
 
-bool showMike;
+bool useMike;		//onscreen, responds to actions etc.
+bool hideMike;		//still there, but don't render this frame.
 double intervalFrames;
 Coord playerOrigin;
 double playerStrength = 8.0;
@@ -51,24 +51,29 @@ static Coord momentumState;
 static Coord PLAYER_SIZE = { 6, 7 };
 static Rect movementBounds;
 static bool begunDying;
-static bool hitAnimate;
 static const double HIT_KNOCKBACK = 0.5;
 bool playerShooting;
 bool begunShooting;
 static double BUBBLE_TIME_SECONDS = 1.5;
 static bool BUBBLE_FINISHED = false;
 static long bubbleLastTime;
-static char frameName[50];
+static char* frameName;
 static long lastHitTime;
-
-void collidePlayer(double strength) {
-	hitPlayer(strength * 3);
-}
+static bool pain;
+static bool flickerPain;
+static const int PAIN_RECOVER_TIME = 2000;
 
 void hitPlayer(double damage) {
+	//Don't take damage during pain recovery time.
+	if(pain) {
+		return;
+	}
+
 	play("Hit_Hurt10.wav");
-	hitAnimate = true;
 	playerHealth -= damage;
+
+	lastHitTime = clock();
+	pain = true;
 
 	//Apply knockback, but only if we're within bounds.
 	Coord predicted = addCoords(playerOrigin, deriveCoord(playerOrigin, 0, HIT_KNOCKBACK));
@@ -76,8 +81,6 @@ void hitPlayer(double damage) {
 		playerOrigin.y += HIT_KNOCKBACK;
 	}
 }
-
-static int fuck;
 
 //Perform an animation sceneNumber.
 void playerAnimate(void) {
@@ -94,10 +97,11 @@ void playerAnimate(void) {
 		//Start to die - reset animation frames.
 		if(!begunDying) {
 			animationInc = 1;
+			pain = false;
 			begunDying = true;
 		}
 		//Flag if completely dead, and stop any further logic.
-		else if(animationInc > DEATH_FRAMES){
+		else if(animationInc == DEATH_FRAMES){
 			playerState = PSTATE_DEAD;
 			triggerState(STATE_TITLE);
 			return;
@@ -107,10 +111,15 @@ void playerAnimate(void) {
 	}
 	//Idle frames.
 	else{
-		//If hit - switch to hit version.
-		if(hitAnimate) {
-//			frameVersion = ASSET_HIT;
-//			hitAnimate = false;
+		//Pain flicker
+		if(pain) {
+			if(flickerPain) {
+				hideMike = true;
+				flickerPain = false;
+			}else{
+				hideMike = false;
+				flickerPain = true;
+			}
 		}
 
 		//Shooting.
@@ -148,7 +157,8 @@ void playerAnimate(void) {
 	sprintf(frameFile, animGroupName, animationInc);
 
 	//Remember what frame we're on for shadow drawing.
-	strncpy(frameName, frameFile, sizeof(frameFile));
+	frameName = realloc(frameName, strlen(frameFile) + 1);
+	strcpy(frameName, frameFile);
 
 	//Now, assign it.
 	SDL_Texture* texture = getTextureVersion(frameFile, frameVersion);
@@ -156,7 +166,7 @@ void playerAnimate(void) {
 }
 
 void playerShadowFrame(void) {
-	if(!showMike) return;
+	if(!useMike || hideMike) return;
 
 	SDL_Texture* shadowTexture = getTextureVersion(frameName, ASSET_SHADOW);
 	if(shadowTexture != NULL) {
@@ -173,7 +183,7 @@ void playerShadowFrame(void) {
 
 //Render the player at a given frame, independent of animation.
 void playerRenderFrame(void) {
-	if(!showMike) return;
+	if(!useMike || hideMike) return;
 	if((playerState&PSTATE_DEAD) > 0) return;
 
 	switch(gameState) {
@@ -261,12 +271,19 @@ static void recogniseThrust(void) {
 
 void playerGameFrame(void) {
 
-	if(!showMike || !canControl()) return;
+	if(!useMike || !canControl()) return;
 
 	//Flag for death sequence.
 	if(playerHealth <= 0) {
 		playerState = PSTATE_DYING;
 		return;
+	}
+
+	//Recover from pain invincibility.
+	if(pain && due(lastHitTime, PAIN_RECOVER_TIME)) {
+		hideMike = false;
+		flickerPain = false;
+		pain = false;
 	}
 
 	//Movement.
@@ -294,6 +311,7 @@ void resetPlayer() {
 	playerOrigin.y = 220;
 	playerHealth = playerStrength;
 	momentumState = zeroCoord();
+	pain = false;
 
 	playerOrigin = makeCoord(
 			(screenBounds.x / 2),

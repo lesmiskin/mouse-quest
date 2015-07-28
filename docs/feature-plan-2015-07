@@ -5,9 +5,12 @@
 
 2015-07-28
 [DONE] ~ Refactor health meter display algorithm.
+[DONE] ~ Fixed *massive* memory-related bug with player frame name storage - was overwriting the state of a recently-added boolean variable. Now using proper memory allocation strategy with a pointer.
+[DONE] Added temporary invincibility when hit ('pain recovery')
+[DONE] Fixed flickering Mike when returning to titlescreen after dying.
+[DONE] Fixed erroneous explosion frame at conclusion of Mike's death.
 
-Temporary invuln when hit (flicker?).
-
+Focus the game window once launched.
 ~ PCB boards need to be darker colour.
 ~ Can't hear kick drum properly during intro.
 ~ Normalise drum volumes of title and levels.

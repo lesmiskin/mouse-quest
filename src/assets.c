@@ -257,7 +257,6 @@ static void loadImages(void) {
 		{ "exp-04.png", false, true, false },
 		{ "exp-05.png", false, true, false },
 		{ "exp-06.png", false, true, false },
-		{ "exp-07.png", false, true, false },
 	};
 
 	//Infer asset path from current directory.

@@ -27,18 +27,18 @@ void hudRenderFrame(void) {
 	if(gameState != STATE_GAME) return;
 
 	//Loop through icons and draw them at the appropriate 'fullness' levels for each health bar.
+	// This algorithm will automatically scale according to whatever we choose to set the player's total health to.
 	float healthPerHeart = playerStrength / NUM_HEARTS;		//e.g. for 4 hearts, 1 heart = 25 hitpoints.
 	for(int bar=0; bar < NUM_HEARTS; bar++) {
-		//The total health represented by this bar. This is kinda complex - the idea is that we swap around the
-		// bar health 'totals' per-increment, since we're looping from left to right. If we just did bar * health, then
-		// our display would read backwards.
-		float barHealth = playerStrength - ((NUM_HEARTS - bar) * healthPerHeart);
+		//The total health represented by this bar. We do a bit of crazy magic here to make sure we calculate this
+		// correctly for a left-to-right pass.
+		float barHealth = playerStrength - ((NUM_HEARTS - (bar+1)) * healthPerHeart);
 
 		//Full bar.
 		if(playerHealth >= barHealth) {
 			drawSpriteAbs(life, lifePositions[bar]);
 		//Between half and full.
-		}else if(playerHealth >= barHealth/2) {
+		}else if(playerHealth >= barHealth - (healthPerHeart/2)) {
 			drawSpriteAbs(lifeHalf, lifePositions[bar]);
 		//Under half / none.
 		}else{
