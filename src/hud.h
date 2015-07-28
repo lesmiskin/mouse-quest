@@ -3,5 +3,6 @@
 
 extern void hudGameFrame(void);
 extern void hudRenderFrame(void);
+extern void hudInit(void);
 
 #endif

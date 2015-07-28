@@ -1,12 +1,17 @@
 2015-07-27
 [DONE] Background of PCBs is occasionally opaque
 [DONE] Planets get reset too soon
+[DONE] Health bar
 
-Stop damaging when colliding.
+2015-07-28
+[DONE] ~ Refactor health meter display algorithm.
+
 Temporary invuln when hit (flicker?).
 
-Health bar
-
+~ PCB boards need to be darker colour.
+~ Can't hear kick drum properly during intro.
+~ Normalise drum volumes of title and levels.
+~ Reduce clap volume in titlescreen and intro.
 Weapon powerups
 Level ending
 Game over
