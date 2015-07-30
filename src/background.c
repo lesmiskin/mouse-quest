@@ -41,11 +41,11 @@ static int PLANET_SPEED_MIN = 6;				//will /10
 static int PLANET_SPEED_MAX = 6;
 static int PLANET_BOUND = 32;
 
-#define MAX_PLATFORMS 4
+#define MAX_PLATFORMS 10
 static long lastPlatformTime;
 static double nextPlatformSpawnSeconds;
-static int PLATFORM_SPAWN_MIN_SECONDS = 5;
-static int PLATFORM_SPAWN_MAX_SECONDS = 10;
+static int PLATFORM_SPAWN_MIN_SECONDS = 1;
+static int PLATFORM_SPAWN_MAX_SECONDS = 5;
 static double PLATFORM_SCROLL_SPEED = 0.8;
 static const int PLATFORM_SCALE = 2;
 static Platform platforms[MAX_PLATFORMS];
@@ -314,7 +314,16 @@ Platform makePlatform(Coord origin) {
 					break;
 			}
 
-			filename = chance(50) ? "base-large.png" : "base-large-chip.png";
+			filename = chance(50) ? "base-large.png" : "base-large-chip-gold-3.png";
+
+//			int rand = random(1,4);
+//			if(rand == 1) filename = "base-large.png";
+//			else if(rand == 2) filename = "base-large-chip-gold-1.png";
+//			else if(rand == 3) filename = "base-large-chip-gold-2.png";
+//			else if(rand == 4) filename = "base-large-chip-gold-3.png";
+//			else if(rand == 2) filename = "base-large-chip-2.png";
+//			else if(rand == 3) filename = "base-large-chip-3.png";
+//			else if(rand == 4) filename = "base-large-chip.png";
 
 			SDL_Texture *baseTexture = getTexture(filename);
 			baseSprite = makeSprite(baseTexture, zeroCoord(), SDL_FLIP_NONE);
