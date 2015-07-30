@@ -66,8 +66,8 @@ SDL_Texture* createPlatformTexture(void) {
 		renderer,
 		SDL_PIXELFORMAT_UNKNOWN,
 		SDL_TEXTUREACCESS_TARGET,
-		(int)PLATFORM_SEED_X * PLATFORM_SCALE * 16,
-		(int)PLATFORM_SEED_Y * PLATFORM_SCALE * 16
+		(int)PLATFORM_SEED_X * PLATFORM_SCALE * 20,
+		(int)PLATFORM_SEED_Y * PLATFORM_SCALE * 20
 	);
 }
 
@@ -225,7 +225,7 @@ Platform makePlatform(Coord origin) {
 	p.origin = origin;
 
 	//Local variables.
-	Coord tileSize = makeCoord(16, 16);
+	Coord tileSize = makeCoord(20, 20);
 
 	//Get base asset.
 
@@ -314,6 +314,8 @@ Platform makePlatform(Coord origin) {
 					break;
 			}
 
+			filename = chance(50) ? "base-large.png" : "base-large-chip.png";
+
 			SDL_Texture *baseTexture = getTexture(filename);
 			baseSprite = makeSprite(baseTexture, zeroCoord(), SDL_FLIP_NONE);
 
@@ -370,7 +372,7 @@ void backgroundGameFrame(void) {
 		//TODO: Algorithm to remove free-floating, or otherwise corner-hinged tiles from platform geometry.
 		//TODO: Decorate borders with edge sprites.
 
-		Coord origin = makeCoord(random(0, (int)screenBounds.x), -(PLATFORM_SEED_Y * PLATFORM_SCALE * 16) / 2);
+		Coord origin = makeCoord(random(0, (int)screenBounds.x), -(PLATFORM_SEED_Y * PLATFORM_SCALE * 20) / 2);
 		Platform platform = makePlatform(origin);
 		platforms[++platformInc] = platform;
 

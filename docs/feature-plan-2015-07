@@ -12,7 +12,28 @@
 [DONE] Added fade-out flicker appearance during pain recovery.
 [DONE] Added skeletal 'shock' animation frame for player hit.
 
+Planned enemy placements.
+More enemy types.
+Bug: Weird backgrounds for PCB tiles.
 Focus the game window once launched.
+Weapon powerups
+Score system
+Fruit bonuses
+Letters upon scoring
+Ship coins
+
+Consistent tile sizes: 16(small/Mike), 24(monster), 32(planet), 48(background).
+
+Different level themes: Outer space, planet surface.
+Five different levels.
+
+Level ending
+Game over
+
+Fade when cutscene skipped
+Fade when entering game
+
+Bug: Sometimes get exp-08.png error when dying.
 ~ Architecture: Ensure we don't change game state in render/animate frame methods.
 ~ PCB boards need to be darker colour.
 ~ Can't hear kick drum properly during intro.
@@ -20,11 +41,5 @@ Focus the game window once launched.
 ~ Reduce clap volume in titlescreen and intro.
 ~ Convert asset def bools to flags.
 ~ Asset hit/super version creation: Change to SDL modulation to skip need for surface copying.
-Weapon powerups
-Level ending
-Game over
 Pause
-Fade when cutscene skipped
-Fade when entering game
-
-~ Sound and music loading code is repetitive.
+~ Sound and music asset loading code is repetitive.

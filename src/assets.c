@@ -145,6 +145,8 @@ static void loadImages(void) {
 		{ "base-chip.png", false, false, false, false },
 		{ "base-resistor.png", false, false, false, false },
 		{ "base-resistor-2.png", false, false, false, false },
+		{ "base-large.png", false, false, false, false },
+		{ "base-large-chip.png", false, false, false, false },
 		{ "base.png", false, false, false, false },
 		{ "base-n.png", false, false, false, false },
 		{ "base-n-resistor.png", false, false, false, false },
