@@ -20,10 +20,20 @@ typedef struct {
 
 #define MAX_SHOTS 20
 
-static int gameTime;
+typedef struct {
+	float time;
+	int x;
+	EnemyType type;
+} EnemySpawn;
+
+static EnemySpawn spawns[100];
+static long gameStartTime;
+static const int MAX_SPAWNS = 10;
+
 Enemy enemies[MAX_ENEMIES];
 const int ENEMY_BOUND = 32;
 static int enemyCount;
+static const double ENEMY_SPEED = 1.0;
 static const int ENEMY_SPEED_MIN = 10;
 static const int ENEMY_SPEED_MAX = 15;
 static const int ENEMY_SPAWN_INTERVAL = 20;
@@ -248,7 +258,8 @@ void spawnEnemy(int x, int y, EnemyType type) {
 		false,
 		type,
 		0,
-		(random(ENEMY_SPEED_MIN, ENEMY_SPEED_MAX)) * 0.1,
+		ENEMY_SPEED,
+//		(random(ENEMY_SPEED_MIN, ENEMY_SPEED_MAX)) * 0.1,
 		"",
 		false,
 		false
@@ -295,6 +306,8 @@ static double rollSine[5] = { 0.0, 1.25, 2.5, 3.75, 5.0 };
 //	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 //};
 
+static int spawnInc;
+
 void enemyGameFrame(void) {
 
 	//Bob enemies in sine pattern.
@@ -330,14 +343,14 @@ void enemyGameFrame(void) {
 	if(gameState != STATE_GAME) return;
 
 	//Spawn new enemies at random positions, at a given time increment
-	if(gameTime % ENEMY_SPAWN_INTERVAL == 0) {
-		int xSpawnPos = random(0, (int)screenBounds.x + 33);			//HACK!
-		spawnEnemy(
-			xSpawnPos,
-			-ENEMY_BOUND,
-			(EnemyType)random(0, 4)
-		);
-	}
+//	if(gameTime % ENEMY_SPAWN_INTERVAL == 0) {
+//		int xSpawnPos = random(0, (int)screenBounds.x + 33);			//HACK!
+//		spawnEnemy(
+//			xSpawnPos,
+//			-ENEMY_BOUND,
+//			(EnemyType)random(0, 4)
+//		);
+//	}
 
 	//Scroll the enemies down the screen
 	for(int i=0; i < MAX_ENEMIES; i++) {
@@ -386,10 +399,35 @@ void enemyGameFrame(void) {
 		}
 	}
 
-	gameTime++;
+	if(spawnInc < MAX_SPAWNS && due(gameStartTime, spawns[spawnInc].time)) {
+		spawnEnemy(
+			spawns[spawnInc].x,
+			-ENEMY_BOUND,
+			spawns[spawnInc].type
+		);
+
+		spawnInc++;
+	}
+}
+
+EnemySpawn makeSpawn(long time, int x, EnemyType type) {
+	EnemySpawn s = { time, x, type };
+	return s;
 }
 
 void enemyInit(void) {
 	resetEnemies();
 	animateEnemy();
+
+	spawns[0] = makeSpawn(1000, 200, ENEMY_DISK_BLUE);
+	spawns[1] = makeSpawn(1000 + 400, 200, ENEMY_DISK_BLUE);
+	spawns[2] = makeSpawn(1400 + 400, 200, ENEMY_DISK_BLUE);
+	spawns[3] = makeSpawn(1800 + 400, 200, ENEMY_DISK_BLUE);
+	spawns[4] = makeSpawn(2200 + 400, 200, ENEMY_DISK_BLUE);
+
+	spawns[5] = makeSpawn(3000, 50, ENEMY_DISK);
+	spawns[6] = makeSpawn(3000 + 400, 50, ENEMY_DISK);
+	spawns[7] = makeSpawn(3400 + 400, 50, ENEMY_DISK);
+	spawns[8] = makeSpawn(3800 + 400, 50, ENEMY_DISK);
+	spawns[9] = makeSpawn(4200 + 400, 50, ENEMY_DISK);
 }

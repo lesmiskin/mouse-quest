@@ -174,8 +174,9 @@ static void makeFader(void) {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
 
-	//Restore renderer context back to the window canvas.
+	//Restore renderer context back to the window canvas, and reset draw colour.
 	SDL_SetRenderTarget(renderer, NULL);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 }
 
 void faderRenderFrame(void) {

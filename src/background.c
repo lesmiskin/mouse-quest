@@ -11,15 +11,26 @@ typedef struct {
 	double speed;
 } Planet;
 
+typedef enum {
+	TILE_NONE,
+	TILE_BASE,
+	TILE_CHIP
+} TileType;
+
+#define PLATFORM_TILE_X 6
+#define PLATFORM_TILE_Y 6
+
 typedef struct {
-	char map[10][20];							//Vertical rectangle (width / 2, height + 1/3)
+	TileType tiles[PLATFORM_TILE_X][PLATFORM_TILE_Y];
 	Coord origin;
-	Sprite sprite;
+	Sprite sprite;  
 } Platform;
 
 double bgOffset;
 bool showBackground;
 bool staticBackground;
+
+static const int BASE_SIZE = 20;
 
 #define MAX_PLANETS 4
 static Sprite spaceSprite;
@@ -44,31 +55,16 @@ static int PLANET_BOUND = 32;
 #define MAX_PLATFORMS 10
 static long lastPlatformTime;
 static double nextPlatformSpawnSeconds;
-static int PLATFORM_SPAWN_MIN_SECONDS = 1;
+static int PLATFORM_SPAWN_MIN_SECONDS = 5;
 static int PLATFORM_SPAWN_MAX_SECONDS = 5;
 static double PLATFORM_SCROLL_SPEED = 0.8;
-static const int PLATFORM_SCALE = 2;
-static Platform platforms[MAX_PLATFORMS];
 static int platformInc;
 static Sprite baseSprite;
 static SDL_Texture* platformCanvas;
-
-static const int PLATFORM_SEED_X = 3;
-static const int PLATFORM_SEED_Y = 6;
-static const int PLATFORM_SEED_DENSITY = 75;
+static Platform platforms[MAX_PLATFORMS];
 
 static bool isNullPlanet(Planet* planet) {
 	return planet->speed == 0;
-}
-
-SDL_Texture* createPlatformTexture(void) {
-	return SDL_CreateTexture(
-		renderer,
-		SDL_PIXELFORMAT_UNKNOWN,
-		SDL_TEXTUREACCESS_TARGET,
-		(int)PLATFORM_SEED_X * PLATFORM_SCALE * 20,
-		(int)PLATFORM_SEED_Y * PLATFORM_SCALE * 20
-	);
 }
 
 SDL_Texture* initBackgroundFrame(char* filename) {
@@ -189,155 +185,60 @@ typedef enum {
 	TILE_EAST = 8
 } TileDirection;
 
-Platform makePlatform(Coord origin) {
-	bool seedMap[PLATFORM_SEED_X][PLATFORM_SEED_Y];
-	bool seedMap2[PLATFORM_SEED_X * PLATFORM_SCALE][PLATFORM_SEED_Y * PLATFORM_SCALE];
-
-	//Create an initial 'seed map' to base eventual platform appearance on. This can scale based on a constant.
-	// (taking care to set false cases, since these aren't automatically set).
-	for(int x=0; x < PLATFORM_SEED_X; x++){
-		for(int y=0; y < PLATFORM_SEED_Y; y++) {
-			seedMap[x][y] = chance(PLATFORM_SEED_DENSITY);
-		}
-	}
-
-	//NB: FOUND ISSUE - DON'T ITERATE ON BOTH X AND Y WITH S! JUST ONE!!!
-
-	for(int x=0; x < PLATFORM_SEED_X * PLATFORM_SCALE; x+=PLATFORM_SCALE){
-		for(int y=0; y < PLATFORM_SEED_Y * PLATFORM_SCALE; y+=PLATFORM_SCALE) {
-			bool chanceResult = chance(PLATFORM_SEED_DENSITY);
-			for(int s=0; s < PLATFORM_SCALE; s++) {
-				seedMap[x+s][y+s] = chanceResult;
-			}
-		}
-	}
-
+Platform makePlatform(Platform *platform) {
 	//Create tile map canvas texture.
-	SDL_Texture* canvas = createPlatformTexture();
+	SDL_Texture* canvas = SDL_CreateTexture(
+		renderer,
+		SDL_PIXELFORMAT_UNKNOWN,
+		SDL_TEXTUREACCESS_TARGET,
+		PLATFORM_TILE_X * BASE_SIZE,
+		PLATFORM_TILE_Y * BASE_SIZE
+	);	bool seedMap[PLATFORM_TILE_X][PLATFORM_TILE_Y];
 
 	//Change renderer context to output onto the tilemap.
 	SDL_SetRenderTarget(renderer, canvas);
 
 	//Make transparent (initially)
+	SDL_RenderClear(renderer);		//clear previous drawing data (e.g. from fader).
 	SDL_SetTextureBlendMode(canvas, SDL_BLENDMODE_BLEND);
-
-	Platform p;
-	p.origin = origin;
-
-	//Local variables.
-	Coord tileSize = makeCoord(20, 20);
-
-	//Get base asset.
-
-	//TODO: Randomly-blended (128 alpha) tiles to give depth look.
 
 	//Replicate the tile across the screen area, operating on seed map to scale.
 	int xTile = 0;
-	for(double x=0; x < PLATFORM_SEED_X * PLATFORM_SCALE; x += 1 / (double)PLATFORM_SCALE, xTile += tileSize.x){
+	for(int x=0; x < PLATFORM_TILE_X; x++, xTile += BASE_SIZE){
 		int yTile = 0;
-		for(double y=0; y < PLATFORM_SEED_Y * PLATFORM_SCALE; y += 1 / (double)PLATFORM_SCALE, yTile += tileSize.y) {
-			if(!seedMap[(int)floor(x)][(int)floor(y)]) continue;
+		for(int y=0; y < PLATFORM_TILE_Y; y++, yTile += BASE_SIZE) {
+
+			char* filename;
+
+			switch(platform->tiles[y][x]) {
+				case TILE_NONE:
+					continue;
+				case TILE_BASE:
+					filename = "base-large.png";
+					break;
+				case TILE_CHIP:
+					filename = "base-large-chip.png";
+					break;
+			}
+
 			SDL_Rect destination  = {
 				xTile, yTile,
-				(int)tileSize.x, (int)tileSize.y
+				BASE_SIZE, BASE_SIZE
 			};
 
-			int ix = (int)floor(x);
-			int iy = (int)floor(y);
-
-			TileDirection result = TILE_NULL;
-
-			char* filename = NULL;
-			if(floor(x) != x && (ix+1 == PLATFORM_SEED_X || !seedMap[ix+1][iy])) {
-				result |= TILE_EAST;
-			}else if(x == 0 || (floor(x) == x && !seedMap[ix-1][iy])) {
-				result |= TILE_WEST;
-			}
-
-			if(y == 0 || (floor(y) == y && !seedMap[ix][iy-1])) {
-				result |= TILE_NORTH;
-			}else if(floor(y) != y && (iy+1 == PLATFORM_SEED_Y || (!seedMap[ix][iy+1]))) {
-				result |= TILE_SOUTH;
-			}
-
-			switch(result) {
-				case TILE_NORTH | TILE_EAST:
-					filename = "base-ne.png";
-					break;
-				case TILE_NORTH | TILE_WEST:
-					filename = "base-nw.png";
-					break;
-				case TILE_SOUTH | TILE_EAST:
-					filename = "base-se.png";
-					break;
-				case TILE_SOUTH | TILE_WEST:
-					filename = "base-sw.png";
-					break;
-				case TILE_NORTH:{
-					int chance = random(1, 3);
-					if(chance == 1){
-						filename = "base-n.png";
-					}else if(chance == 2) {
-						filename = "base-n-resistor.png";
-					}else if(chance == 3){
-						filename = "base-n-resistor-2.png";
-					}
-					break;
-				}case TILE_SOUTH:{
-					int chance = random(1, 3);
-					if(chance == 1){
-						filename = "base-s.png";
-					}else if(chance == 2) {
-						filename = "base-s-resistor.png";
-					}else if(chance == 3){
-						filename = "base-s-resistor-2.png";
-					}
-					break;
-				}case TILE_EAST:
-					filename = (chance(50) ? "base-e-resistor-2.png" : "base-e.png");
-					break;
-				case TILE_WEST: {
-					int chance = random(1, 3);
-					if(chance == 1){
-						filename = "base-w.png";
-					}else if(chance == 2) {
-						filename = "base-w-resistor.png";
-					}else if(chance == 3){
-						filename = "base-w-resistor-2.png";
-					}
-					break;
-				}
-				default:
-					filename = chance(50) ?
-					   (chance(50) ? "base-resistor.png" : "base-resistor-2.png") :
-					   (chance(50) ? "base-chip.png" : "base.png");
-					break;
-			}
-
-			filename = chance(50) ? "base-large.png" : "base-large-chip-gold-3.png";
-
-//			int rand = random(1,4);
-//			if(rand == 1) filename = "base-large.png";
-//			else if(rand == 2) filename = "base-large-chip-gold-1.png";
-//			else if(rand == 3) filename = "base-large-chip-gold-2.png";
-//			else if(rand == 4) filename = "base-large-chip-gold-3.png";
-//			else if(rand == 2) filename = "base-large-chip-2.png";
-//			else if(rand == 3) filename = "base-large-chip-3.png";
-//			else if(rand == 4) filename = "base-large-chip.png";
-
+			//Grab texture
 			SDL_Texture *baseTexture = getTexture(filename);
 			baseSprite = makeSprite(baseTexture, zeroCoord(), SDL_FLIP_NONE);
 
+			//Draw it onto the platform canvas
 			SDL_RenderCopy(renderer, baseSprite.texture, NULL, &destination);
 		}
 	}
 
 	//Restore renderer context back to the window canvas.
 	SDL_SetRenderTarget(renderer, NULL);
-
-	p.sprite = makeSprite(canvas, zeroCoord(), SDL_FLIP_NONE);
-
-	return p;
+	
+	platform->sprite = makeSprite(canvas, zeroCoord(), SDL_FLIP_NONE);
 }
 
 void backgroundGameFrame(void) {
@@ -375,15 +276,26 @@ void backgroundGameFrame(void) {
 		planets[i].origin.y += planets[i].speed;
 	}
 
+	//Spawn platforms.
 	if(timer(&lastPlatformTime, toMilliseconds(nextPlatformSpawnSeconds))) {
 		if(platformInc == MAX_PLATFORMS-1) platformInc = 0;
 
-		//TODO: Algorithm to remove free-floating, or otherwise corner-hinged tiles from platform geometry.
-		//TODO: Decorate borders with edge sprites.
-
-		Coord origin = makeCoord(random(0, (int)screenBounds.x), -(PLATFORM_SEED_Y * PLATFORM_SCALE * 20) / 2);
-		Platform platform = makePlatform(origin);
-		platforms[++platformInc] = platform;
+		Platform p = {
+			{
+			{ 1, 1, 1, 1, 1, 1 },
+			{ 1, 2, 2, 2, 2, 1 },
+			{ 1, 1, 2, 2, 1, 1 },
+			{ 0, 0, 1, 1, 0, 0 },
+			{ 0, 0, 0, 0, 0, 0 },
+			{ 0, 0, 0, 0, 0, 0 }
+			},
+			makeCoord(
+				random(0, (int)screenBounds.x),
+				-(PLATFORM_TILE_Y * BASE_SIZE) / 2
+			)
+		};
+//		makePlatform(&p);
+//		platforms[++platformInc] = p;
 
 		//Spawn next planet at a random time.
 		nextPlatformSpawnSeconds = random(PLATFORM_SPAWN_MIN_SECONDS, PLATFORM_SPAWN_MAX_SECONDS);
@@ -408,8 +320,6 @@ void initBackground(void) {
 	//Pre-render background tile animation frames, and load into array.
 	for(int i=0; i < TILE_FRAMES; i++) {
 		char filename[10];
-//		sprintf(filename, "title.png", i+1);
-//		sprintf(filename, "base.png", i+1);
 		sprintf(filename, "space-%02d.png", i+1);
 		tileMaps[i] = initBackgroundFrame(filename);
 	}

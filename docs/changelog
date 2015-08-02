@@ -56,3 +56,19 @@ June 1 2015
 July 20 2015
 * Made GitLab.com account.
 
+---
+
+2015-07-27
+[DONE] Background of PCBs is occasionally opaque
+[DONE] Planets get reset too soon
+[DONE] Health bar
+
+2015-07-28
+[DONE] ~ Refactor health meter display algorithm.
+[DONE] ~ Fixed *massive* memory-related bug with player frame name storage - was overwriting the state of a recently-added boolean variable. Now using proper memory allocation strategy with a pointer.
+[DONE] Added temporary invincibility when hit ('pain recovery')
+[DONE] Fixed flickering Mike when returning to titlescreen after dying.
+[DONE] Fixed erroneous explosion frame at conclusion of Mike's death.
+[DONE] Added fade-out flicker appearance during pain recovery.
+[DONE] Added skeletal 'shock' animation frame for player hit.
+

@@ -142,6 +142,8 @@ static void loadImages(void) {
 		{ "super-fleck.png", false, false, false, false },
 		{ "level-1.png", false, false, false, false },
 		{ "title.png", false, false, false, false },
+		{ "base-large-2.png", false, false, false, false },
+		{ "base-large-2-chip.png", false, false, false, false },
 		{ "base-chip.png", false, false, false, false },
 		{ "base-resistor.png", false, false, false, false },
 		{ "base-resistor-2.png", false, false, false, false },
