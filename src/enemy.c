@@ -20,7 +20,7 @@ typedef struct {
 
 #define MAX_SHOTS 20
 
-int frame = 1;
+static int gameTime;
 
 typedef struct {
 	float time;
@@ -35,16 +35,15 @@ static const int MAX_SPAWNS = 10;
 Enemy enemies[MAX_ENEMIES];
 const int ENEMY_BOUND = 32;
 static int enemyCount;
-static const double ENEMY_SPEED = 2.0;
 static const int ENEMY_SPEED_MIN = 10;
 static const int ENEMY_SPEED_MAX = 15;
 static const int ENEMY_SPAWN_INTERVAL = 20;
 static const int DISK_IDLE_FRAMES = 12;
 static const int VIRUS_IDLE_FRAMES = 6;
 static const int CD_IDLE_FRAMES = 4;
- static const int BUG_IDLE_FRAMES = 6;
+static const int BUG_IDLE_FRAMES = 6;
 static const int DEATH_FRAMES = 7;
-static const double ENEMY_HEALTH = 2.0;
+static const double ENEMY_HEALTH = 4.0;
 static const double HIT_KNOCKBACK = 5.0;
 
 static const double COLLIDE_DAMAGE = 1;
@@ -152,8 +151,6 @@ void enemyRenderFrame(void) {
 
 void animateEnemy(void) {
 
-	frame = frame == DISK_IDLE_FRAMES ? 1 : frame + 1;
-
 	//Render out not-null enemies wherever they may be.
 	for(int i=0; i < MAX_ENEMIES; i++) {
 		if (invalidEnemy(&enemies[i])) continue;
@@ -216,7 +213,7 @@ void animateEnemy(void) {
 		}
 
 		//Select animation frame from above group.
-		sprintf(frameFile, animGroupName, frame);
+		sprintf(frameFile, animGroupName, enemies[i].animFrame);
 		SDL_Texture* texture = getTextureVersion(frameFile, frameVersion);
 		enemies[i].sprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
 
@@ -224,6 +221,7 @@ void animateEnemy(void) {
 		strncpy(enemies[i].frameName, frameFile, sizeof(frameFile));
 
 		//Increment frame count for next frame (NB: absolute death will never get here).
+		enemies[i].animFrame = enemies[i].animFrame == maxFrames ? 1 : enemies[i].animFrame + 1;
 
 		//Flag as being OK to render, now the initial frame is chosen
 		if(!enemies[i].initialFrameChosen) enemies[i].initialFrameChosen = true;
@@ -262,8 +260,7 @@ void spawnEnemy(int x, int y, EnemyType type) {
 		false,
 		type,
 		0,
-		ENEMY_SPEED,
-//		(random(ENEMY_SPEED_MIN, ENEMY_SPEED_MAX)) * 0.1,
+		(random(ENEMY_SPEED_MIN, ENEMY_SPEED_MAX)) * 0.1,
 		"",
 		false,
 		false
@@ -347,14 +344,14 @@ void enemyGameFrame(void) {
 	if(gameState != STATE_GAME) return;
 
 	//Spawn new enemies at random positions, at a given time increment
-//	if(gameTime % ENEMY_SPAWN_INTERVAL == 0) {
-//		int xSpawnPos = random(0, (int)screenBounds.x + 33);			//HACK!
-//		spawnEnemy(
-//			xSpawnPos,
-//			-ENEMY_BOUND,
-//			(EnemyType)random(0, 4)
-//		);
-//	}
+	if(gameTime % ENEMY_SPAWN_INTERVAL == 0) {
+		int xSpawnPos = random(0, (int)screenBounds.x + 33);			//HACK!
+		spawnEnemy(
+			xSpawnPos,
+			-ENEMY_BOUND,
+			(EnemyType)random(0, 4)
+		);
+	}
 
 	//Scroll the enemies down the screen
 	for(int i=0; i < MAX_ENEMIES; i++) {
@@ -403,15 +400,7 @@ void enemyGameFrame(void) {
 		}
 	}
 
-	if(spawnInc < MAX_SPAWNS && due(gameStartTime, spawns[spawnInc].time)) {
-		spawnEnemy(
-			spawns[spawnInc].x,
-			-ENEMY_BOUND,
-			spawns[spawnInc].type
-		);
-
-		spawnInc++;
-	}
+	gameTime++;
 }
 
 EnemySpawn makeSpawn(long time, int x, EnemyType type) {
@@ -422,16 +411,4 @@ EnemySpawn makeSpawn(long time, int x, EnemyType type) {
 void enemyInit(void) {
 	resetEnemies();
 	animateEnemy();
-
-	spawns[0] = makeSpawn(1000, 200, ENEMY_DISK_BLUE);
-	spawns[1] = makeSpawn(1200, 200, ENEMY_DISK_BLUE);
-	spawns[2] = makeSpawn(1400, 200, ENEMY_DISK_BLUE);
-	spawns[3] = makeSpawn(1600, 200, ENEMY_DISK_BLUE);
-	spawns[4] = makeSpawn(1800, 200, ENEMY_DISK_BLUE);
-
-	spawns[5] = makeSpawn(3000, 50, ENEMY_DISK);
-	spawns[6] = makeSpawn(3200, 50, ENEMY_DISK);
-	spawns[7] = makeSpawn(3400, 50, ENEMY_DISK);
-	spawns[8] = makeSpawn(3600, 50, ENEMY_DISK);
-	spawns[9] = makeSpawn(3800, 50, ENEMY_DISK);
 }

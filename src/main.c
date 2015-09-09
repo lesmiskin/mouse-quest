@@ -83,8 +83,8 @@ int main()  {
 	enemyInit();
 	hudInit();
 
-//	triggerState(STATE_INTRO);
-	triggerState(STATE_GAME);
+	triggerState(STATE_INTRO);
+//	triggerState(STATE_GAME);
 
 	long lastRenderFrameTime = clock();
 	long lastGameFrameTime = lastRenderFrameTime;

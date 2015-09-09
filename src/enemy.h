@@ -35,7 +35,7 @@ typedef struct {
 	bool initialFrameChosen;
 } Enemy;
 
-#define MAX_ENEMIES 20
+#define MAX_ENEMIES 30
 extern void resetEnemies();
 extern void spawnEnemy(int x, int y, EnemyType type);
 extern void hitEnemy(Enemy* enemy, double damage);

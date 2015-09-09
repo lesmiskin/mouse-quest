@@ -35,7 +35,7 @@ bool useMike;		//onscreen, responds to actions etc.
 bool hideMike;		//still there, but don't render this frame.
 double intervalFrames;
 Coord playerOrigin;
-double playerStrength = 800.0;
+double playerStrength = 8.0;
 double playerHealth;
 static const double PLAYER_MAX_SPEED = 4.0;
 static const double MOMENTUM_INC_DIVISOR = 10;
