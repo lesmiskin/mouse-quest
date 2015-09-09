@@ -9,7 +9,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_executable(surface common.c renderer.c assets.c player.c input.c main.c background.c weapon.c enemy.c scripting.c scripts.c hud.c)
+add_executable(mouse-quest common.c renderer.c assets.c player.c input.c main.c background.c weapon.c enemy.c scripting.c scripts.c hud.c)
 
 # Leverage CMake to discover the SDL module.
 INCLUDE(FindPkgConfig)
@@ -23,4 +23,4 @@ INCLUDE_DIRECTORIES(${SDL2IMAGE_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES(${SDL2MIXER_INCLUDE_DIRS})
 
 # Note: '-lm' to include glibm for math.h (glibc in included by default for stdio.h etc).
-TARGET_LINK_LIBRARIES(surface -lm ${SDL2_LIBRARIES} ${SDL2MIXER_LIBRARIES} ${SDL2IMAGE_LIBRARIES})
+TARGET_LINK_LIBRARIES(mouse-quest -lm ${SDL2_LIBRARIES} ${SDL2MIXER_LIBRARIES} ${SDL2IMAGE_LIBRARIES})
