@@ -14,7 +14,6 @@ GameState gameState;
 	Coord windowSize = { 896, 1024 };		//x3 (1px == 4px)
 #endif
 
-
 const int ANIMATION_HZ = 1000 / 12;		//12fps
 const int RENDER_HZ = 1000 / 60;		//60fps
 const int GAME_HZ = 1000 / 60;			//60fps

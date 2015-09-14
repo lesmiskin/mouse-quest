@@ -76,14 +76,13 @@ void drawSpriteAbsRotated(Sprite sprite, Coord origin, double angle) {
 		sprite.size.y * renderScale
 	};
 
+	//Rotation
 	SDL_Point rotateOrigin = { 0, 0 };
-
 	if(angle > 0) {
 		rotateOrigin.x = (int)sprite.size.x / 2;
 		rotateOrigin.y = (int)sprite.size.y / 2;
 	};
 
-	SDL_Point point = { 0,0 };
 	SDL_RenderCopyEx(renderer, sprite.texture, NULL, &destination, angle, &rotateOrigin, sprite.flip);
 }
 

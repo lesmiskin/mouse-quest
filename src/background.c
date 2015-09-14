@@ -46,7 +46,7 @@ static long lastPlatformTime;
 static double nextPlatformSpawnSeconds;
 static int PLATFORM_SPAWN_MIN_SECONDS = 5;
 static int PLATFORM_SPAWN_MAX_SECONDS = 10;
-static double PLATFORM_SCROLL_SPEED = 0.8;
+static double PLATFORM_SCROLL_SPEED = 0.7;
 static const int PLATFORM_SCALE = 2;
 static Platform platforms[MAX_PLATFORMS];
 static int platformInc;

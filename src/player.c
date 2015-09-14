@@ -98,6 +98,7 @@ void playerAnimate(void) {
 	if(isDying()) {
 		//Start to die - reset animation frames.
 		if(!begunDying) {
+			play("mike-die.wav");
 			animationInc = 1;
 			begunDying = true;
 		}

@@ -7,6 +7,7 @@
 #include "background.h"
 #include "input.h"
 #include "scripting.h"
+#include "weapon.h"
 
 //DONE: Fix frame blinking during super scene (cue-frames doing this - render skip, or immediate reprocess?)
 //DONE: On subsequent intro runs, we skip past the logo too soon.
@@ -131,6 +132,7 @@ void scriptGameFrame(void) {
 			switch(scriptStatus.sceneNumber) {
 				case TITLE_CUE:
 					//General initialisation
+					resetPew();
 					resetPlayer();
 					resetEnemies();
 					resetBackground();

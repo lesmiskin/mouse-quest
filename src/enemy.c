@@ -4,12 +4,24 @@
 #include "renderer.h"
 #include "player.h"
 #include "common.h"
+#include "weapon.h"
 
 //TODO: Reintroduce sprite flickering, but localised on upcoming 'Character' struct (keep original Surface on asset record?).
 //TODO: Reinstate proper flicker effect with white alt graphic.
 //TODO: Centralise enemy sprite frames into own structure (e.g. frame counts).
 //TODO: Rather than frelling about making asset name descriptions on every frame - just keep a pointer to the right asset in an animation array.
 //TODO: Shoudn't need an initial sprite for the enemy -- since we're setting it when animated(?)
+
+typedef struct {
+	Coord origin;
+	Coord parallax;
+} Powerup;
+
+static int powerupInc = 0;
+static const int POWERUP_CHANCE = 10;
+static Powerup powerups[MAX_WEAPONS];
+static const double POWERUP_SPEED = 1.0;
+const int POWERUP_BOUND = 24;
 
 typedef struct {
 	Coord origin;
@@ -28,16 +40,12 @@ typedef struct {
 	EnemyType type;
 } EnemySpawn;
 
-static EnemySpawn spawns[100];
-static long gameStartTime;
-static const int MAX_SPAWNS = 10;
-
 Enemy enemies[MAX_ENEMIES];
 const int ENEMY_BOUND = 32;
 static int enemyCount;
-static const int ENEMY_SPEED_MIN = 10;
-static const int ENEMY_SPEED_MAX = 15;
-static const int ENEMY_SPAWN_INTERVAL = 20;
+static const int ENEMY_SPEED_MIN = 5;
+static const int ENEMY_SPEED_MAX = 10;
+static const int ENEMY_SPAWN_INTERVAL = 25;
 static const int DISK_IDLE_FRAMES = 12;
 static const int VIRUS_IDLE_FRAMES = 6;
 static const int CD_IDLE_FRAMES = 4;
@@ -52,10 +60,22 @@ static const double SHOT_DAMAGE = 1;
 static EnemyShot enemyShots[MAX_SHOTS];
 static int enemyShotCount;
 static const double SHOT_HZ = 1000 / 0.5;
-static const double SHOT_SPEED = 2.0;
+static const double SHOT_SPEED = 1.5;
 static const int ENEMY_SHOT_BOUND = 24;
 static const int MAX_VIRUS_SHOT_FRAMES = 4;
 static const int MAX_PLASMA_SHOT_FRAMES = 2;
+
+static void spawnPowerup(Coord coord) {
+	//Stop spawning powerups after we've elapsed our total.
+	if(powerupInc == MAX_WEAPONS) powerupInc = 0;
+
+	Powerup powerup = { coord };
+	powerups[powerupInc++] = powerup;
+}
+
+static bool invalidPowerup(Powerup *powerup) {
+	return !inScreenBounds(powerup->origin);
+}
 
 static bool invalidEnemy(Enemy *enemy) {
 	return
@@ -147,6 +167,14 @@ void enemyRenderFrame(void) {
 
 		drawSpriteAbs(shotSprite, enemyShots[i].parallax);
 	}
+
+	//Render powerups
+	for(int i=0; i < MAX_WEAPONS; i++) {
+		if(invalidPowerup(&powerups[i])) continue;
+		SDL_Texture *texture = getTexture("powerup.png");
+		Sprite sprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
+		drawSpriteAbs(sprite, powerups[i].parallax);
+	}
 }
 
 void animateEnemy(void) {
@@ -166,6 +194,11 @@ void animateEnemy(void) {
 			if(enemies[i].animSequence != ENEMY_ANIMATION_DEATH){
  				enemies[i].animSequence = ENEMY_ANIMATION_DEATH;
 				enemies[i].animFrame = 1;
+
+				//Spawn powerup (only in-game, though)
+				if(gameState == STATE_GAME && chance(POWERUP_CHANCE)) {
+					spawnPowerup(enemies[i].origin);
+				}
 			//Zero if completely dead.
 			}else if(enemies[i].animFrame == DEATH_FRAMES){
 				enemies[i] = nullEnemy();
@@ -217,7 +250,7 @@ void animateEnemy(void) {
 		SDL_Texture* texture = getTextureVersion(frameFile, frameVersion);
 		enemies[i].sprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
 
-		//Record animation frame for shadowing (hacky)
+		//Record animation frame for shadowing
 		strncpy(enemies[i].frameName, frameFile, sizeof(frameFile));
 
 		//Increment frame count for next frame (NB: absolute death will never get here).
@@ -290,24 +323,10 @@ void resetEnemies() {
 	memset(enemies, 0, sizeof(enemies));
 	memset(enemyShots, 0, sizeof(enemyShots));
 	enemyCount = 0;
+	powerupInc = 0;
 }
 
 static double rollSine[5] = { 0.0, 1.25, 2.5, 3.75, 5.0 };
-
-//static EnemyType spawns[10][10] = {
-//	{ 0, ENEMY_BUG, 0, 0, 0, 0, 0, 0, 0, 0 },
-//	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-//	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-//	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-//	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-//	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-//	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-//	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-//	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-//	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-//};
-
-static int spawnInc;
 
 void enemyGameFrame(void) {
 
@@ -397,6 +416,24 @@ void enemyGameFrame(void) {
 		if(inBounds(playerOrigin, shotBounds)) {
 			hitPlayer(SHOT_DAMAGE);
 			enemyShots[i] = nullEnemyShot();
+		}
+	}
+
+	//Powerups
+	for(int i=0; i < MAX_WEAPONS; i++) {
+		if(invalidPowerup(&powerups[i])) continue;
+
+		//Scroll down screen
+		powerups[i].origin.y += POWERUP_SPEED;
+		powerups[i].parallax = parallax(powerups[i].origin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_X, PARALLAX_ADDITIVE);
+
+		//Check if player touching
+		Rect powerupBound = makeSquareBounds(powerups[i].parallax, POWERUP_BOUND);
+		if(inBounds(playerOrigin, powerupBound)) {
+  			pickupWeapon();
+			play("Powerup8.wav");
+			Powerup nullPowerup = { };
+			powerups[i] = nullPowerup;
 		}
 	}
 

@@ -82,6 +82,7 @@ int main()  {
 	initBackground();
 	enemyInit();
 	hudInit();
+	pewInit();
 
 	triggerState(STATE_INTRO);
 //	triggerState(STATE_GAME);

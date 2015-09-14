@@ -134,6 +134,7 @@ void shutdownAssets(void) {
 static void loadImages(void) {
 	//Define assets to be loaded.
 	AssetDef definitions[] = {
+		{ "powerup.png", false, false, false, false },
 		{ "life.png", false, false, false, false },
 		{ "life-half.png", false, false, false, false },
 		{ "life-none.png", false, false, false, false },
@@ -298,8 +299,9 @@ static void loadSounds(void) {
 	const int SOUND_VOLUME = 12 ;
 
 	SoundDef defs[] = {
+		{ "mike-die.wav", SOUND_VOLUME * 4 },
 		{ "intro-presents.wav", SOUND_VOLUME * 2 },
-		{ "Powerup8.wav", SOUND_VOLUME },
+		{ "Powerup8.wav", SOUND_VOLUME * 4 },
 		{ "warp.wav", SOUND_VOLUME },
 		{ "start.wav", SOUND_VOLUME },
 		{ "Hit_Hurt10.wav", SOUND_VOLUME },
