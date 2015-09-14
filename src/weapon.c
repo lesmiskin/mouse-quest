@@ -25,9 +25,9 @@ typedef struct {
 
 #define MAX_SHOTS 200
 
-static const int SHOT_HZ = 1000 / 30;
+static const int SHOT_HZ = 1000 / 40;
 static const double SHOT_SPEED = 4.5;
-static const Coord SHOT_FIRE_OFFSET = { 1, -5 };
+//static const Coord SHOT_FIRE_OFFSET = { 1, -5 };
 static const double SHOT_DAMAGE = 1.0;
 
 static Shot shots[MAX_SHOTS];
@@ -61,69 +61,62 @@ void pew(void) {
 
 	//Make the Shot.
 	Shot shot1 = { SHOT_SPEED, makeCoord(
-			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x + 3),
-			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y + 3)
+			playerOrigin.x - scalePixels(1),
+			playerOrigin.y + scalePixels(- 5)
 		), 1,
-	   NORTH_WEST
+	   NORTH
 	};
 	Shot shot2 = { SHOT_SPEED, makeCoord(
-			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x - 3),
-			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y + 3)
+			playerOrigin.x - scalePixels(-2),
+			playerOrigin.y + scalePixels(-2)
 		), 1,
 	   NORTH_EAST
 	};
 	Shot shot3 = { SHOT_SPEED, makeCoord(
-			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x),
-			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y)
+			playerOrigin.x - scalePixels(-2),
+			playerOrigin.y + scalePixels(0)
 		), 1,
-	   NORTH
+	   EAST
 	};
 	Shot shot4 = { SHOT_SPEED, makeCoord(
-			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x + 3),
-			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y)
+			playerOrigin.x - scalePixels(-2),
+			playerOrigin.y + scalePixels(2)
 		), 1,
-	   NORTH
+	   SOUTH_EAST
 	};
 	Shot shot5 = { SHOT_SPEED, makeCoord(
-			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x + 3),
-			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y)
+			playerOrigin.x - scalePixels(0),
+			playerOrigin.y + scalePixels(2)
 		), 1,
 	   SOUTH
 	};
 	Shot shot6 = { SHOT_SPEED, makeCoord(
-			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x + 3),
-			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y)
+			playerOrigin.x - scalePixels(2),
+			playerOrigin.y + scalePixels(2)
 		), 1,
 	   SOUTH_WEST
 	};
 	Shot shot7 = { SHOT_SPEED, makeCoord(
-			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x + 3),
-			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y)
+			playerOrigin.x - scalePixels(5),
+			playerOrigin.y + scalePixels(0)
 		), 1,
-	   SOUTH_EAST
+	   WEST
 	};
 	Shot shot8 = { SHOT_SPEED, makeCoord(
-			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x),
-			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y)
-	), 1,
-				   EAST
-	};
-	Shot shot9 = { SHOT_SPEED, makeCoord(
-			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x),
-			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y)
-	), 1,
-				   WEST
+			playerOrigin.x - scalePixels(2),
+			playerOrigin.y + scalePixels(-2)
+		), 1,
+	   NORTH_WEST
 	};
 
 	shots[shotInc++] = shot1;
 	shots[shotInc++] = shot2;
 	shots[shotInc++] = shot3;
-//	shots[shotInc++] = shot4;
+	shots[shotInc++] = shot4;
 	shots[shotInc++] = shot5;
 	shots[shotInc++] = shot6;
 	shots[shotInc++] = shot7;
 	shots[shotInc++] = shot8;
-	shots[shotInc++] = shot9;
 }
 
 void pewGameFrame(void) {
@@ -180,6 +173,53 @@ void pewGameFrame(void) {
 }
 
 void pewRenderFrame(void) {
+
+	//Draw the shadows first (so we don't shadow on top of other shots)
+	for(int i=0; i < MAX_SHOTS; i++) {
+		//Skip zeroed.
+		if (invalidShot(&shots[i])) continue;
+
+		//Choose frame.
+		char frameFile[50];
+		sprintf(frameFile, "shot-neon-%02d.png", shots[i].animFrame);
+		SDL_Texture *shotTexture = getTexture(frameFile);
+		SDL_Texture *shotShadowTexture = getTextureVersion(frameFile, ASSET_SHADOW);
+
+		SDL_RendererFlip flipDir = SDL_FLIP_NONE;
+		double angle = 0;
+
+		// Rotate/flip the sprite based on heading.
+		switch(shots[i].direction) {
+			case NORTH_EAST:
+				angle = 45;
+				break;
+			case EAST:
+				angle = 90;
+				break;
+			case SOUTH_EAST:
+				angle = 135;
+				break;
+			case SOUTH:
+				flipDir = SDL_FLIP_VERTICAL;
+				break;
+			case SOUTH_WEST:
+				angle = 225;
+				break;
+			case WEST:
+				angle = 270;
+				break;
+			case NORTH_WEST:
+				angle = 315;
+				break;
+		}
+
+		//Shadow.
+		Sprite shotShadow = makeSprite(shotShadowTexture, zeroCoord(), SDL_FLIP_NONE);
+		Coord shadowCoord = parallax(shots[i].coord, PARALLAX_SUN, PARALLAX_LAYER_SHADOW, PARALLAX_X, PARALLAX_SUBTRACTIVE);
+		shadowCoord.y += STATIC_SHADOW_OFFSET;
+		drawSpriteAbsRotated(shotShadow, shadowCoord, angle);
+	}
+
 	//We loop through the projectile array, drawing any shots that are still initialised.
 	for(int i=0; i < MAX_SHOTS; i++) {
 		//Skip zeroed.
@@ -190,12 +230,6 @@ void pewRenderFrame(void) {
 		sprintf(frameFile, "shot-neon-%02d.png", shots[i].animFrame);
 		SDL_Texture *shotTexture = getTexture(frameFile);
 		SDL_Texture *shotShadowTexture = getTextureVersion(frameFile, ASSET_SHADOW);
-
-		//Shadow.
-		Sprite shotShadow = makeSprite(shotShadowTexture, zeroCoord(), SDL_FLIP_NONE);
-		Coord shadowCoord = parallax(shots[i].coord, PARALLAX_SUN, PARALLAX_LAYER_SHADOW, PARALLAX_X, PARALLAX_SUBTRACTIVE);
-		shadowCoord.y += STATIC_SHADOW_OFFSET;
-		drawSpriteAbs(shotShadow, shadowCoord);
 
 		SDL_RendererFlip flipDir = SDL_FLIP_NONE;
 		double angle = 0;

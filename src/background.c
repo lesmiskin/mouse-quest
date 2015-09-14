@@ -21,7 +21,7 @@ double bgOffset;
 bool showBackground;
 bool staticBackground;
 
-#define MAX_PLANETS 2
+#define MAX_PLANETS 10
 static Sprite spaceSprite;
 static const double SCROLL_SPEED = 0.5;			//TODO: Should be in FPS.
 static Planet planets[MAX_PLANETS];
