@@ -5,15 +5,27 @@
 #include "enemy.h"
 #include "SDL2/SDL_mixer.h"
 
+typedef enum {
+	NORTH,
+	NORTH_EAST,
+	EAST,
+	SOUTH_EAST,
+	SOUTH,
+	SOUTH_WEST,
+	WEST,
+	NORTH_WEST,
+} ShotDir;
+
 typedef struct {
 	double speed;
 	Coord coord;
 	int animFrame;
+	ShotDir direction;
 } Shot;
 
-#define MAX_SHOTS 25
+#define MAX_SHOTS 200
 
-static const int SHOT_HZ = 1000 / 15;
+static const int SHOT_HZ = 1000 / 30;
 static const double SHOT_SPEED = 4.5;
 static const Coord SHOT_FIRE_OFFSET = { 1, -5 };
 static const double SHOT_DAMAGE = 1.0;
@@ -48,16 +60,70 @@ void pew(void) {
 	if(shotInc == sizeof(shots) / sizeof(Shot)) shotInc = 0;
 
 	//Make the Shot.
-	Shot goldShot = {
-		SHOT_SPEED,
-		makeCoord(
+	Shot shot1 = { SHOT_SPEED, makeCoord(
+			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x + 3),
+			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y + 3)
+		), 1,
+	   NORTH_WEST
+	};
+	Shot shot2 = { SHOT_SPEED, makeCoord(
+			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x - 3),
+			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y + 3)
+		), 1,
+	   NORTH_EAST
+	};
+	Shot shot3 = { SHOT_SPEED, makeCoord(
 			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x),
 			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y)
-		),
-		1
+		), 1,
+	   NORTH
+	};
+	Shot shot4 = { SHOT_SPEED, makeCoord(
+			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x + 3),
+			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y)
+		), 1,
+	   NORTH
+	};
+	Shot shot5 = { SHOT_SPEED, makeCoord(
+			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x + 3),
+			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y)
+		), 1,
+	   SOUTH
+	};
+	Shot shot6 = { SHOT_SPEED, makeCoord(
+			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x + 3),
+			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y)
+		), 1,
+	   SOUTH_WEST
+	};
+	Shot shot7 = { SHOT_SPEED, makeCoord(
+			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x + 3),
+			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y)
+		), 1,
+	   SOUTH_EAST
+	};
+	Shot shot8 = { SHOT_SPEED, makeCoord(
+			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x),
+			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y)
+	), 1,
+				   EAST
+	};
+	Shot shot9 = { SHOT_SPEED, makeCoord(
+			playerOrigin.x - scalePixels(SHOT_FIRE_OFFSET.x),
+			playerOrigin.y + scalePixels(SHOT_FIRE_OFFSET.y)
+	), 1,
+				   WEST
 	};
 
-	shots[shotInc++] = goldShot;
+	shots[shotInc++] = shot1;
+	shots[shotInc++] = shot2;
+	shots[shotInc++] = shot3;
+//	shots[shotInc++] = shot4;
+	shots[shotInc++] = shot5;
+	shots[shotInc++] = shot6;
+	shots[shotInc++] = shot7;
+	shots[shotInc++] = shot8;
+	shots[shotInc++] = shot9;
 }
 
 void pewGameFrame(void) {
@@ -83,7 +149,32 @@ void pewGameFrame(void) {
 
 		//If we haven't hit anything - adjust shot for velocity and heading.
 		if(!invalidShot(&shots[i])){
-			shots[i].coord = makeCoord(shots[i].coord.x, shots[i].coord.y -= shots[i].speed);
+			switch(shots[i].direction) {
+				case NORTH:
+					shots[i].coord = deriveCoord(shots[i].coord, 0, -shots[i].speed);
+					break;
+				case SOUTH:
+					shots[i].coord = deriveCoord(shots[i].coord, 0, shots[i].speed);
+					break;
+				case EAST:
+					shots[i].coord = deriveCoord(shots[i].coord, +shots[i].speed, 0);
+					break;
+				case WEST:
+					shots[i].coord = deriveCoord(shots[i].coord, -shots[i].speed, 0);
+					break;
+				case NORTH_EAST:
+					shots[i].coord = deriveCoord(shots[i].coord, shots[i].speed, -shots[i].speed);
+					break;
+				case NORTH_WEST:
+					shots[i].coord = deriveCoord(shots[i].coord, -shots[i].speed, -shots[i].speed);
+					break;
+				case SOUTH_EAST:
+					shots[i].coord = deriveCoord(shots[i].coord, shots[i].speed, shots[i].speed);
+					break;
+				case SOUTH_WEST:
+					shots[i].coord = deriveCoord(shots[i].coord, -shots[i].speed, shots[i].speed);
+					break;
+ 			}
 		}
 	}
 }
@@ -106,9 +197,37 @@ void pewRenderFrame(void) {
 		shadowCoord.y += STATIC_SHADOW_OFFSET;
 		drawSpriteAbs(shotShadow, shadowCoord);
 
+		SDL_RendererFlip flipDir = SDL_FLIP_NONE;
+		double angle = 0;
+
+		// Rotate/flip the sprite based on heading.
+		switch(shots[i].direction) {
+			case NORTH_EAST:
+				angle = 45;
+				break;
+			case EAST:
+				angle = 90;
+				break;
+			case SOUTH_EAST:
+				angle = 135;
+				break;
+			case SOUTH:
+				flipDir = SDL_FLIP_VERTICAL;
+				break;
+			case SOUTH_WEST:
+				angle = 225;
+				break;
+			case WEST:
+				angle = 270;
+				break;
+			case NORTH_WEST:
+				angle = 315;
+				break;
+		}
+
 		//Shot itself.
-		shotSprite = makeSprite(shotTexture, zeroCoord(), SDL_FLIP_NONE);
-		drawSpriteAbs(shotSprite, shots[i].coord);
+		shotSprite = makeSprite(shotTexture, zeroCoord(), flipDir);
+		drawSpriteAbsRotated(shotSprite, shots[i].coord, angle);
 	}
 }
 
