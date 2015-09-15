@@ -18,7 +18,7 @@ typedef struct {
 	double swayInc;
 } Powerup;
 
-static int powerupInc = 0;
+static int powerupCount = 0;
 static const int POWERUP_CHANCE = 100;
 static Powerup powerups[MAX_WEAPONS*2];
 static const double POWERUP_SPEED = 1.0;
@@ -68,10 +68,10 @@ static const int MAX_PLASMA_SHOT_FRAMES = 2;
 
 static void spawnPowerup(Coord coord) {
 	//Stop spawning powerups after we've elapsed our total.
-	if(powerupInc == MAX_WEAPONS) powerupInc = 0;
+	if(powerupCount == MAX_WEAPONS) powerupCount = 0;
 
 	Powerup powerup = { coord };
-	powerups[powerupInc++] = powerup;
+	powerups[powerupCount++] = powerup;
 }
 
 static bool invalidPowerup(Powerup *powerup) {
@@ -333,8 +333,10 @@ static void spawnShot(Enemy* enemy) {
 void resetEnemies() {
 	memset(enemies, 0, sizeof(enemies));
 	memset(enemyShots, 0, sizeof(enemyShots));
+	memset(powerups, 0, sizeof(powerups));
 	enemyCount = 0;
-	powerupInc = 0;
+	enemyShotCount = 0;
+	powerupCount = 0;
 }
 
 static double rollSine[5] = { 0.0, 1.25, 2.5, 3.75, 5.0 };
