@@ -15,11 +15,12 @@
 typedef struct {
 	Coord origin;
 	Coord parallax;
+	double swayInc;
 } Powerup;
 
 static int powerupInc = 0;
-static const int POWERUP_CHANCE = 10;
-static Powerup powerups[MAX_WEAPONS];
+static const int POWERUP_CHANCE = 100;
+static Powerup powerups[MAX_WEAPONS*2];
 static const double POWERUP_SPEED = 1.0;
 const int POWERUP_BOUND = 24;
 
@@ -43,7 +44,7 @@ typedef struct {
 Enemy enemies[MAX_ENEMIES];
 const int ENEMY_BOUND = 32;
 static int enemyCount;
-static const int ENEMY_SPEED_MIN = 5;
+static const int ENEMY_SPEED_MIN = 7;
 static const int ENEMY_SPEED_MAX = 10;
 static const int ENEMY_SPAWN_INTERVAL = 25;
 static const int DISK_IDLE_FRAMES = 12;
@@ -59,7 +60,7 @@ static const double SHOT_DAMAGE = 1;
 
 static EnemyShot enemyShots[MAX_SHOTS];
 static int enemyShotCount;
-static const double SHOT_HZ = 1000 / 0.5;
+static const double SHOT_HZ = 1000 / 0.25;
 static const double SHOT_SPEED = 1.5;
 static const int ENEMY_SHOT_BOUND = 24;
 static const int MAX_VIRUS_SHOT_FRAMES = 4;
@@ -141,6 +142,16 @@ void enemyShadowFrame(void) {
 		Coord shadowCoord = parallax(enemyShots[i].parallax, PARALLAX_SUN, PARALLAX_LAYER_SHADOW, PARALLAX_X, PARALLAX_SUBTRACTIVE);
 		shadowCoord.y += STATIC_SHADOW_OFFSET;
 		drawSpriteAbs(shotShadow, shadowCoord);
+	}
+
+	//Render powerup shadows
+	for(int i=0; i < MAX_WEAPONS; i++) {
+		if(invalidPowerup(&powerups[i])) continue;
+		SDL_Texture *texture = getTextureVersion("powerup.png", ASSET_SHADOW);
+		Sprite sprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
+		Coord shadowCoord = parallax(powerups[i].parallax, PARALLAX_SUN, PARALLAX_LAYER_SHADOW, PARALLAX_X, PARALLAX_SUBTRACTIVE);
+		shadowCoord.y += STATIC_SHADOW_OFFSET;
+		drawSpriteAbs(sprite, shadowCoord);
 	}
 }
 
@@ -336,10 +347,7 @@ void enemyGameFrame(void) {
 		case STATE_TITLE:
 			for(int i=0; i < enemyCount; i++) {
 				//Increment, looping on 2Pi radians (360 degrees)
-				rollSine[i] = rollSine[i] >= 6.28 ? 0 : rollSine[i] + 0.1;
-
-				double sineOffset = (sin(rollSine[i] += 0.005) * 8);
-				enemies[i].parallax.y = enemies[i].origin.y + sineOffset;
+				enemies[i].parallax.y = sineInc(enemies[i].origin.y, &rollSine[i], 0.1, 8);
 			}
 	}
 
@@ -426,6 +434,9 @@ void enemyGameFrame(void) {
 		//Scroll down screen
 		powerups[i].origin.y += POWERUP_SPEED;
 		powerups[i].parallax = parallax(powerups[i].origin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_X, PARALLAX_ADDITIVE);
+
+		//Sway in sine wave pattern
+		powerups[i].parallax.x = sineInc(powerups[i].origin.x, &rollSine[i], 0.05, 32);
 
 		//Check if player touching
 		Rect powerupBound = makeSquareBounds(powerups[i].parallax, POWERUP_BOUND);

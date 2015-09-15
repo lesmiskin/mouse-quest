@@ -221,3 +221,10 @@ bool timer(long *lastTime, double hertz){
 bool due(long compareTime, double milliseconds) {
 	return ticsToMilliseconds(clock() - compareTime) > milliseconds;
 }
+
+double sineInc(double offset, double *sineInc, double speed, double magnitude) {
+	*sineInc = *sineInc >= 6.28 ? 0 : *sineInc + speed;
+
+	double sineOffset = (sin(*sineInc) * magnitude);
+	return offset + sineOffset;
+}
