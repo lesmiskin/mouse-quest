@@ -25,16 +25,22 @@ typedef struct {
 	double angle;
 } Shot;
 
+typedef struct {
+	Coord coord;
+} Bomb;
+
 typedef enum {
-	SPEED_NORMAL = 1000 / 10,
-	SPEED_FAST = 1000 / 15,
+	SPEED_NORMAL = 1000 / 8,
+	SPEED_FAST = 1000 / 12,
 } WeaponSpeed;
 
 typedef enum {
-	PATTERN_SINGLE = 0,
-	PATTERN_DUAL = 1,
-	PATTERN_TRIAD = 2,
-	PATTERN_FAN = 3
+	PATTERN_MINI = 0,
+	PATTERN_MINI_2 = 1,
+	PATTERN_SINGLE = 2,
+	PATTERN_DUAL = 3,
+	PATTERN_TRIAD = 4,
+	PATTERN_FAN = 5,
 } WeaponPattern;
 
 typedef struct {
@@ -43,26 +49,26 @@ typedef struct {
 } Weapon;
 
 #define MAX_SHOTS 50
-const bool SHOT_SHADOWS = false;
-
-static int weaponInc = 0;
+const bool SHOT_SHADOWS = true;
+int weaponInc = 0;
 static Weapon weapons[MAX_WEAPONS];
-
 //static const int SHOT_HZ = 1000 / 11 ;
 static const double SHOT_SPEED = 7;
 static const double SHOT_DAMAGE = 1.0;
-
 static Shot shots[MAX_SHOTS];
 static int shotInc = 0;
 static Sprite shotSprite;
 static long lastShotTime;
 static int maxFrames = 2;
+static bool bombing = false;
+
+static short minigunLastSide = 0;
 
 //Used for checking whether Shot is valid in array.
 static bool invalidShot(Shot *shot) {
 	return
-		shot->speed == 0 ||			//was never set.
-		shot->coord.y <= -8;		//is out of range.
+		shot->speed == 0 ||				//was never set (i.e. when all are NULL at start of game)
+		!inScreenBounds(shot->coord);	//if out of range in any screen boundary (important for diag and fan patterns).
 }
 
 static Shot nullShot(void) {
@@ -110,9 +116,13 @@ static void spawnPew(int xOffset, int yOffset, ShotDir direction) {
 	shots[shotInc++] = shot;
 }
 
-void pickupWeapon(void) {
+bool atMaxWeapon(void) {
+	return weaponInc + 1 == MAX_WEAPONS;
+}
+
+void upgradeWeapon(void) {
 	//Limit to available
-	if(weaponInc == MAX_WEAPONS-1) return;
+	if(atMaxWeapon()) return;
 
 	weaponInc++;
 }
@@ -141,6 +151,35 @@ void pew(void) {
 			spawnPew(0, -5, NORTH);
 			spawnPew(-2, -2, NORTH_EAST);
 			spawnPew(2, -2, NORTH_WEST);
+			break;
+		case PATTERN_MINI:
+			if(minigunLastSide == 0) {
+				spawnPew(-5, -5, NORTH);
+				minigunLastSide = 1;
+			}else{
+				spawnPew(5, -5, NORTH);
+				minigunLastSide = 0;
+			}
+			break;
+		case PATTERN_MINI_2:
+			switch(minigunLastSide) {
+				case 0:
+					spawnPew(-6, -5, NORTH);
+					minigunLastSide = 1;
+					break;
+				case 1:
+					spawnPew(0, -5, NORTH);
+					minigunLastSide = 2;
+					break;
+				case 2:
+					spawnPew(6, -5, NORTH);
+					minigunLastSide = 3;
+					break;
+				case 3:
+					spawnPew(0, -5, NORTH);
+					minigunLastSide = 0;
+					break;
+			}
 			break;
 		case PATTERN_FAN:
 			spawnPew(0, -5, NORTH);
@@ -261,23 +300,13 @@ void pewAnimateFrame(){
 }
 
 void pewInit(void) {
-	Weapon w1 = { SPEED_NORMAL, PATTERN_SINGLE };
-	Weapon w2 = { SPEED_FAST, PATTERN_SINGLE };
-	Weapon w3 = { SPEED_NORMAL, PATTERN_DUAL };
-	Weapon w4 = { SPEED_FAST, PATTERN_DUAL };
-	Weapon w5 = { SPEED_NORMAL, PATTERN_TRIAD };
-	Weapon w6 = { SPEED_FAST, PATTERN_TRIAD };
-	Weapon w7 = { SPEED_NORMAL, PATTERN_FAN };
-	Weapon w8 = { SPEED_FAST, PATTERN_FAN };
+	Weapon w1 = { SPEED_NORMAL, PATTERN_DUAL };
+	Weapon w2 = { SPEED_FAST, PATTERN_DUAL };
+	Weapon w3 = { SPEED_FAST, PATTERN_TRIAD };
 
 	weapons[0] = w1;
 	weapons[1] = w2;
 	weapons[2] = w3;
-	weapons[3] = w4;
-	weapons[4] = w5;
-	weapons[5] = w6;
-	weapons[6] = w7;
-	weapons[7] = w8;
 }
 
 void resetPew(void) {

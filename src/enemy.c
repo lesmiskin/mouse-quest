@@ -5,24 +5,13 @@
 #include "player.h"
 #include "common.h"
 #include "weapon.h"
+#include "item.h"
 
 //TODO: Reintroduce sprite flickering, but localised on upcoming 'Character' struct (keep original Surface on asset record?).
 //TODO: Reinstate proper flicker effect with white alt graphic.
 //TODO: Centralise enemy sprite frames into own structure (e.g. frame counts).
 //TODO: Rather than frelling about making asset name descriptions on every frame - just keep a pointer to the right asset in an animation array.
 //TODO: Shoudn't need an initial sprite for the enemy -- since we're setting it when animated(?)
-
-typedef struct {
-	Coord origin;
-	Coord parallax;
-	double swayInc;
-} Powerup;
-
-static int powerupCount = 0;
-static const int POWERUP_CHANCE = 100;
-static Powerup powerups[MAX_WEAPONS*2];
-static const double POWERUP_SPEED = 1.0;
-const int POWERUP_BOUND = 24;
 
 typedef struct {
 	Coord origin;
@@ -65,18 +54,6 @@ static const double SHOT_SPEED = 1.5;
 static const int ENEMY_SHOT_BOUND = 24;
 static const int MAX_VIRUS_SHOT_FRAMES = 4;
 static const int MAX_PLASMA_SHOT_FRAMES = 2;
-
-static void spawnPowerup(Coord coord) {
-	//Stop spawning powerups after we've elapsed our total.
-	if(powerupCount == MAX_WEAPONS) powerupCount = 0;
-
-	Powerup powerup = { coord };
-	powerups[powerupCount++] = powerup;
-}
-
-static bool invalidPowerup(Powerup *powerup) {
-	return !inScreenBounds(powerup->origin);
-}
 
 static bool invalidEnemy(Enemy *enemy) {
 	return
@@ -143,16 +120,6 @@ void enemyShadowFrame(void) {
 		shadowCoord.y += STATIC_SHADOW_OFFSET;
 		drawSpriteAbs(shotShadow, shadowCoord);
 	}
-
-	//Render powerup shadows
-	for(int i=0; i < MAX_WEAPONS; i++) {
-		if(invalidPowerup(&powerups[i])) continue;
-		SDL_Texture *texture = getTextureVersion("powerup.png", ASSET_SHADOW);
-		Sprite sprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
-		Coord shadowCoord = parallax(powerups[i].parallax, PARALLAX_SUN, PARALLAX_LAYER_SHADOW, PARALLAX_X, PARALLAX_SUBTRACTIVE);
-		shadowCoord.y += STATIC_SHADOW_OFFSET;
-		drawSpriteAbs(sprite, shadowCoord);
-	}
 }
 
 void enemyRenderFrame(void) {
@@ -178,14 +145,6 @@ void enemyRenderFrame(void) {
 
 		drawSpriteAbs(shotSprite, enemyShots[i].parallax);
 	}
-
-	//Render powerups
-	for(int i=0; i < MAX_WEAPONS; i++) {
-		if(invalidPowerup(&powerups[i])) continue;
-		SDL_Texture *texture = getTexture("powerup.png");
-		Sprite sprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
-		drawSpriteAbs(sprite, powerups[i].parallax);
-	}
 }
 
 void animateEnemy(void) {
@@ -207,8 +166,16 @@ void animateEnemy(void) {
 				enemies[i].animFrame = 1;
 
 				//Spawn powerup (only in-game, though)
-				if(gameState == STATE_GAME && chance(POWERUP_CHANCE)) {
-					spawnPowerup(enemies[i].origin);
+				if(gameState == STATE_GAME){
+					if(chance(1) && canSpawn(TYPE_HEALTH)) {
+						spawnItem(enemies[i].origin, TYPE_HEALTH);
+					}else if(chance(1) && canSpawn(TYPE_WEAPON)) {
+						spawnItem(enemies[i].origin, TYPE_WEAPON);
+					}else if(chance(5)){
+						spawnItem(enemies[i].origin, TYPE_FRUIT);
+					}else{
+						spawnItem(enemies[i].origin, TYPE_COIN);
+					}
 				}
 			//Zero if completely dead.
 			}else if(enemies[i].animFrame == DEATH_FRAMES){
@@ -333,10 +300,8 @@ static void spawnShot(Enemy* enemy) {
 void resetEnemies() {
 	memset(enemies, 0, sizeof(enemies));
 	memset(enemyShots, 0, sizeof(enemyShots));
-	memset(powerups, 0, sizeof(powerups));
 	enemyCount = 0;
 	enemyShotCount = 0;
-	powerupCount = 0;
 }
 
 static double rollSine[5] = { 0.0, 1.25, 2.5, 3.75, 5.0 };
@@ -426,27 +391,6 @@ void enemyGameFrame(void) {
 		if(inBounds(playerOrigin, shotBounds)) {
 			hitPlayer(SHOT_DAMAGE);
 			enemyShots[i] = nullEnemyShot();
-		}
-	}
-
-	//Powerups
-	for(int i=0; i < MAX_WEAPONS; i++) {
-		if(invalidPowerup(&powerups[i])) continue;
-
-		//Scroll down screen
-		powerups[i].origin.y += POWERUP_SPEED;
-		powerups[i].parallax = parallax(powerups[i].origin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_X, PARALLAX_ADDITIVE);
-
-		//Sway in sine wave pattern
-		powerups[i].parallax.x = sineInc(powerups[i].origin.x, &rollSine[i], 0.05, 32);
-
-		//Check if player touching
-		Rect powerupBound = makeSquareBounds(powerups[i].parallax, POWERUP_BOUND);
-		if(inBounds(playerOrigin, powerupBound)) {
-  			pickupWeapon();
-			play("Powerup8.wav");
-			Powerup nullPowerup = { };
-			powerups[i] = nullPowerup;
 		}
 	}
 

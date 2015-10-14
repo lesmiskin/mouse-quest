@@ -64,6 +64,14 @@ static bool flickerPain;
 static const int PAIN_RECOVER_TIME = 2000;
 static bool painShocked;
 
+extern bool atFullhealth(void) {
+	return playerHealth == playerStrength;
+}
+
+extern void restoreHealth(void) {
+	playerHealth = playerStrength;
+}
+
 void hitPlayer(double damage) {
 	//Don't take damage during pain recovery time.
 	if(pain) {
@@ -102,7 +110,7 @@ void playerAnimate(void) {
 			animationInc = 1;
 			begunDying = true;
 		}
-		//Flag if completely dead, and stop any further logic.
+			//Flag if completely dead, and stop any further logic.
 		else if(animationInc == DEATH_FRAMES){
 			playerState = PSTATE_DEAD;
 			triggerState(STATE_TITLE);
@@ -111,12 +119,12 @@ void playerAnimate(void) {
 
 		animGroupName = "exp-%02d.png";
 	}
-	//Pain: In shock (change frame)
+		//Pain: In shock (change frame)
 	else if(pain && !painShocked) {
 		animGroupName = "mike-shock3.png";
 		painShocked = true;
 	}
-	//Idle frames.
+		//Idle frames.
 	else{
 		//Pain: Flicker during recovery time.
 		if(pain) {
@@ -135,7 +143,7 @@ void playerAnimate(void) {
 				animationInc = 1;
 				begunShooting = true;
 			}
-			//Cycle shooting animation.
+				//Cycle shooting animation.
 			else if(animationInc > SHOOTING_FRAMES) {
 				animationInc = 1;
 			}
@@ -147,14 +155,14 @@ void playerAnimate(void) {
 				animGroupName = "mike-shoot-%02d.png";
 			}
 		}
-		//Regular idle.
+			//Regular idle.
 		else{
 			if(leanDirection == LEAN_LEFT) {
 				animGroupName = "mike-lean-left-%02d.png";
 			}else if(leanDirection == LEAN_RIGHT) {
 				animGroupName = "mike-lean-right-%02d.png";
 			}else {
-				animGroupName = "mike-%02d.png";
+				animGroupName = "mike-facing-%02d.png";
 			}
 		}
 	}
@@ -249,7 +257,7 @@ static void applyMomentum(void) {
 	//Stop momentum if we'd reach, or overshoot, the screen bounds, but allow this kind
 	// of behaviour during scripted sequences.
 	if(!isScripted()) {
-		 if(predicted.x <= movementBounds.x || predicted.x >= movementBounds.width)
+		if(predicted.x <= movementBounds.x || predicted.x >= movementBounds.width)
 			momentumState.x = 0;
 		if(predicted.y <= movementBounds.y || predicted.y >= movementBounds.height)
 			momentumState.y = 0;
@@ -270,7 +278,7 @@ static void recogniseThrust(void) {
 		thrustState.x = 1;
 		leanDirection = LEAN_RIGHT;
 	}
-	//Reset lean direction when unpressed.
+		//Reset lean direction when unpressed.
 	else if(leanDirection != LEAN_NONE){
 		leanDirection = LEAN_NONE;
 	}
@@ -320,8 +328,8 @@ void resetPlayer() {
 	pain = false;
 
 	playerOrigin = makeCoord(
-			(screenBounds.x / 2),
-			(int)(screenBounds.y * 0.9)
+		(screenBounds.x / 2),
+		(int)(screenBounds.y * 0.9)
 	);
 }
 

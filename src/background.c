@@ -397,7 +397,7 @@ void initBackground(void) {
 
 	//Pre-render background tile animation frames, and load into array.
 	for(int i=0; i < TILE_FRAMES; i++) {
-		char filename[10];
+		char filename[15];
 //		sprintf(filename, "title.png", i+1);
 //		sprintf(filename, "base.png", i+1);
 		sprintf(filename, "space-%02d.png", i+1);

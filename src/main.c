@@ -14,6 +14,7 @@
 #include "scripting.h"
 #include "scripts.h"
 #include "hud.h"
+#include "item.h"
 
 static const char *GAME_TITLE = "Mouse Quest";
 static const bool FULLSCREEN = false;
@@ -83,6 +84,7 @@ int main()  {
 	enemyInit();
 	hudInit();
 	pewInit();
+	itemInit();
 
 	triggerState(STATE_INTRO);
 //	triggerState(STATE_GAME);
@@ -101,6 +103,7 @@ int main()  {
 			scriptGameFrame();
 			playerGameFrame();
 			enemyGameFrame();
+			itemGameFrame();
 			pewGameFrame();
 			hudGameFrame();
 		}
@@ -110,6 +113,8 @@ int main()  {
 			playerAnimate();
 			animateEnemy();
 			pewAnimateFrame();
+			hudAnimateFrame();
+			itemAnimateFrame();
 		}
 
 		//Renderer frame
@@ -119,6 +124,7 @@ int main()  {
 			scriptRenderFrame();
 			enemyShadowFrame();
 			playerShadowFrame();
+			itemRenderFrame();
  			enemyRenderFrame();
 			pewRenderFrame();
 			playerRenderFrame();

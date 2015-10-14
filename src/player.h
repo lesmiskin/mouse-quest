@@ -11,6 +11,8 @@ typedef enum {
 	PSTATE_DEAD = 16
 } PlayerState;
 
+extern bool atFullhealth(void);
+extern void restoreHealth(void);
 extern PlayerState playerState;
 extern bool useMike;
 extern bool playerDying;

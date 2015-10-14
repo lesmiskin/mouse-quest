@@ -8,6 +8,7 @@
 #include "input.h"
 #include "scripting.h"
 #include "weapon.h"
+#include "item.h"
 
 //DONE: Fix frame blinking during super scene (cue-frames doing this - render skip, or immediate reprocess?)
 //DONE: On subsequent intro runs, we skip past the logo too soon.
@@ -97,7 +98,7 @@ void scriptGameFrame(void) {
 					spawnEnemy(140, random(40, 65), random(0, sizeof(EnemyType)));
 					playerOrigin.y = screenBounds.y + 16;
 					useMike = true;
-					showBackground = false;
+//					showBackground = false;
 					playMusic("intro-battle-3.ogg", 1);
 					break;
 				case INTRO_BATTLE_MIKE_ENTER:
@@ -136,6 +137,7 @@ void scriptGameFrame(void) {
 					resetPlayer();
 					resetEnemies();
 					resetBackground();
+					resetItems();
 					useMike = true;
 					staticBackground = true;
 					game_messageTime = clock();
@@ -151,7 +153,6 @@ void scriptGameFrame(void) {
 					}
 
 					playMusic("title.ogg", 1);
-//					play("Powerup8.wav");
 					break;
 				case TITLE_LOOP:
 					//Begin game when fire button is pressed.
@@ -167,6 +168,7 @@ void scriptGameFrame(void) {
 				resetPlayer();
 				resetEnemies();
 				resetBackground();
+				resetItems();
 				useMike = true;
 				playMusic("level-01c.ogg", -1);
 			}
@@ -183,20 +185,20 @@ void scriptGameFrame(void) {
 
 void superRenderFrame(void) {
 	//Main blue background.
-	Sprite streak = makeSprite(getTexture("super-streak.png"), zeroCoord(), SDL_FLIP_NONE);
-	drawSpriteAbs(streak, makeCoord(screenBounds.x/2, screenBounds.y/2));
-
-	//Spawn a bunch of random white streaks to give the impression of fast motion.
-	Sprite fleck = makeSprite(getTexture("super-fleck.png"), zeroCoord(), SDL_FLIP_NONE);
-	for(int i=0; i < 16; i++) {
-		drawSpriteAbs(
-			fleck,
-			makeCoord(
-				random((screenBounds.x/2) - 55, (screenBounds.x/2) + 56),
-				random(0, screenBounds.y)
-			)
-		);
-	}
+//	Sprite streak = makeSprite(getTexture("super-streak.png"), zeroCoord(), SDL_FLIP_NONE);
+//	drawSpriteAbs(streak, makeCoord(screenBounds.x/2, screenBounds.y/2));
+//
+//	//Spawn a bunch of random white streaks to give the impression of fast motion.
+//	Sprite fleck = makeSprite(getTexture("super-fleck.png"), zeroCoord(), SDL_FLIP_NONE);
+//	for(int i=0; i < 16; i++) {
+//		drawSpriteAbs(
+//			fleck,
+//			makeCoord(
+//				random((screenBounds.x/2) - 55, (screenBounds.x/2) + 56),
+//				random(0, screenBounds.y)
+//			)
+//		);
+//	}
 }
 
 void scriptRenderFrame(void) {

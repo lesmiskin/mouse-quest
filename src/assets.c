@@ -79,7 +79,7 @@ static Asset makeAsset(AssetDef definition) {
 	if(definition.makeAlphaVersion) {
 		SDL_Texture *alphaTexture = SDL_CreateTextureFromSurface(renderer, original);
 		SDL_SetTextureBlendMode(alphaTexture, SDL_BLENDMODE_BLEND);
-		SDL_SetTextureAlphaMod(alphaTexture, 128);
+		SDL_SetTextureAlphaMod(alphaTexture, 64);
 		asset.textures[ASSET_ALPHA] = alphaTexture;
 	}
 	if(definition.makeShadowVersion) {
@@ -134,7 +134,48 @@ void shutdownAssets(void) {
 static void loadImages(void) {
 	//Define assets to be loaded.
 	AssetDef definitions[] = {
+		{ "text-laser-upgraded.png", false, true, false, false },
+		{ "text-full-power.png", false, true, false, false },
+		{ "font-00.png", false, true, false, false },
+		{ "font-01.png", false, true, false, false },
+		{ "font-02.png", false, true, false, false },
+		{ "font-03.png", false, true, false, false },
+		{ "font-04.png", false, true, false, false },
+		{ "font-05.png", false, true, false, false },
+		{ "font-06.png", false, true, false, false },
+		{ "font-07.png", false, true, false, false },
+		{ "font-08.png", false, true, false, false },
+		{ "font-09.png", false, true, false, false },
+		{ "coin-01.png", false, true, false, false },
+		{ "coin-02.png", false, true, false, false },
+		{ "coin-03.png", false, true, false, false },
+		{ "coin-04.png", false, true, false, false },
+		{ "coin-05.png", false, true, false, false },
+		{ "coin-06.png", false, true, false, false },
+		{ "coin-07.png", false, true, false, false },
+		{ "coin-08.png", false, true, false, false },
+		{ "coin-09.png", false, true, false, false },
+		{ "coin-10.png", false, true, false, false },
+		{ "coin-11.png", false, true, false, false },
+		{ "coin-12.png", false, true, false, false },
 		{ "powerup.png", false, true, false, false },
+		{ "powerup-double.png", false, true, false, false },
+		{ "powerup-double-x2.png", false, true, false, false },
+		{ "powerup-triple.png", false, true, false, false },
+		{ "powerup-triple-x2.png", false, true, false, false },
+		{ "grape-01.png", false, true, false, false },
+		{ "grape-02.png", false, true, false, false },
+		{ "grapes.png", false, true, false, false },
+		{ "battery-pack.png", false, true, false, false },
+		{ "battery-pack-01.png", false, true, false, false },
+		{ "battery-pack-02.png", false, true, false, false },
+		{ "battery.png", false, true, false, false },
+		{ "battery-half.png", false, false, false, false },
+		{ "battery-none.png", false, false, false, false },
+		{ "battery-none-01.png", false, false, false, false },
+		{ "battery-none-02.png", false, false, false, false },
+		{ "battery-low-01.png", false, false, false, false },
+		{ "battery-low-02.png", false, false, false, false },
 		{ "life.png", false, false, false, false },
 		{ "life-half.png", false, false, false, false },
 		{ "life-none.png", false, false, false, false },
@@ -237,6 +278,14 @@ static void loadImages(void) {
 		{ "disk-blue-10.png", true, true, false, false },
 		{ "disk-blue-11.png", true, true, false, false },
 		{ "disk-blue-12.png", true, true, false, false },
+		{ "mike-facing-01.png", true, true, true, true },
+		{ "mike-facing-02.png", true, true, true, true },
+		{ "mike-facing-03.png", true, true, true, true },
+		{ "mike-facing-04.png", true, true, true, true },
+		{ "mike-facing-05.png", true, true, true, true },
+		{ "mike-facing-06.png", true, true, true, true },
+		{ "mike-facing-07.png", true, true, true, true },
+		{ "mike-facing-08.png", true, true, true, true },
 		{ "mike-01.png", true, true, true, true },
 		{ "mike-02.png", true, true, true, true },
 		{ "mike-03.png", true, true, true, true },
@@ -296,12 +345,16 @@ static void loadImages(void) {
 }
 
 static void loadSounds(void) {
-	const int SOUND_VOLUME = 12 ;
+	const int SOUND_VOLUME = 12;
 
 	SoundDef defs[] = {
 		{ "mike-die.wav", SOUND_VOLUME * 4 },
 		{ "intro-presents.wav", SOUND_VOLUME * 2 },
 		{ "Powerup8.wav", SOUND_VOLUME * 4 },
+		{ "Pickup_Coin4.wav", (int)ceil(SOUND_VOLUME * 1.5) },
+		{ "Pickup_Coin14.wav", (int)ceil(SOUND_VOLUME * 1.5) },
+		{ "Pickup_Coin34.wav", SOUND_VOLUME },
+		{ "Pickup_Coin34b.wav", (int)ceil(SOUND_VOLUME * 1.5) },
 		{ "warp.wav", SOUND_VOLUME },
 		{ "start.wav", SOUND_VOLUME },
 		{ "Hit_Hurt10.wav", SOUND_VOLUME },

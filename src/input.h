@@ -8,7 +8,8 @@ typedef enum {
 	CMD_PLAYER_LEFT = 3,
 	CMD_PLAYER_RIGHT = 4,
 	CMD_PLAYER_FIRE = 5,
-	CMD_PLAYER_SKIP_TO_TITLE = 6
+	CMD_PLAYER_BOMB = 6,
+	CMD_PLAYER_SKIP_TO_TITLE = 7
 } Command;
 
 extern void pollInput(void);
