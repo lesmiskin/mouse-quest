@@ -58,7 +58,10 @@ typedef enum {
 	INTRO_BATTLE_PRELUDE,
 	INTRO_BATTLE_MIKE_ENTER,
 	INTRO_BATTLE_MIKE_PAUSE,
+	INTRO_BATTLE_MIKE_SMILING_CUE,
+	INTRO_BATTLE_MIKE_SMILING,
 	INTRO_BATTLE_MIKE_FIRE,
+	INTRO_BATTLE_MIKE_GLOAT_CUE,
 	INTRO_BATTLE_MIKE_GLOAT,
 	INTRO_BATTLE_MIKE_DEPART_CUE,
 	INTRO_BATTLE_MIKE_DEPART,
@@ -103,6 +106,9 @@ void scriptGameFrame(void) {
 					break;
 				case INTRO_BATTLE_MIKE_ENTER:
 					scriptCommand(CMD_PLAYER_UP);
+					break;
+				case INTRO_BATTLE_MIKE_SMILING_CUE:
+					smile();
 					break;
 				case INTRO_BATTLE_MIKE_FIRE:
 					scriptCommand(CMD_PLAYER_FIRE);
@@ -171,7 +177,7 @@ void scriptGameFrame(void) {
 				resetItems();
 				useMike = true;
 				playMusic("level-01c.ogg", -1);
-			}
+ 			}
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
 				triggerState(STATE_TITLE);
@@ -269,9 +275,12 @@ void initScripts(void) {
 	intro.scenes[INTRO_BATTLE_CUE] = 				newCueStep();
 	intro.scenes[INTRO_BATTLE_PRELUDE] = 			newTimedStep(SCENE_LOOP, 3000, FADE_IN);
 	intro.scenes[INTRO_BATTLE_MIKE_ENTER] = 		newTimedStep(SCENE_LOOP, 200, FADE_NONE);
-	intro.scenes[INTRO_BATTLE_MIKE_PAUSE] = 		newTimedStep(SCENE_LOOP, 2000, FADE_NONE);
+	intro.scenes[INTRO_BATTLE_MIKE_PAUSE] = 		newTimedStep(SCENE_LOOP, 1000, FADE_NONE);
+	intro.scenes[INTRO_BATTLE_MIKE_SMILING_CUE] = 	newCueStep();
+	intro.scenes[INTRO_BATTLE_MIKE_SMILING] = 		newTimedStep(SCENE_LOOP, 1150, FADE_NONE);
 	intro.scenes[INTRO_BATTLE_MIKE_FIRE] = 			newTimedStep(SCENE_LOOP, 1400, FADE_NONE);
-	intro.scenes[INTRO_BATTLE_MIKE_GLOAT] = 		newTimedStep(SCENE_LOOP, 2000, FADE_NONE);
+	intro.scenes[INTRO_BATTLE_MIKE_GLOAT_CUE] =		newCueStep();
+	intro.scenes[INTRO_BATTLE_MIKE_GLOAT] = 		newTimedStep(SCENE_LOOP, 1600, FADE_NONE);
 	intro.scenes[INTRO_BATTLE_MIKE_DEPART_CUE] = 	newCueStep();
 	intro.scenes[INTRO_BATTLE_MIKE_DEPART] = 		newTimedStep(SCENE_LOOP, 800, FADE_OUT);
 	intro.scenes[INTRO_TITLE_CUE] = 				newStateStep(STATE_TITLE);

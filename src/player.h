@@ -8,9 +8,11 @@ typedef enum {
 	PSTATE_NORMAL = 2,
 	PSTATE_WON = 4,
 	PSTATE_DYING = 8,
-	PSTATE_DEAD = 16
+	PSTATE_SMILING = 16,
+	PSTATE_DEAD = 32
 } PlayerState;
 
+extern void smile(void);
 extern bool atFullhealth(void);
 extern void restoreHealth(void);
 extern PlayerState playerState;

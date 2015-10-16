@@ -18,7 +18,7 @@ typedef enum {
 
 PlayerState playerState;
 
-const PlayerState PSTATE_CAN_ANIMATE = PSTATE_NOT_PLAYING | PSTATE_NORMAL | PSTATE_WON | PSTATE_DYING;
+const PlayerState PSTATE_CAN_ANIMATE = PSTATE_NOT_PLAYING | PSTATE_NORMAL | PSTATE_WON | PSTATE_DYING | PSTATE_SMILING;
 const PlayerState PSTATE_CAN_CONTROL = PSTATE_NORMAL;
 
 static bool canControl() {
@@ -42,6 +42,7 @@ static const double MOMENTUM_INC_DIVISOR = 10;
 static const int ANIMATION_FRAMES = 8;
 static const int DEATH_FRAMES = 7;
 static const int SHOOTING_FRAMES = 2;
+static const int SMILING_FRAMES = 13;
 static int animationInc;
 static double momentumInc;			//PLAYER_MAX_SPEED / MOMENTUM_INC_DIVISOR = momentumInc
 static LeanDirection leanDirection;
@@ -50,7 +51,8 @@ static Coord thrustState;			//Stores direction state (-1 = left/down, 1 = up/rig
 static Coord momentumState;
 static Coord PLAYER_SIZE = { 6, 7 };
 static Rect movementBounds;
-static bool begunDying;
+static bool begunDying = false;
+static bool begunSmiling = false;
 static const double HIT_KNOCKBACK = 0.5;
 bool playerShooting;
 bool begunShooting;
@@ -63,6 +65,12 @@ static bool pain;
 static bool flickerPain;
 static const int PAIN_RECOVER_TIME = 2000;
 static bool painShocked;
+static PlayerState lastState;
+
+extern void smile(void) {
+	lastState = playerState;
+	playerState = PSTATE_SMILING;
+}
 
 extern bool atFullhealth(void) {
 	return playerHealth == playerStrength;
@@ -96,21 +104,40 @@ void hitPlayer(double damage) {
 void playerAnimate(void) {
 	if(!canAnimate()) return;
 
-	animationInc = animationInc == ANIMATION_FRAMES ? 1 : animationInc + 1;
+	//TODO: Fix hard-coded smiling state animation loop.
+
+	//Reset animation loop.
+	if(playerState != PSTATE_SMILING) {
+		animationInc = animationInc == ANIMATION_FRAMES ? 1 : animationInc + 1;
+	}
 
 	char frameFile[255];
 	char* animGroupName;
 	AssetVersion frameVersion = ASSET_DEFAULT;
 
 	//Death.
-	if(isDying()) {
+	if(playerState == PSTATE_SMILING) {
+		if(!begunSmiling) {
+			animationInc = 1;
+			begunSmiling = true;
+		}else if(animationInc == 5) {
+			play("ping2.wav");
+		}else if(animationInc == SMILING_FRAMES) {
+			playerState = lastState;
+			animationInc = 1;
+			begunSmiling = false;
+			return;
+		}
+		animGroupName = "mike-shades-%02d.png";
+		animationInc++;
+	}else if(isDying()) {
 		//Start to die - reset animation frames.
 		if(!begunDying) {
 			play("mike-die.wav");
 			animationInc = 1;
 			begunDying = true;
 		}
-			//Flag if completely dead, and stop any further logic.
+		//Flag if completely dead, and stop any further logic.
 		else if(animationInc == DEATH_FRAMES){
 			playerState = PSTATE_DEAD;
 			triggerState(STATE_TITLE);
@@ -119,12 +146,12 @@ void playerAnimate(void) {
 
 		animGroupName = "exp-%02d.png";
 	}
-		//Pain: In shock (change frame)
+	//Pain: In shock (change frame)
 	else if(pain && !painShocked) {
 		animGroupName = "mike-shock3.png";
 		painShocked = true;
 	}
-		//Idle frames.
+	//Idle frames.
 	else{
 		//Pain: Flicker during recovery time.
 		if(pain) {
@@ -155,7 +182,7 @@ void playerAnimate(void) {
 				animGroupName = "mike-shoot-%02d.png";
 			}
 		}
-			//Regular idle.
+		//Regular idle.
 		else{
 			if(leanDirection == LEAN_LEFT) {
 				animGroupName = "mike-lean-left-%02d.png";

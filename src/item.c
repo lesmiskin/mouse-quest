@@ -143,25 +143,38 @@ void spawnItem(Coord coord, ItemType type) {
 			animRate = ANIM_SEQUENCE;
 			strcpy(baseFrameName, "coin-");
 			break;
-		case TYPE_FRUIT:
+		case TYPE_FRUIT: {
+			int chance = random(0, 100);
+
+			if(chance < 33) {
+				strcpy(baseFrameName, "cherries-");
+				strcpy(realFrameName, "cherries-");
+			}else if(chance > 66) {
+				strcpy(baseFrameName, "grape-");
+				strcpy(realFrameName, "grape-");
+			}else{
+				strcpy(baseFrameName, "pineapple-");
+				strcpy(realFrameName, "pineapple-");
+			}
+
 			swing = false;
 			animRate = ANIM_BOOLEAN;
-			maxAnims = 3;
-			strcpy(baseFrameName, "grape-");
-			strcpy(realFrameName, "grape-");
+			maxAnims = 2;
 			break;
+		}
 		case TYPE_WEAPON:
 			swing = true;
-			maxAnims = 1;
+			maxAnims = 2;
 			animRate = ANIM_BOOLEAN;
 
 			char* filename = NULL;
 			switch(weaponInc) {
 				case 0:
-					filename = "powerup-double.png";
+					filename = "powerup-double-";
 					break;
 				case 1:
-					filename = "powerup-triple.png";
+					filename = "powerup-double-";
+//					filename = "powerup-triple.png";
 					break;
 				default:
 					filename = "powerup.png";
@@ -174,9 +187,9 @@ void spawnItem(Coord coord, ItemType type) {
 		case TYPE_HEALTH:
 			swing = true;
 			animRate = ANIM_BOOLEAN;
-			maxAnims = 1;
-			strcpy(baseFrameName, "battery-pack.png");
-			strcpy(realFrameName, "battery-pack.png");
+			maxAnims = 2;
+			strcpy(baseFrameName, "battery-pack-");
+			strcpy(realFrameName, "battery-pack-");
 			break;
 	}
 
