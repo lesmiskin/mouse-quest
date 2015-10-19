@@ -167,11 +167,11 @@ void animateEnemy(void) {
 
 				//Spawn powerup (only in-game, though)
 				if(gameState == STATE_GAME){
-					if(chance(1) && canSpawn(TYPE_HEALTH)) {
+					if(chance(2) && canSpawn(TYPE_HEALTH)) {
 						spawnItem(enemies[i].origin, TYPE_HEALTH);
 					}else if(chance(1) && canSpawn(TYPE_WEAPON)) {
 						spawnItem(enemies[i].origin, TYPE_WEAPON);
-					}else if(chance(5)){
+					}else if(chance(10)){
 						spawnItem(enemies[i].origin, TYPE_FRUIT);
 					}else{
 						spawnItem(enemies[i].origin, TYPE_COIN);

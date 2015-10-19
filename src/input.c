@@ -9,6 +9,9 @@
 #define MAX_COMMANDS 20
 static bool commands[MAX_COMMANDS];
 static bool scriptCommands[MAX_COMMANDS];
+static SDL_Joystick* joystick = NULL;
+static bool usingJoystick = false;
+static const int JOYSTICK_DEADZONE = 8000;
 
 void scriptCommand(int commandFlag) {
 	scriptCommands[commandFlag] = true;
@@ -18,8 +21,31 @@ bool checkCommand(int commandFlag) {
 	return commands[commandFlag];
 }
 
-void pollInput(void) {
+void shutdownInput(void) {
+	if(usingJoystick) {
+		SDL_JoystickClose(joystick);
+		joystick = NULL;
+	}
+}
 
+void initInput(void) {
+	if(SDL_NumJoysticks() > 0) {
+		usingJoystick = true;
+		joystick = SDL_JoystickOpen(0);
+	}
+}
+
+typedef enum {
+	PS3_DPAD_UP = 4,
+	PS3_DPAD_RIGHT = 5,
+	PS3_DPAD_DOWN = 6,
+	PS3_DPAD_LEFT = 7,
+	PS3_BUTTON_X = 14,
+	PS3_BUTTON_PS = 16,
+	PS3_BUTTON_START = 3
+} Ps3Buttons;
+
+void pollInput(void) {
 	//Tell SDL we want to examine events (otherwise getKeyboardState won't work).
 	SDL_PumpEvents();
 
@@ -36,7 +62,26 @@ void pollInput(void) {
 			case SDL_QUIT:
 				commands[CMD_QUIT] = true;
 				break;
-			case SDL_KEYDOWN:
+			case SDL_JOYBUTTONDOWN: {
+				switch(gameState) {
+					case STATE_INTRO:
+						if(event.jbutton.button == PS3_BUTTON_X)
+							commands[CMD_PLAYER_SKIP_TO_TITLE] = true;
+						break;
+					case STATE_TITLE:
+						if(event.jbutton.button == PS3_BUTTON_X)
+							commands[CMD_PLAYER_FIRE] = true;
+						else if(event.jbutton.button == PS3_BUTTON_PS)
+							commands[CMD_QUIT] = true;
+						break;
+					case STATE_GAME:
+						if(event.jbutton.button == PS3_BUTTON_PS)
+							commands[CMD_PLAYER_SKIP_TO_TITLE] = true;
+						break;
+				}
+				break;
+			}
+			case SDL_KEYDOWN: {
 				//Ignore held keys.
 				if(event.key.repeat) break;
 
@@ -45,13 +90,17 @@ void pollInput(void) {
 				//Bind SDL keycodes to our custom actions, so we don't have to duplicate/remember keybindings everywhere in our code.
 				switch(gameState) {
 					case STATE_TITLE:
-						if(keypress == SDL_SCANCODE_LCTRL || keypress == SDL_SCANCODE_SPACE)
+						if(	keypress == SDL_SCANCODE_LCTRL ||
+							keypress == SDL_SCANCODE_SPACE
+						)
 							commands[CMD_PLAYER_FIRE] = true;
 						if(keypress == SDL_SCANCODE_ESCAPE)
 							commands[CMD_QUIT] = true;
 						break;
 					case STATE_INTRO:
-						if(keypress == SDL_SCANCODE_LCTRL || keypress == SDL_SCANCODE_SPACE || keypress == SDL_SCANCODE_ESCAPE)
+						if(	keypress == SDL_SCANCODE_LCTRL ||
+							keypress == SDL_SCANCODE_SPACE ||
+							keypress == SDL_SCANCODE_ESCAPE)
 							commands[CMD_PLAYER_SKIP_TO_TITLE] = true;
  						break;
 					case STATE_GAME:
@@ -60,6 +109,7 @@ void pollInput(void) {
 						break;
 				}
 				break;
+			}
 		}
 	}
 
@@ -68,26 +118,44 @@ void pollInput(void) {
 		case STATE_INTRO:
 			if(scriptCommands[CMD_PLAYER_LEFT])
 				commands[CMD_PLAYER_LEFT] = true;
-			if(scriptCommands[CMD_PLAYER_RIGHT])
+			else if(scriptCommands[CMD_PLAYER_RIGHT])
 				commands[CMD_PLAYER_RIGHT] = true;
+
 			if(scriptCommands[CMD_PLAYER_UP])
 				commands[CMD_PLAYER_UP] = true;
-			if(scriptCommands[CMD_PLAYER_DOWN])
+			else if(scriptCommands[CMD_PLAYER_DOWN])
 				commands[CMD_PLAYER_DOWN] = true;
+
 			if(scriptCommands[CMD_PLAYER_FIRE])
 				commands[CMD_PLAYER_FIRE] = true;
 			break;
 		case STATE_GAME:
-			if(keysHeld[SDL_SCANCODE_LEFT])
+			if(		keysHeld[SDL_SCANCODE_LEFT] ||
+					SDL_JoystickGetAxis(joystick, 0) < -JOYSTICK_DEADZONE ||
+					SDL_JoystickGetButton(joystick, PS3_DPAD_LEFT))
 				commands[CMD_PLAYER_LEFT] = true;
-			if(keysHeld[SDL_SCANCODE_RIGHT])
+			else if(keysHeld[SDL_SCANCODE_RIGHT] ||
+					SDL_JoystickGetAxis(joystick, 0) > JOYSTICK_DEADZONE ||
+					SDL_JoystickGetButton(joystick, PS3_DPAD_RIGHT))
 				commands[CMD_PLAYER_RIGHT] = true;
-			if(keysHeld[SDL_SCANCODE_UP])
+
+			if(		keysHeld[SDL_SCANCODE_UP] ||
+					SDL_JoystickGetAxis(joystick, 1) < -JOYSTICK_DEADZONE ||
+					SDL_JoystickGetButton(joystick, PS3_DPAD_UP))
 				commands[CMD_PLAYER_UP] = true;
-			if(keysHeld[SDL_SCANCODE_DOWN])
+			else if(
+					keysHeld[SDL_SCANCODE_DOWN] ||
+					SDL_JoystickGetAxis(joystick, 1) > JOYSTICK_DEADZONE ||
+					SDL_JoystickGetButton(joystick, PS3_DPAD_DOWN))
 				commands[CMD_PLAYER_DOWN] = true;
-			if(keysHeld[SDL_SCANCODE_LCTRL] || keysHeld[SDL_SCANCODE_SPACE])
+
+			if(		keysHeld[SDL_SCANCODE_LCTRL] ||
+					keysHeld[SDL_SCANCODE_SPACE] ||
+					SDL_JoystickGetButton(joystick, PS3_BUTTON_X))
 				commands[CMD_PLAYER_FIRE] = true;
+
+			if(SDL_JoystickGetButton(joystick, PS3_BUTTON_START))
+				commands[CMD_PLAYER_SKIP_TO_TITLE] = true;
 			break;
 	}
 

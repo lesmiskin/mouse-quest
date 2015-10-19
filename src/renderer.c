@@ -105,6 +105,7 @@ void clearBackground(Colour colour) {
 }
 void updateCanvas(void) {
 	SDL_RenderPresent(renderer);			//For geometry/font updates.
+//	SDL_RenderClear(renderer);
 //	SDL_UpdateWindowSurface(window);
 }
 
@@ -219,6 +220,9 @@ void faderRenderFrame(void) {
 }
 
 void initRenderer(void) {
+	//Enable v-sync in SDL.
+	if(vsync) SDL_GL_SetSwapInterval(1);
+
 	//Init SDL renderer
 	renderer = SDL_CreateRenderer(
 		window,
@@ -235,13 +239,33 @@ void initRenderer(void) {
 
 	//Pixel grid is the blocky rendering grid we use to help tile things (i.e. backgrounds).
 	pixelGrid = makeCoord(
-		windowSize.x / renderScale,
-		windowSize.y / renderScale
+		BASE_SCALE_WIDTH / renderScale,
+		BASE_SCALE_HEIGHT / renderScale
 	);
 
 	//Use SDL to scale our game activity so it's independent of the output resolution.
-	double sdlScale = windowSize.x / BASE_SCALE_WIDTH; 		//320=1:1, 640=2:1 etc.
+	//Base it on height, since we use a portrait, not landscape game window.
+	double sdlScale = windowSize.y / BASE_SCALE_HEIGHT;
 	SDL_RenderSetScale(renderer, sdlScale, sdlScale);
+
+	//Clear the entire canvas, then use SDL to scale up our virtual resolution -
+	// allowing us to have a centered, portrait window :)
+
+	//Rachaie's background.
+//	SDL_SetRenderDrawColor(renderer, 255,128,240,64);
+
+	SDL_RenderClear(renderer);
+	SDL_RenderSetLogicalSize(renderer, pixelGrid.x, pixelGrid.y);
+
+	//Alternative clipping strategy:
+//	SDL_Rect viewportRect = {100, 0, pixelGrid.x, pixelGrid.y};
+//	SDL_RenderSetViewport(renderer, &viewportRect);
+
+	//Alternative clipping strategy:
+//  SDL_Rect clipRect = {0, 0, pixelGrid.x, pixelGrid.y};
+//	SDL_RenderSetClipRect(renderer, &clipRect);
+
+//	SDL_SetWindowDisplayMode()
 
 	assert(renderer != NULL);
 

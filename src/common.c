@@ -4,14 +4,28 @@
 
 SDL_Window *window = NULL;
 GameState gameState;
-//Coord windowSize = { 320, 240 };
-//Coord windowSize = { 640, 480 };		//x2 (1px == 2px)
-//Coord windowSize = { 224, 256 };		//x3 (1px == 4px)
+const bool vsync = false;
+
+//Windowed resolutions
+//Coord windowSize = { 224, 256 };		//1:1 scale
+//Coord windowSize = { 448, 512 };		//2:1 scale
+//Coord windowSize = { 672, 768 };		//3:1 scale
+//Coord windowSize = { 896, 1024 };		//4:1 scale
+
+//Widescreen resolutions
+//Coord windowSize = { 1280, 720};		//720p
+//Coord windowSize = { 1360, 768 };		//Perfect 3:1.
+//Coord windowSize = { 1600, 900 };
+
+//Native resolution
+Coord windowSize = { 1680, 1050 };
+
 
 #ifdef DEBUG_T500
 	Coord windowSize = { 448, 512 };		//x3 (1px == 4px)
 #else
-	Coord windowSize = { 896, 1024 };		//x3 (1px == 4px)
+//	Coord windowSize = { 896, 1024 };		//x3 (1px == 4px)
+//	Coord windowSize = { 1680, 1050 };		//x3 (1px == 4px)
 #endif
 
 const int ANIMATION_HZ = 1000 / 12;		//12fps

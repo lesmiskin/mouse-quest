@@ -19,6 +19,7 @@ typedef enum {
 } GameState;
 GameState gameState;
 
+extern const bool vsync;
 extern bool isScripted();
 extern bool stateInitialised;
 extern void triggerState(GameState newState);

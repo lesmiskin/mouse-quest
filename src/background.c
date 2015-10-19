@@ -143,21 +143,21 @@ void backgroundRenderFrame(void) {
 	//Blit out our first texture
 	SDL_Rect destination  = {
 		0, (int)bgOffset,
-		(int)windowSize.x, (int)windowSize.y
+		(int)screenBounds.x, (int)screenBounds.y
 	};
 	SDL_RenderCopy(renderer, tileMap, NULL, &destination);
 
 	//Blit out our second texture, offset by the first texture accordingly.
 	SDL_Rect destination2 = {
-		0, (int)bgOffset - (int)windowSize.y,
-		(int)windowSize.x, (int)windowSize.y
+		0, (int)bgOffset - (int)screenBounds.y,
+		(int)screenBounds.x, (int)screenBounds.y
 	};
 	SDL_RenderCopy(renderer, tileMap, NULL, &destination2);
 
 	//Blit the fader overlay to the screen.
 	SDL_Rect faderDestination = {
 			0, 0,
-			(int)windowSize.x, (int)windowSize.y
+			(int)screenBounds.x, (int)screenBounds.y
 	};
 
 	//Don't do planet or platform rendering for static backgrounds.
@@ -335,7 +335,7 @@ void backgroundGameFrame(void) {
 	if(!showBackground || staticBackground) return;
 
 	//Chunk the textures downwards on each frame, or reset if outside view.
-	bgOffset = bgOffset > windowSize.y ? 0 : bgOffset + SCROLL_SPEED;
+	bgOffset = bgOffset > screenBounds.y ? 0 : bgOffset + SCROLL_SPEED;
 
 	//Spawn planets.
 	if(timer(&lastPlanetTime, toMilliseconds(nextPlanetSpawnSeconds))) {

@@ -16,6 +16,12 @@ typedef enum {
 	LEAN_RIGHT = 2
 } LeanDirection;
 
+typedef enum {
+	Y_NONE = 0,
+	Y_UP = 1,
+	Y_DOWN = 2
+} YDirection;
+
 PlayerState playerState;
 
 const PlayerState PSTATE_CAN_ANIMATE = PSTATE_NOT_PLAYING | PSTATE_NORMAL | PSTATE_WON | PSTATE_DYING | PSTATE_SMILING;
@@ -46,6 +52,7 @@ static const int SMILING_FRAMES = 13;
 static int animationInc;
 static double momentumInc;			//PLAYER_MAX_SPEED / MOMENTUM_INC_DIVISOR = momentumInc
 static LeanDirection leanDirection;
+static YDirection yDirection;
 static Sprite bodySprite;
 static Coord thrustState;			//Stores direction state (-1 = left/down, 1 = up/right, 0 = stationary)
 static Coord momentumState;
@@ -86,7 +93,7 @@ void hitPlayer(double damage) {
 		return;
 	}
 
-	play("Hit_Hurt10.wav");
+	play("Hit_Hurt18.wav");
 	playerHealth -= damage;
 
 	lastHitTime = clock();
@@ -188,6 +195,8 @@ void playerAnimate(void) {
 				animGroupName = "mike-lean-left-%02d.png";
 			}else if(leanDirection == LEAN_RIGHT) {
 				animGroupName = "mike-lean-right-%02d.png";
+			}else if(yDirection == Y_UP) {
+				animGroupName = "mike-%02d.png";
 			}else {
 				animGroupName = "mike-facing-%02d.png";
 			}
@@ -295,9 +304,13 @@ static void recogniseThrust(void) {
 	//Toggle thrust in a particular direction, based on key press.
 	if(checkCommand(CMD_PLAYER_UP)){
 		thrustState.y = -1;
+		yDirection = Y_UP;
 	}else if(checkCommand(CMD_PLAYER_DOWN)){
 		thrustState.y = 1;
+	}else if(yDirection != Y_NONE) {
+		yDirection = Y_NONE;
 	}
+
 	if(checkCommand(CMD_PLAYER_LEFT)){
 		thrustState.x = -1;
 		leanDirection = LEAN_LEFT;
@@ -305,7 +318,7 @@ static void recogniseThrust(void) {
 		thrustState.x = 1;
 		leanDirection = LEAN_RIGHT;
 	}
-		//Reset lean direction when unpressed.
+	//Reset lean direction when unpressed.
 	else if(leanDirection != LEAN_NONE){
 		leanDirection = LEAN_NONE;
 	}

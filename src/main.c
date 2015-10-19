@@ -21,7 +21,7 @@ static const bool FULLSCREEN = false;
 bool running = true;
 
 static void initSDL(void) {
-	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK);
 
 	//Add PNG support via SDL_Image.
 	if(!IMG_Init(IMG_INIT_PNG)) {
@@ -45,7 +45,7 @@ static void initWindow(void) {
 #endif
 		(int)windowSize.x,					//dimensions
 		(int)windowSize.y,
-		FULLSCREEN ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_MAXIMIZED
+		SDL_WINDOW_OPENGL | (FULLSCREEN ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_MAXIMIZED)
 	);
 
 	//Hide cursor in fullscreen
@@ -63,6 +63,7 @@ static void shutdownMain(void) {
 	shutdownAssets();
 	shutdownRenderer();
 	shutdownWindow();
+	shutdownInput();
 
 	SDL_Quit();
 }
@@ -77,6 +78,7 @@ int main()  {
 	initWindow();
 	initRenderer();
 	initAssets();
+	initInput();
 
 	initScripts();
 	playerInit();
@@ -120,6 +122,9 @@ int main()  {
 		//Renderer frame
 		double renderFPS;
 		if(timer(&lastRenderFrameTime, RENDER_HZ)) {
+			//V-sync requires us to clear on every frame.
+			if(vsync) clearBackground(makeBlack());
+
 			backgroundRenderFrame();
 			scriptRenderFrame();
 			enemyShadowFrame();

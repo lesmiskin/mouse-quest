@@ -12,6 +12,7 @@ typedef enum {
 	CMD_PLAYER_SKIP_TO_TITLE = 7
 } Command;
 
+extern void initInput(void);
 extern void pollInput(void);
 extern void processSystemCommands(void);
 extern bool checkCommand(int commandFlag);

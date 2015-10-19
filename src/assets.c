@@ -375,12 +375,13 @@ static void loadSounds(void) {
 		{ "Pickup_Coin4.wav", (int)ceil(SOUND_VOLUME * 1.5) },
 		{ "Pickup_Coin14.wav", (int)ceil(SOUND_VOLUME * 1.5) },
 		{ "Pickup_Coin34.wav", SOUND_VOLUME },
-		{ "Pickup_Coin34b.wav", (int)ceil(SOUND_VOLUME * 1.5) },
+		{ "Pickup_Coin34b.wav", (int)ceil(SOUND_VOLUME * 2.5) },
 		{ "ping.wav", (int)ceil(SOUND_VOLUME * 2) },
 		{ "ping2.wav", (int)ceil(SOUND_VOLUME * 2) },
 		{ "warp.wav", SOUND_VOLUME },
 		{ "start.wav", SOUND_VOLUME },
 		{ "Hit_Hurt10.wav", (int)ceil(SOUND_VOLUME * 3) },		//When we get hit.
+		{ "Hit_Hurt18.wav", (int)ceil(SOUND_VOLUME * 3) },		//When we get hit.
 		{ "Hit_Hurt9.wav", SOUND_VOLUME },
 		{ "Laser_Shoot34.wav", SOUND_VOLUME / 2 },
 		{ "Laser_Shoot18.wav", SOUND_VOLUME / 1.5 },
