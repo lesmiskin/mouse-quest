@@ -7,6 +7,10 @@
 // coding keys throughout our code.
 
 #define MAX_COMMANDS 20
+
+SDL_Haptic* haptic = NULL;
+bool hapticSupported = false;
+
 static bool commands[MAX_COMMANDS];
 static bool scriptCommands[MAX_COMMANDS];
 static SDL_Joystick* joystick = NULL;
@@ -23,6 +27,7 @@ bool checkCommand(int commandFlag) {
 
 void shutdownInput(void) {
 	if(usingJoystick) {
+		SDL_HapticClose(haptic);
 		SDL_JoystickClose(joystick);
 		joystick = NULL;
 	}
@@ -32,6 +37,14 @@ void initInput(void) {
 	if(SDL_NumJoysticks() > 0) {
 		usingJoystick = true;
 		joystick = SDL_JoystickOpen(0);
+		haptic = SDL_HapticOpenFromJoystick(joystick);
+
+		if(SDL_HapticRumbleSupported(haptic)) {
+			hapticSupported = true;
+			SDL_HapticRumbleInit(haptic);
+			int result = SDL_HapticRumblePlay(haptic, 0.75, 2000);
+			int blah = 5;
+		}
 	}
 }
 

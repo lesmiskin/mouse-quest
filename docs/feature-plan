@@ -66,6 +66,8 @@
 [DONE] ~ Fade to operate on Hertz basis, not increment.
 [DONE] ~ Convert all magic number array sizes to shared #define's.
 
+Pretty much all of the double datatypes could be floats ;P
+
 Favicon for binary file
 Favicon for SDL window decoration
 Inexpensive USB MIDI keyboard and some basic drum+bass beats.

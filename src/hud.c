@@ -17,6 +17,7 @@ typedef struct {
 } ScorePlume;
 
 int score;
+int topScore;
 static ScorePlume plumes[MAX_PLUMES];
 static int plumeInc = 0;
 static Sprite life, lifeHalf/*, lifeNone*/;
@@ -25,6 +26,8 @@ static int noneAnimInc = 1;
 static int noneMaxAnims = 2;
 static const int BATTERY_BLINK_RATE = 500;
 static long lastBlinkTime;
+static Sprite letters[10];
+static const int LETTER_WIDTH = 4;
 
 void spawnScorePlume(PlumeType type, int score) {
 	if(plumeInc+1 == MAX_PLUMES) plumeInc = 0;
@@ -44,9 +47,11 @@ void spawnPlume(PlumeType type) {
 	spawnScorePlume(type, 0);
 }
 
-void raiseScore(unsigned amount) {
+void raiseScore(unsigned amount, bool plume) {
 	score += amount;
-	spawnScorePlume(PLUME_SCORE, amount);
+	if(plume) {
+		spawnScorePlume(PLUME_SCORE, amount);
+	}
 }
 
 ScorePlume nullPlume() {
@@ -68,8 +73,11 @@ void hudGameFrame(void) {
 		}
 
 		plumes[i].parallax.y -= 0.75;
-//		plumes[i].parallax = parallax(plumes[i].origin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_X, PARALLAX_ADDITIVE);
 	}
+}
+
+void resetHud(void) {
+	score = 0;
 }
 
 void hudAnimateFrame(void) {
@@ -91,9 +99,39 @@ void hudInit(void) {
 	for(int i=0; i < NUM_HEARTS; i++){
 		lifePositions[i] = makeCoord(10 + (i * 12 ), 10);
 	}
+
+	//Pre-load font sprites.
+	for(int i=0; i < 10; i++) {
+		char textureName[50];
+		sprintf(textureName, "font-%02d.png", i);
+		letters[i] = makeSimpleSprite(textureName);
+	}
+}
+
+void writeText(int amount, Coord pos) {
+	//Algorithm for digit iteration of an int (source: http://stackoverflow.com/a/8671947)
+	//Note: The algorithm iterates from lowest to highest, so we print the digits in reverse to compensate.
+
+	if(amount == 0) {
+		drawSpriteAbs(letters[0], pos);
+	}else{
+		while(amount != 0) {
+			drawSpriteAbs(letters[amount % 10], pos);
+			amount /= 10;
+			pos.x -= LETTER_WIDTH;
+		}
+	}
 }
 
 void hudRenderFrame(void) {
+
+	//Score HUD
+	if(gameState != STATE_GAME) {
+//		writeText(topScore, makeCoord(pixelGrid.x - 5, 10));
+	}else{
+		writeText(score, makeCoord(pixelGrid.x - 5, 10));
+	}
+
 	//Only show if playing.
 	if(gameState != STATE_GAME) return;
 
@@ -109,43 +147,37 @@ void hudRenderFrame(void) {
 		if(playerHealth >= barHealth) {
 			drawSpriteAbs(life, lifePositions[bar]);
 		//Between half and full.
-		//}else if(playerHealth >= barHealth - (healthPerHeart/2)) {
-		}else{
+		}else if(playerHealth >= barHealth - (healthPerHeart/2)) {
 			char noneName[50];
 			sprintf(noneName, "battery-low-%02d.png", noneAnimInc);
 			Sprite lifeNone = makeSprite(getTexture(noneName), zeroCoord(), SDL_FLIP_NONE);
 
 			drawSpriteAbs(lifeNone, lifePositions[bar]);
+		}else{
+//			char noneName[50];
+//			sprintf(noneName, "battery-low-%02d.png", noneAnimInc);
+//			Sprite lifeNone = makeSprite(getTexture(noneName), zeroCoord(), SDL_FLIP_NONE);
+//
+//			drawSpriteAbs(lifeNone, lifePositions[bar]);
 		}
 	}
 
+	//Plumes
 	for(int i=0; i < MAX_PLUMES; i++) {
 		if(isNullPlume(&plumes[i])) continue;
 
 		switch(plumes[i].type) {
 			case PLUME_SCORE: {
-				Sprite score_0 = makeSprite(getTexture("font-00.png"), zeroCoord(), SDL_FLIP_NONE);
-				Sprite score_1 = makeSprite(getTexture("font-01.png"), zeroCoord(), SDL_FLIP_NONE);
-				Sprite score_5 = makeSprite(getTexture("font-05.png"), zeroCoord(), SDL_FLIP_NONE);
-
-				if(plumes[i].score == 100) {
-					drawSpriteAbs(score_1, deriveCoord(plumes[i].parallax, -4, 0));
-				}else if(plumes[i].score == 500) {
-					drawSpriteAbs(score_5, deriveCoord(plumes[i].parallax, -4, 0));
-				}
-
-				drawSpriteAbs(score_0, deriveCoord(plumes[i].parallax, 0, 0));
-				drawSpriteAbs(score_0, deriveCoord(plumes[i].parallax, 4, 0));
-
+				writeText(plumes[i].score, plumes[i].parallax);
 				break;
 			}
 			case PLUME_LASER: {
-				Sprite plume = makeSprite(getTexture("text-laser-upgraded.png"), zeroCoord(), SDL_FLIP_NONE);
+				Sprite plume = makeSimpleSprite("text-laser-upgraded.png");
 				drawSpriteAbs(plume, plumes[i].parallax);
 				break;
 			}
 			case PLUME_POWER: {
-				Sprite plume = makeSprite(getTexture("text-full-power.png"), zeroCoord(), SDL_FLIP_NONE);
+				Sprite plume = makeSimpleSprite("text-full-power.png");
 				drawSpriteAbs(plume, plumes[i].parallax);
 				break;
 			}

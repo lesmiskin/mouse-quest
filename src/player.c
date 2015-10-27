@@ -4,6 +4,7 @@
 #include "assets.h"
 #include "renderer.h"
 #include "input.h"
+#include "hud.h"
 
 //NB: There is a conceptual distinction between realtime and animated effects. e.g. movment is realtime, whereas the
 // animation frames are not. This is consistent with the presentation of Tyrian, and rotating powerups/weapons in
@@ -40,11 +41,13 @@ static bool isDying() {
 bool useMike;		//onscreen, responds to actions etc.
 bool hideMike;		//still there, but don't render this frame.
 double intervalFrames;
+double dieInc = 0;
 Coord playerOrigin;
-double playerStrength = 8.0;
+double playerStrength = 4.0;
 double playerHealth;
+static long deathTime = 0;
 static const double PLAYER_MAX_SPEED = 4.0;
-static const double MOMENTUM_INC_DIVISOR = 10;
+static const double MOMENTUM_INC_DIVISOR = 6.5;
 static const int ANIMATION_FRAMES = 8;
 static const int DEATH_FRAMES = 7;
 static const int SHOOTING_FRAMES = 2;
@@ -58,7 +61,7 @@ static Coord thrustState;			//Stores direction state (-1 = left/down, 1 = up/rig
 static Coord momentumState;
 static Coord PLAYER_SIZE = { 6, 7 };
 static Rect movementBounds;
-static bool begunDying = false;
+static bool begunDyingRender = false;
 static bool begunSmiling = false;
 static const double HIT_KNOCKBACK = 0.5;
 bool playerShooting;
@@ -74,6 +77,11 @@ static const int PAIN_RECOVER_TIME = 2000;
 static bool painShocked;
 static PlayerState lastState;
 
+static double dieBounce;
+static bool dieDir;
+static double dieSide;
+static bool begunDyingGame;
+
 extern void smile(void) {
 	lastState = playerState;
 	playerState = PSTATE_SMILING;
@@ -88,8 +96,11 @@ extern void restoreHealth(void) {
 }
 
 void hitPlayer(double damage) {
-	//Don't take damage during pain recovery time.
-	if(pain) {
+	//Don't take damage when in hit recovery mode.
+	if(pain && !isDying()) return;
+
+	if(begunDyingGame && dieBounce < 1) {
+		dieBounce = 4.0;
 		return;
 	}
 
@@ -139,19 +150,28 @@ void playerAnimate(void) {
 		animationInc++;
 	}else if(isDying()) {
 		//Start to die - reset animation frames.
-		if(!begunDying) {
+		if(!begunDyingRender) {
 			play("mike-die.wav");
 			animationInc = 1;
-			begunDying = true;
+			begunDyingRender = true;
+			deathTime = clock();
+
+			//Save score.
+			if(score > topScore) topScore = score;
 		}
-		//Flag if completely dead, and stop any further logic.
-		else if(animationInc == DEATH_FRAMES){
+		//Flag once bounced completely offscreen (with a little padding)
+		else if(playerOrigin.y > screenBounds.y + 64){
 			playerState = PSTATE_DEAD;
+			deathTime = 0;
 			triggerState(STATE_TITLE);
 			return;
 		}
 
-		animGroupName = "exp-%02d.png";
+		if(dieDir) {
+			animGroupName = "mike-lean-right-06.png";
+		}else{
+			animGroupName = "mike-lean-left-06.png";
+		}
 	}
 	//Pain: In shock (change frame)
 	else if(pain && !painShocked) {
@@ -325,6 +345,26 @@ static void recogniseThrust(void) {
 }
 
 void playerGameFrame(void) {
+	if(isDying()) {
+		//Set initial trajectory (we just do an incremental approach, no
+		// parabolic math here).
+		if(!begunDyingGame) {
+			//Bounce towards opposite side of screen so we don't miss him.
+			dieDir = playerOrigin.x < (screenBounds.x / 2);
+			dieBounce = (double)random(30, 55) / 10;
+			dieSide = (double)random(65, 85) / 100;
+			begunDyingGame = true;
+		}
+
+		if(dieDir) {
+			playerOrigin.x += dieSide;
+		}else{
+			playerOrigin.x -= dieSide;
+		}
+
+		//Decrease bounce thrust over time.
+		playerOrigin.y -= (dieBounce -= 0.15);
+	}
 
 	if(!useMike || !canControl()) return;
 
@@ -360,6 +400,8 @@ void playerGameFrame(void) {
 }
 
 void resetPlayer() {
+	begunDyingRender = false;
+	begunDyingGame = false;
 	playerState = PSTATE_NORMAL;
 	bubbleLastTime = clock();
 	playerOrigin.y = 220;

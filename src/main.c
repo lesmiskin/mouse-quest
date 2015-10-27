@@ -17,11 +17,11 @@
 #include "item.h"
 
 static const char *GAME_TITLE = "Mouse Quest";
-static const bool FULLSCREEN = false;
+static const bool FULLSCREEN = true;
 bool running = true;
 
 static void initSDL(void) {
-	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK);
+	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC);
 
 	//Add PNG support via SDL_Image.
 	if(!IMG_Init(IMG_INIT_PNG)) {

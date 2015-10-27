@@ -9,6 +9,7 @@
 #include "scripting.h"
 #include "weapon.h"
 #include "item.h"
+#include "hud.h"
 
 //DONE: Fix frame blinking during super scene (cue-frames doing this - render skip, or immediate reprocess?)
 //DONE: On subsequent intro runs, we skip past the logo too soon.
@@ -144,6 +145,7 @@ void scriptGameFrame(void) {
 					resetEnemies();
 					resetBackground();
 					resetItems();
+					resetHud();
 					useMike = true;
 					staticBackground = true;
 					game_messageTime = clock();

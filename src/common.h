@@ -81,5 +81,6 @@ extern long ticsToMilliseconds(long tics);
 extern int toMilliseconds(int seconds);
 extern Coord windowSize;
 extern double sineInc(double offset, double *sineInc, double speed, double magnitude);
+extern double cosInc(double offset, double *sineInc, double speed, double magnitude);
 
 #endif

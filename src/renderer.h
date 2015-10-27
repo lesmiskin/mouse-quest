@@ -42,6 +42,7 @@ extern Coord screenBounds;
 extern int scalePixels(int pixels);
 extern SDL_Renderer *renderer;
 extern Coord pixelGrid;
+extern Sprite makeSimpleSprite(char *textureName);
 extern Sprite makeSprite(SDL_Texture *texture, Coord offset, SDL_RendererFlip flip);
 extern void drawSpriteAbsRotated(Sprite drawSprite, Coord origin, double angle);
 extern void drawSpriteAbs(Sprite drawSprite, Coord origin);

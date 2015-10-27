@@ -257,11 +257,11 @@ void itemGameFrame(void) {
 			switch(items[i].type) {
 				case TYPE_COIN:
 					play("Pickup_Coin34.wav");
-					raiseScore(100);
+					raiseScore(25, true);
 					break;
 				case TYPE_FRUIT:
 					play("Pickup_Coin34b.wav");
-					raiseScore(500);
+					raiseScore(100, true);
 					break;
 				case TYPE_WEAPON:
 					play("Powerup8.wav");

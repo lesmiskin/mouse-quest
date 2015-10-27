@@ -6,6 +6,7 @@
 #include "common.h"
 #include "weapon.h"
 #include "item.h"
+#include "hud.h"
 
 //TODO: Reintroduce sprite flickering, but localised on upcoming 'Character' struct (keep original Surface on asset record?).
 //TODO: Reinstate proper flicker effect with white alt graphic.
@@ -30,30 +31,35 @@ typedef struct {
 	EnemyType type;
 } EnemySpawn;
 
+static int ENEMY_SPEED = 10;
+static int ENEMY_SPAWN_INTERVAL = 25;
+static double HIT_KNOCKBACK = 5.0;
+static double COLLIDE_DAMAGE = 1;
+static double SHOT_DAMAGE = 1;
+static double SHOT_HZ = 1000 / 0.25;
+static double SHOT_SPEED = 1.5;
+
+//TODO: Homing.
+//TODO: Shooter chance ratio.
+
 Enemy enemies[MAX_ENEMIES];
 const int ENEMY_BOUND = 32;
 static int enemyCount;
 static const int ENEMY_SPEED_MIN = 7;
-static const int ENEMY_SPEED_MAX = 10;
-static const int ENEMY_SPAWN_INTERVAL = 25;
 static const int DISK_IDLE_FRAMES = 12;
 static const int VIRUS_IDLE_FRAMES = 6;
 static const int CD_IDLE_FRAMES = 4;
 static const int BUG_IDLE_FRAMES = 6;
 static const int DEATH_FRAMES = 7;
 static const double ENEMY_HEALTH = 4.0;
-static const double HIT_KNOCKBACK = 5.0;
-
-static const double COLLIDE_DAMAGE = 1;
-static const double SHOT_DAMAGE = 1;
 
 static EnemyShot enemyShots[MAX_SHOTS];
 static int enemyShotCount;
-static const double SHOT_HZ = 1000 / 0.25;
-static const double SHOT_SPEED = 1.5;
 static const int ENEMY_SHOT_BOUND = 24;
 static const int MAX_VIRUS_SHOT_FRAMES = 4;
 static const int MAX_PLASMA_SHOT_FRAMES = 2;
+static const double DIFFICULTY_INTERVAL = 5 / 1000;
+static long lastDifficultyTime;
 
 static bool invalidEnemy(Enemy *enemy) {
 	return
@@ -180,6 +186,7 @@ void animateEnemy(void) {
 			//Zero if completely dead.
 			}else if(enemies[i].animFrame == DEATH_FRAMES){
 				enemies[i] = nullEnemy();
+				raiseScore(10, false);
 				continue;
 			}
 
@@ -271,7 +278,8 @@ void spawnEnemy(int x, int y, EnemyType type) {
 		false,
 		type,
 		0,
-		(random(ENEMY_SPEED_MIN, ENEMY_SPEED_MAX)) * 0.1,
+		ENEMY_SPEED * 0.1,
+//		(random(ENEMY_SPEED_MIN, ENEMY_SPEED_MAX)) * 0.1,
 		"",
 		false,
 		false
@@ -302,11 +310,41 @@ void resetEnemies() {
 	memset(enemyShots, 0, sizeof(enemyShots));
 	enemyCount = 0;
 	enemyShotCount = 0;
+	lastDifficultyTime = clock();
+
+	ENEMY_SPEED = 10;
+	ENEMY_SPAWN_INTERVAL = 25;
+	HIT_KNOCKBACK = 5.0;
+	COLLIDE_DAMAGE = 1;
+	SHOT_DAMAGE = 1;
+	SHOT_HZ = 1000 / 0.25;
+	SHOT_SPEED = 1.5;
 }
 
 static double rollSine[5] = { 0.0, 1.25, 2.5, 3.75, 5.0 };
 
 void enemyGameFrame(void) {
+
+//	static int ENEMY_SPEED = 10;
+//	static int ENEMY_SPAWN_INTERVAL = 25;
+//	static double HIT_KNOCKBACK = 5.0;
+//	static double COLLIDE_DAMAGE = 1;
+//	static double SHOT_DAMAGE = 1;
+
+	if(lastDifficultyTime == 0) {
+		lastDifficultyTime = clock();
+	}
+
+	if(due(lastDifficultyTime, 30000)) {
+		ENEMY_SPEED *= 1.1;
+		ENEMY_SPAWN_INTERVAL /= 1.1;
+//		HIT_KNOCKBACK /= 1.1;
+		SHOT_DAMAGE *= 1.1;
+		COLLIDE_DAMAGE *= 1.1;
+		SHOT_SPEED *= 1.1;
+
+		lastDifficultyTime = clock();
+	}
 
 	//Bob enemies in sine pattern.
 	switch(gameState) {
@@ -359,12 +397,10 @@ void enemyGameFrame(void) {
 		enemies[i].parallax = parallax(enemies[i].origin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_X, PARALLAX_ADDITIVE);
 
 		//Have we hit the player? (pass through if dying)
-		if(playerState != PSTATE_DYING) {
-			Rect enemyBound = makeSquareBounds(enemies[i].parallax, ENEMY_BOUND);
-			if(inBounds(playerOrigin, enemyBound)) {
-				hitPlayer(COLLIDE_DAMAGE);
-				hitEnemy(&enemies[i], playerStrength);
-			}
+		Rect enemyBound = makeSquareBounds(enemies[i].parallax, ENEMY_BOUND);
+		if(inBounds(playerOrigin, enemyBound)) {
+			hitPlayer(COLLIDE_DAMAGE);
+			hitEnemy(&enemies[i], playerStrength);
 		}
 
 		//Spawn shots.
@@ -388,7 +424,7 @@ void enemyGameFrame(void) {
 
 		//Hit the player?
 		Rect shotBounds = makeSquareBounds(enemyShots[i].parallax, ENEMY_SHOT_BOUND);
-		if(inBounds(playerOrigin, shotBounds)) {
+		if(playerState != PSTATE_DYING && inBounds(playerOrigin, shotBounds)) {
 			hitPlayer(SHOT_DAMAGE);
 			enemyShots[i] = nullEnemyShot();
 		}

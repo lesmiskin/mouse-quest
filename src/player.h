@@ -17,7 +17,7 @@ extern bool atFullhealth(void);
 extern void restoreHealth(void);
 extern PlayerState playerState;
 extern bool useMike;
-extern bool playerDying;
+extern bool playerDyingGame;
 extern void hitPlayer(double damage);
 extern double playerStrength;
 extern double playerHealth;

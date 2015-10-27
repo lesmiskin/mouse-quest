@@ -136,6 +136,7 @@ static void loadImages(void) {
 	AssetDef definitions[] = {
 		{ "text-laser-upgraded.png", false, true, false, false },
 		{ "text-full-power.png", false, true, false, false },
+		{ "top-score.png", false, false, false, false },
 		{ "font-00.png", false, true, false, false },
 		{ "font-01.png", false, true, false, false },
 		{ "font-02.png", false, true, false, false },

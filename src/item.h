@@ -9,7 +9,6 @@ typedef enum {
 
 extern const int POWERUP_CHANCE;
 
-
 extern void shutdownInput(void);
 extern bool canSpawn(ItemType type);
 extern void spawnItem(Coord coord, ItemType type);

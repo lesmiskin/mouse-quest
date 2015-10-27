@@ -242,3 +242,10 @@ double sineInc(double offset, double *sineInc, double speed, double magnitude) {
 	double sineOffset = (sin(*sineInc) * magnitude);
 	return offset - sineOffset;
 }
+
+double cosInc(double offset, double *sineInc, double speed, double magnitude) {
+	*sineInc = *sineInc >= 6.28 ? 0 : *sineInc + speed;
+
+	double sineOffset = (cos(*sineInc) * magnitude);
+	return offset - sineOffset;
+}
