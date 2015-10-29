@@ -53,8 +53,9 @@ static int platformInc;
 static Sprite baseSprite;
 static SDL_Texture* platformCanvas;
 
+static const int PLATFORM_TILE_SIZE = 20;
 static const int PLATFORM_SEED_X = 3;
-static const int PLATFORM_SEED_Y = 6;
+static const int PLATFORM_SEED_Y = 3;
 static const int PLATFORM_SEED_DENSITY = 75;
 
 static bool isNullPlanet(Planet* planet) {
@@ -66,8 +67,8 @@ SDL_Texture* createPlatformTexture(void) {
 		renderer,
 		SDL_PIXELFORMAT_UNKNOWN,
 		SDL_TEXTUREACCESS_TARGET,
-		(int)PLATFORM_SEED_X * PLATFORM_SCALE * 16,
-		(int)PLATFORM_SEED_Y * PLATFORM_SCALE * 16
+		(int)PLATFORM_SEED_X * PLATFORM_SCALE * PLATFORM_TILE_SIZE,
+		(int)PLATFORM_SEED_Y * PLATFORM_SCALE * PLATFORM_TILE_SIZE
 	);
 }
 
@@ -226,7 +227,7 @@ Platform makePlatform(Coord origin) {
 	p.origin = origin;
 
 	//Local variables.
-	Coord tileSize = makeCoord(16, 16);
+	Coord tileSize = makeCoord(PLATFORM_TILE_SIZE, PLATFORM_TILE_SIZE);
 
 	//Get base asset.
 
@@ -263,55 +264,57 @@ Platform makePlatform(Coord origin) {
 
 			switch(result) {
 				case TILE_NORTH | TILE_EAST:
-					filename = "base-ne.png";
+					filename = "base-large-ne.png";
 					break;
 				case TILE_NORTH | TILE_WEST:
-					filename = "base-nw.png";
+					filename = "base-large-nw.png";
 					break;
 				case TILE_SOUTH | TILE_EAST:
-					filename = "base-se.png";
+					filename = "base-large-se.png";
 					break;
 				case TILE_SOUTH | TILE_WEST:
-					filename = "base-sw.png";
+					filename = "base-large-sw.png";
 					break;
 				case TILE_NORTH:{
-					int chance = random(1, 3);
-					if(chance == 1){
-						filename = "base-n.png";
-					}else if(chance == 2) {
-						filename = "base-n-resistor.png";
-					}else if(chance == 3){
-						filename = "base-n-resistor-2.png";
-					}
+//					int chance = random(1, 3);
+//					if(chance == 1){
+						filename = "base-large-n.png";
+//					}else if(chance == 2) {
+//						filename = "base-n-resistor.png";
+//					}else if(chance == 3){
+//						filename = "base-n-resistor-2.png";
+//					}
 					break;
 				}case TILE_SOUTH:{
-					int chance = random(1, 3);
-					if(chance == 1){
-						filename = "base-s.png";
-					}else if(chance == 2) {
-						filename = "base-s-resistor.png";
-					}else if(chance == 3){
-						filename = "base-s-resistor-2.png";
-					}
+//					int chance = random(1, 3);
+//					if(chance == 1){
+						filename = "base-large-s.png";
+//					}else if(chance == 2) {
+//						filename = "base-s-resistor.png";
+//					}else if(chance == 3){
+//						filename = "base-s-resistor-2.png";
+//					}
 					break;
 				}case TILE_EAST:
-					filename = (chance(50) ? "base-e-resistor-2.png" : "base-e.png");
+					filename = "base-large-e.png";
+//					filename = (chance(50) ? "base-e-resistor-2.png" : "base-e.png");
 					break;
 				case TILE_WEST: {
-					int chance = random(1, 3);
-					if(chance == 1){
-						filename = "base-w.png";
-					}else if(chance == 2) {
-						filename = "base-w-resistor.png";
-					}else if(chance == 3){
-						filename = "base-w-resistor-2.png";
-					}
+//					int chance = random(1, 3);
+//					if(chance == 1){
+						filename = "base-large-w.png";
+//					}else if(chance == 2) {
+//						filename = "base-w-resistor.png";
+//					}else if(chance == 3){
+//						filename = "base-w-resistor-2.png";
+//					}
 					break;
 				}
 				default:
-					filename = chance(50) ?
-					   (chance(50) ? "base-resistor.png" : "base-resistor-2.png") :
-					   (chance(50) ? "base-chip.png" : "base.png");
+					filename = chance(90) ? "base-large-chip.png" : "base-large.png";
+//					filename = chance(50) ?
+//					   (chance(50) ? "base-resistor.png" : "base-resistor-2.png") :
+//					   (chance(50) ? "base-chip.png" : "base.png");
 					break;
 			}
 
@@ -371,7 +374,7 @@ void backgroundGameFrame(void) {
 		//TODO: Algorithm to remove free-floating, or otherwise corner-hinged tiles from platform geometry.
 		//TODO: Decorate borders with edge sprites.
 
-		Coord origin = makeCoord(random(0, (int)screenBounds.x), -(PLATFORM_SEED_Y * PLATFORM_SCALE * 16) / 2);
+		Coord origin = makeCoord(random(0, (int)screenBounds.x), -(PLATFORM_SEED_Y * PLATFORM_SCALE * PLATFORM_TILE_SIZE) / 2);
 		Platform platform = makePlatform(origin);
 		platforms[++platformInc] = platform;
 
