@@ -31,13 +31,13 @@ typedef struct {
 	EnemyType type;
 } EnemySpawn;
 
-static int ENEMY_SPEED = 10;
-static int ENEMY_SPAWN_INTERVAL = 25;
+static int ENEMY_SPEED = 9;
+static int ENEMY_SPAWN_INTERVAL = 27;
 static double HIT_KNOCKBACK = 5.0;
 static double COLLIDE_DAMAGE = 1;
 static double SHOT_DAMAGE = 1;
 static double SHOT_HZ = 1000 / 0.25;
-static double SHOT_SPEED = 1.5;
+static double SHOT_SPEED = 1.3;
 
 //TODO: Homing.
 //TODO: Shooter chance ratio.
@@ -45,7 +45,6 @@ static double SHOT_SPEED = 1.5;
 Enemy enemies[MAX_ENEMIES];
 const int ENEMY_BOUND = 32;
 static int enemyCount;
-static const int ENEMY_SPEED_MIN = 7;
 static const int DISK_IDLE_FRAMES = 12;
 static const int VIRUS_IDLE_FRAMES = 6;
 static const int CD_IDLE_FRAMES = 4;
@@ -310,15 +309,15 @@ void resetEnemies() {
 	memset(enemyShots, 0, sizeof(enemyShots));
 	enemyCount = 0;
 	enemyShotCount = 0;
-	lastDifficultyTime = clock();
+	lastDifficultyTime = 0;
 
-	ENEMY_SPEED = 10;
-	ENEMY_SPAWN_INTERVAL = 25;
+	ENEMY_SPEED = 9;
+	ENEMY_SPAWN_INTERVAL = 27;
 	HIT_KNOCKBACK = 5.0;
 	COLLIDE_DAMAGE = 1;
 	SHOT_DAMAGE = 1;
 	SHOT_HZ = 1000 / 0.25;
-	SHOT_SPEED = 1.5;
+	SHOT_SPEED = 1.3;
 }
 
 static double rollSine[5] = { 0.0, 1.25, 2.5, 3.75, 5.0 };
@@ -330,21 +329,6 @@ void enemyGameFrame(void) {
 //	static double HIT_KNOCKBACK = 5.0;
 //	static double COLLIDE_DAMAGE = 1;
 //	static double SHOT_DAMAGE = 1;
-
-	if(lastDifficultyTime == 0) {
-		lastDifficultyTime = clock();
-	}
-
-	if(due(lastDifficultyTime, 30000)) {
-		ENEMY_SPEED *= 1.1;
-		ENEMY_SPAWN_INTERVAL /= 1.1;
-//		HIT_KNOCKBACK /= 1.1;
-		SHOT_DAMAGE *= 1.1;
-		COLLIDE_DAMAGE *= 1.1;
-		SHOT_SPEED *= 1.1;
-
-		lastDifficultyTime = clock();
-	}
 
 	//Bob enemies in sine pattern.
 	switch(gameState) {
@@ -374,6 +358,21 @@ void enemyGameFrame(void) {
 	}
 
 	if(gameState != STATE_GAME) return;
+
+	if(lastDifficultyTime == 0) {
+		lastDifficultyTime = clock();
+	}
+
+	if(due(lastDifficultyTime, 30000)) {
+		ENEMY_SPEED *= 1.1;
+		ENEMY_SPAWN_INTERVAL /= 1.1;
+//		HIT_KNOCKBACK /= 1.1;
+		SHOT_DAMAGE *= 1.1;
+		COLLIDE_DAMAGE *= 1.1;
+		SHOT_SPEED *= 1.1;
+
+		lastDifficultyTime = clock();
+	}
 
 	//Spawn new enemies at random positions, at a given time increment
 	if(gameTime % ENEMY_SPAWN_INTERVAL == 0) {

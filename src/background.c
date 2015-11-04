@@ -37,16 +37,16 @@ static double nextPlanetSpawnSeconds;
 static int PLANET_SPAWN_MIN_SECONDS = 5;
 static int PLANET_SPAWN_MAX_SECONDS = 15;
 static int planetInc;
-static int PLANET_SPEED_MIN = 6;				//will /10
-static int PLANET_SPEED_MAX = 6;
+static int PLANET_SPEED_MIN = 5;				//will /10
+static int PLANET_SPEED_MAX = 5;
 static int PLANET_BOUND = 32;
 
 #define MAX_PLATFORMS 3
 static long lastPlatformTime;
 static double nextPlatformSpawnSeconds;
-static int PLATFORM_SPAWN_MIN_SECONDS = 5;
-static int PLATFORM_SPAWN_MAX_SECONDS = 10;
-static double PLATFORM_SCROLL_SPEED = 0.7;
+static int PLATFORM_SPAWN_MIN_SECONDS = 10;
+static int PLATFORM_SPAWN_MAX_SECONDS = 20;
+static double PLATFORM_SCROLL_SPEED = 0.55;
 static const int PLATFORM_SCALE = 2;
 static Platform platforms[MAX_PLATFORMS];
 static int platformInc;
@@ -311,7 +311,8 @@ Platform makePlatform(Coord origin) {
 					break;
 				}
 				default:
-					filename = chance(90) ? "base-large-chip.png" : "base-large.png";
+					filename = chance(66) ? "base-large-chip.png" : "base-large.png";
+//					filename = chance(90) ? "base-large-chip.png" : "base-large.png";
 //					filename = chance(50) ?
 //					   (chance(50) ? "base-resistor.png" : "base-resistor-2.png") :
 //					   (chance(50) ? "base-chip.png" : "base.png");
@@ -327,7 +328,6 @@ Platform makePlatform(Coord origin) {
 
 	//Restore renderer context back to the window canvas.
 	SDL_SetRenderTarget(renderer, NULL);
-
 	p.sprite = makeSprite(canvas, zeroCoord(), SDL_FLIP_NONE);
 
 	return p;

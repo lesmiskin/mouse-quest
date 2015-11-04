@@ -229,6 +229,9 @@ void initRenderer(void) {
 	//Enable v-sync in SDL.
 	if(vsync) SDL_GL_SetSwapInterval(1);
 
+	//EXPERIMENTAL: Toggle for old-school 'bilinear filtering' look.
+//	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
+
 	//Init SDL renderer
 	renderer = SDL_CreateRenderer(
 		window,

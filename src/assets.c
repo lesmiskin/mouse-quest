@@ -74,7 +74,7 @@ static Asset makeAsset(AssetDef definition) {
 	//Darken background elements to provide contrast with foreground.
 	//A hint of blue is added for atmosphere.
 	if(definition.isBackground) {
-		SDL_SetTextureColorMod(texture, 176, 176, 216);
+		SDL_SetTextureColorMod(texture, 128, 128, 148);
 	}
 
 	asset.textures[ASSET_DEFAULT] = texture;
@@ -232,6 +232,22 @@ static void loadImages(void) {
 		{ "base-large-chip-e.png", false, false, false, false, true },
 		{ "base-large-chip-s.png", false, false, false, false, true },
 		{ "base-large-chip-w.png", false, false, false, false, true },
+		
+		{ "base-large-double.png", false, false, false, false, true },
+		{ "base-large-double-chip.png", false, false, false, false, true },
+		{ "base-large-double-n.png", false, false, false, false, true },
+		{ "base-large-double-e.png", false, false, false, false, true },
+		{ "base-large-double-s.png", false, false, false, false, true },
+		{ "base-large-double-w.png", false, false, false, false, true },
+		{ "base-large-double-ne.png", false, false, false, false, true },
+		{ "base-large-double-nw.png", false, false, false, false, true },
+		{ "base-large-double-se.png", false, false, false, false, true },
+		{ "base-large-double-sw.png", false, false, false, false, true },
+		{ "base-large-double-chip-n.png", false, false, false, false, true },
+		{ "base-large-double-chip-e.png", false, false, false, false, true },
+		{ "base-large-double-chip-s.png", false, false, false, false, true },
+		{ "base-large-double-chip-w.png", false, false, false, false, true },
+
 		{ "base.png", false, false, false, false, true },
 		{ "base-n.png", false, false, false, false, true },
 		{ "base-n-resistor.png", false, false, false, false, true },
