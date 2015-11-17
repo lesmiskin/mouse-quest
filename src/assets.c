@@ -74,7 +74,7 @@ static Asset makeAsset(AssetDef definition) {
 	//Darken background elements to provide contrast with foreground.
 	//A hint of blue is added for atmosphere.
 	if(definition.isBackground) {
-		SDL_SetTextureColorMod(texture, 128, 128, 148);
+		SDL_SetTextureColorMod(texture, 164, 164, 164);
 	}
 
 	asset.textures[ASSET_DEFAULT] = texture;
@@ -220,6 +220,8 @@ static void loadImages(void) {
 		{ "base-resistor-2.png", false, false, false, false, true },
 		{ "base-large.png", false, false, false, false, true },
 		{ "base-large-chip.png", false, false, false, false, true },
+		{ "base-large-resistor.png", false, false, false, false, true },
+		{ "base-large-terminal.png", false, false, false, false, true },
 		{ "base-large-n.png", false, false, false, false, true },
 		{ "base-large-e.png", false, false, false, false, true },
 		{ "base-large-s.png", false, false, false, false, true },

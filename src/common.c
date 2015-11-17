@@ -31,6 +31,7 @@ Coord windowSize = { 1680, 1050 };
 const int ANIMATION_HZ = 1000 / 12;		//12fps
 const int RENDER_HZ = 1000 / 60;		//60fps
 const int GAME_HZ = 1000 / 60;			//60fps
+const double RADIAN_CIRCLE = 6.28;
 
 bool stateInitialised;
 
@@ -237,14 +238,14 @@ bool due(long compareTime, double milliseconds) {
 }
 
 double sineInc(double offset, double *sineInc, double speed, double magnitude) {
-	*sineInc = *sineInc >= 6.28 ? 0 : *sineInc + speed;
+	*sineInc = *sineInc >= RADIAN_CIRCLE ? 0 : *sineInc + speed;
 
 	double sineOffset = (sin(*sineInc) * magnitude);
 	return offset - sineOffset;
 }
 
 double cosInc(double offset, double *sineInc, double speed, double magnitude) {
-	*sineInc = *sineInc >= 6.28 ? 0 : *sineInc + speed;
+	*sineInc = *sineInc >= RADIAN_CIRCLE ? 0 : *sineInc + speed;
 
 	double sineOffset = (cos(*sineInc) * magnitude);
 	return offset - sineOffset;

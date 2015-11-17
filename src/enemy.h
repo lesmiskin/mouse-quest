@@ -17,8 +17,20 @@ typedef enum {
 	ENEMY_CD,
 } EnemyType;
 
+typedef enum {
+	MOVEMENT_STRAIGHT,
+	MOVEMENT_SNAKE,
+	MOVEMENT_CIRCLE
+} EnemyMovement;
+
+typedef enum {
+	COMBAT_IDLE,
+	COMBAT_SHOOTER
+} EnemyCombat;
+
 typedef struct {
 	Coord origin;
+	Coord formationOrigin;
 	Coord parallax;
 	Sprite sprite;
 	bool hitAnimate;
@@ -33,11 +45,16 @@ typedef struct {
 	char frameName[50];
 	bool wasHitLastFrame;
 	bool initialFrameChosen;
+	EnemyMovement movement;
+	EnemyCombat combat;
+	double swayIncX;
+	double swayIncY;
+	Coord offset;
 } Enemy;
 
 #define MAX_ENEMIES 30
 extern void resetEnemies();
-extern void spawnEnemy(int x, int y, EnemyType type);
+extern void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyCombat combat, double speed, double swayInc);
 extern void hitEnemy(Enemy* enemy, double damage);
 extern const int ENEMY_BOUND;
 extern void hit(Enemy p);

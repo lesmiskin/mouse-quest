@@ -10,6 +10,7 @@
 extern const int ANIMATION_HZ;
 extern const int RENDER_HZ;
 extern const int GAME_HZ;
+extern const double RADIAN_CIRCLE;	//2 * pi (or 2 * 3.14)
 
 typedef unsigned uint;
 typedef enum {

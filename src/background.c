@@ -191,27 +191,19 @@ typedef enum {
 } TileDirection;
 
 Platform makePlatform(Coord origin) {
-	bool seedMap[PLATFORM_SEED_X][PLATFORM_SEED_Y];
-	bool seedMap2[PLATFORM_SEED_X * PLATFORM_SCALE][PLATFORM_SEED_Y * PLATFORM_SCALE];
+	int seedMap[3][3] = {
+		{ 1, 1, 1 },
+		{ 1, 1, 1 },
+		{ 1, 1, 1 }
+	};
 
 	//Create an initial 'seed map' to base eventual platform appearance on. This can scale based on a constant.
 	// (taking care to set false cases, since these aren't automatically set).
-	for(int x=0; x < PLATFORM_SEED_X; x++){
-		for(int y=0; y < PLATFORM_SEED_Y; y++) {
-			seedMap[x][y] = chance(PLATFORM_SEED_DENSITY);
-		}
-	}
-
-	//NB: FOUND ISSUE - DON'T ITERATE ON BOTH X AND Y WITH S! JUST ONE!!!
-
-	for(int x=0; x < PLATFORM_SEED_X * PLATFORM_SCALE; x+=PLATFORM_SCALE){
-		for(int y=0; y < PLATFORM_SEED_Y * PLATFORM_SCALE; y+=PLATFORM_SCALE) {
-			bool chanceResult = chance(PLATFORM_SEED_DENSITY);
-			for(int s=0; s < PLATFORM_SCALE; s++) {
-				seedMap[x+s][y+s] = chanceResult;
-			}
-		}
-	}
+//	for(int x=0; x < PLATFORM_SEED_X; x++){
+//		for(int y=0; y < PLATFORM_SEED_Y; y++) {
+//			seedMap[x][y] = chance(PLATFORM_SEED_DENSITY);
+//		}
+//	}
 
 	//Create tile map canvas texture.
 	SDL_Texture* canvas = createPlatformTexture();
@@ -276,47 +268,33 @@ Platform makePlatform(Coord origin) {
 					filename = "base-large-sw.png";
 					break;
 				case TILE_NORTH:{
-//					int chance = random(1, 3);
-//					if(chance == 1){
-						filename = "base-large-n.png";
-//					}else if(chance == 2) {
-//						filename = "base-n-resistor.png";
-//					}else if(chance == 3){
-//						filename = "base-n-resistor-2.png";
-//					}
+					filename = "base-large-n.png";
 					break;
 				}case TILE_SOUTH:{
-//					int chance = random(1, 3);
-//					if(chance == 1){
-						filename = "base-large-s.png";
-//					}else if(chance == 2) {
-//						filename = "base-s-resistor.png";
-//					}else if(chance == 3){
-//						filename = "base-s-resistor-2.png";
-//					}
+					filename = "base-large-s.png";
 					break;
 				}case TILE_EAST:
 					filename = "base-large-e.png";
-//					filename = (chance(50) ? "base-e-resistor-2.png" : "base-e.png");
 					break;
 				case TILE_WEST: {
-//					int chance = random(1, 3);
-//					if(chance == 1){
-						filename = "base-large-w.png";
-//					}else if(chance == 2) {
-//						filename = "base-w-resistor.png";
-//					}else if(chance == 3){
-//						filename = "base-w-resistor-2.png";
+					filename = "base-large-w.png";
+					break;
+				}
+				default: {
+					filename = chance(50) ?
+						"base-large-chip.png" :
+						"base-large-resistor.png";
+
+//					int rand = random(0, 100);
+//					if(rand < 33) {
+//						filename = "base-large.png";
+//					}else if(rand > 66) {
+//						filename = "base-large-chip.png";
+//					}else{
+//						filename = "base-large-resistor.png";
 //					}
 					break;
 				}
-				default:
-					filename = chance(66) ? "base-large-chip.png" : "base-large.png";
-//					filename = chance(90) ? "base-large-chip.png" : "base-large.png";
-//					filename = chance(50) ?
-//					   (chance(50) ? "base-resistor.png" : "base-resistor-2.png") :
-//					   (chance(50) ? "base-chip.png" : "base.png");
-					break;
 			}
 
 			SDL_Texture *baseTexture = getTexture(filename);
@@ -401,8 +379,6 @@ void initBackground(void) {
 	//Pre-render background tile animation frames, and load into array.
 	for(int i=0; i < TILE_FRAMES; i++) {
 		char filename[15];
-//		sprintf(filename, "title.png", i+1);
-//		sprintf(filename, "base.png", i+1);
 		sprintf(filename, "space-%02d.png", i+1);
 		tileMaps[i] = initBackgroundFrame(filename);
 	}

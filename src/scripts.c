@@ -97,9 +97,9 @@ void scriptGameFrame(void) {
 
 				case INTRO_BATTLE_CUE:
 					//Spawn random assortment of enemies.
-					spawnEnemy(80,  random(40, 65), random(0, sizeof(EnemyType)));
-					spawnEnemy(110, random(40, 65), random(0, sizeof(EnemyType)));
-					spawnEnemy(140, random(40, 65), random(0, sizeof(EnemyType)));
+					spawnEnemy(80,  random(40, 65), random(0, sizeof(EnemyType)), MOVEMENT_STRAIGHT, COMBAT_IDLE, 0, 0);
+					spawnEnemy(110, random(40, 65), random(0, sizeof(EnemyType)), MOVEMENT_STRAIGHT, COMBAT_IDLE, 0, 0);
+					spawnEnemy(140, random(40, 65), random(0, sizeof(EnemyType)), MOVEMENT_STRAIGHT, COMBAT_IDLE, 0, 0);
 					playerOrigin.y = screenBounds.y + 16;
 					useMike = true;
 //					showBackground = false;
@@ -157,7 +157,7 @@ void scriptGameFrame(void) {
 					int spacer = -10;
 					EnemyType roll[] = { ENEMY_BUG, ENEMY_DISK, ENEMY_VIRUS, ENEMY_DISK_BLUE, ENEMY_CD };
 					for(int i=0; i < sizeof(roll) / sizeof(EnemyType); i++) {
-						spawnEnemy(spacer += 40, 135, roll[i]);
+						spawnEnemy(spacer += 40, 135, roll[i], MOVEMENT_CIRCLE, COMBAT_IDLE, 0, 0);
 					}
 
 					playMusic("title.ogg", 1);

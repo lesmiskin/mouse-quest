@@ -21,17 +21,22 @@ static const bool FULLSCREEN = true;
 bool running = true;
 
 static void initSDL(void) {
-	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC);
+	//Kick off the minor subsystems first, so they don't slow down the game before
+	// it's started.
+	SDL_Init(/*SDL_INIT_AUDIO | */SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC);
 
-	//Add PNG support via SDL_Image.
+	//Init SDL_Image for PNG support.
 	if(!IMG_Init(IMG_INIT_PNG)) {
 		fatalError("Fatal error", "SDL_Image did not initialise.");
 	}
 
-	//Sound via higher-level SDL_Mixer library.
+	//Init SDL_Mixer for simpler, high-level sound API.
 	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
 		fatalError("Fatal error", "SDL_Mixer did not initialise.");
 	}
+
+	//Now that everything's loaded - start the video.
+	SDL_InitSubSystem(SDL_INIT_VIDEO);
 }
 static void initWindow(void) {
 	window = SDL_CreateWindow(

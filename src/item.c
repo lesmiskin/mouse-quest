@@ -54,7 +54,11 @@ static bool boolAnimFrame = false;
 static long lastBoolAnimTime;
 
 static bool invalidPowerup(Item *powerup) {
-	return !inScreenBounds(powerup->origin);
+	//Unset struct.
+	if(powerup->maxAnims == 0) return true;
+
+	//Past the screen bounds, plus it's own radius.
+	return powerup->origin.y > screenBounds.y + POWERUP_BOUND/2;
 }
 
 static bool shouldAnimate(Item item) {
