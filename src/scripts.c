@@ -45,6 +45,7 @@ static Coord title_logoLocation;
 static bool game_showLevelMessage;
 static const double GAME_MESSAGE_DURATION = 1.5;
 static long game_messageTime;
+static Coord titleCoord;
 
 typedef enum {
 	TITLE_CUE,
@@ -228,8 +229,16 @@ void scriptRenderFrame(void) {
 			switch(scriptStatus.sceneNumber) {
 				//Show "Les Miskin presents"
 				case INTRO_LOGO: {
+//					if(step.x == 0) {
+//						step = makeCoord(100,100);
+//					}
+//					Coord a = makeCoord(150,150);
+//					Coord stepInc = getStep(a, step);
+//					step.x -= stepInc.x;
+//					step.y -= stepInc.y;
+
 					Sprite presents = makeSprite(getTexture("lm-presents.png"), zeroCoord(), SDL_FLIP_NONE);
-					drawSpriteAbs(presents, makeCoord(screenBounds.x/2 - 3, 98));
+					drawSpriteAbs(presents, /*step*/makeCoord(screenBounds.x/2 - 3, 98));
 					break;
 				}
 				//Add special blue trailing shadows to Mike as he flies off.
@@ -249,6 +258,7 @@ void scriptRenderFrame(void) {
 			switch(scriptStatus.sceneNumber) {
 				case TITLE_LOOP:
 					//Draw the game logo.
+
 					drawSpriteAbs(title_logoSprite, title_logoLocation);
 					break;
 			}

@@ -16,9 +16,10 @@ typedef struct {
 	Coord parallax;
 	int animFrame;
 	EnemyType enemyType;
+	Coord target;
 } EnemyShot;
 
-#define MAX_SHOTS 20
+#define MAX_SHOTS 25
 #define MAX_SPAWNS 10
 
 static int gameTime;
@@ -51,7 +52,7 @@ static int ENEMY_DISTANCE = 22;
 static double HIT_KNOCKBACK = 0.0;
 static double COLLIDE_DAMAGE = 1;
 static double SHOT_DAMAGE = 1;
-static double SHOT_HZ = 1000 / 0.25;
+static double SHOT_HZ = 1500;
 static double SHOT_SPEED = 1.3;
 
 //TODO: Homing.
@@ -88,7 +89,10 @@ static bool invalidEnemyShot(EnemyShot *enemyShot) {
 	return
 		(enemyShot->origin.x == 0 &&
 		enemyShot->origin.y == 0) ||
-		enemyShot->origin.y > screenBounds.y + ENEMY_SHOT_BOUND/2;
+		(enemyShot->origin.y > screenBounds.y + ENEMY_SHOT_BOUND/2 ||
+		enemyShot->parallax.x > screenBounds.x + ENEMY_SHOT_BOUND/2 ||
+		enemyShot->parallax.x < 0 - ENEMY_SHOT_BOUND/2
+		);
 }
 
 static Enemy nullEnemy(void) {
@@ -101,10 +105,11 @@ static EnemyShot nullEnemyShot(void) {
 	return enemyShot;
 }
 
-void hitEnemy(Enemy* enemy, double damage) {
+void hitEnemy(Enemy* enemy, double damage, bool collision) {
 	play("Hit_Hurt9.wav");
 	enemy->hitAnimate = true;
 	enemy->health -= damage;
+	enemy->collided = collision;
 
 	//Apply knockback by directly altering enemy's Y coordinate (improve with lerping).
 	enemy->origin.y -= HIT_KNOCKBACK;
@@ -131,13 +136,7 @@ void enemyShadowFrame(void) {
 		if(invalidEnemyShot(&enemyShots[i])) continue;
 
 		//TODO: Fix duplication with enemyRenderFrame here (keep filename?)
-		char frameFile[50];
-		char* filename = enemyShots[i].enemyType == ENEMY_VIRUS ?
-			"virus-shot.png" :
-			"shot-blue-%02d.png";
-
-		sprintf(frameFile, filename, enemyShots[i].animFrame);
-		SDL_Texture *shotTexture = getTextureVersion(frameFile, ASSET_SHADOW);
+		SDL_Texture *shotTexture = getTextureVersion("virus-shot.png", ASSET_SHADOW);
 		Sprite shotShadow = makeSprite(shotTexture, zeroCoord(), SDL_FLIP_VERTICAL);
 		Coord shadowCoord = parallax(enemyShots[i].parallax, PARALLAX_SUN, PARALLAX_LAYER_SHADOW, PARALLAX_X, PARALLAX_SUBTRACTIVE);
 		shadowCoord.y += STATIC_SHADOW_OFFSET;
@@ -157,15 +156,8 @@ void enemyRenderFrame(void) {
 	for(int i=0; i < MAX_SHOTS; i++) {
 		if(invalidEnemyShot(&enemyShots[i])) continue;
 
-		char frameFile[50];
-		char* filename = enemyShots[i].enemyType == ENEMY_VIRUS ?
-			"virus-shot.png" :
-			"shot-blue-%02d.png";
-
-		sprintf(frameFile, filename, enemyShots[i].animFrame);
-		SDL_Texture *shotTexture = getTexture(frameFile);
+		SDL_Texture *shotTexture = getTexture("virus-shot.png");
 		Sprite shotSprite = makeSprite(shotTexture, zeroCoord(), SDL_FLIP_VERTICAL);
-
 		drawSpriteAbs(shotSprite, enemyShots[i].parallax);
 	}
 }
@@ -188,8 +180,8 @@ void animateEnemy(void) {
  				enemies[i].animSequence = ENEMY_ANIMATION_DEATH;
 				enemies[i].animFrame = 1;
 
-				//Spawn powerup (only in-game, though)
-				if(gameState == STATE_GAME){
+				//Spawn powerup (only in-game, and punish collisions)
+				if(gameState == STATE_GAME && !enemies[i].collided){
 					if(chance(2) && canSpawn(TYPE_HEALTH)) {
 						spawnItem(enemies[i].formationOrigin, TYPE_HEALTH);
 					}else if(chance(1) && canSpawn(TYPE_WEAPON)) {
@@ -324,14 +316,17 @@ void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyComba
 static void spawnShot(Enemy* enemy) {
 	play("Laser_Shoot34.wav");
 
+	Coord travelStep = getStep(playerOrigin, enemy->parallax, 2, true);
+
 	//TODO: Remove initial texture (not needed - we animate)
-	SDL_Texture* texture = getTexture("shot-blue-01.png");
+	SDL_Texture* texture = getTexture("virus-shot.png");
 	Sprite defaultSprite = makeSprite(texture, zeroCoord(), SDL_FLIP_VERTICAL);
 	EnemyShot shot = {
 		enemy->origin,
 		enemy->parallax,
 		1,
-		enemy->type
+		enemy->type,
+		travelStep
 	};
 
 	enemyShots[enemyShotCount++] = shot;
@@ -518,24 +513,28 @@ void enemyGameFrame(void) {
 		Rect enemyBound = makeSquareBounds(enemies[i].parallax, ENEMY_BOUND);
 		if(inBounds(playerOrigin, enemyBound)) {
 			hitPlayer(COLLIDE_DAMAGE);
-			hitEnemy(&enemies[i], playerStrength);
+			hitEnemy(&enemies[i], playerStrength, true);
 		}
 
 		//Spawn shots.
-//		if(	(enemies[i].type == ENEMY_VIRUS || enemies[i].type == ENEMY_CD) &&
-//			timer(&enemies[i].lastShotTime, SHOT_HZ)
-//		) {
-//			if(enemyShotCount == MAX_SHOTS) enemyShotCount = 0;
-//			spawnShot(&enemies[i]);
-//		}
+		if(	(enemies[i].type == ENEMY_VIRUS || enemies[i].type == ENEMY_BUG) &&
+			timer(&enemies[i].lastShotTime, SHOT_HZ)
+		) {
+			if(enemyShotCount == MAX_SHOTS) enemyShotCount = 0;
+			spawnShot(&enemies[i]);
+		}
 	}
 
 	//Shots.
 	for(int i=0; i < MAX_SHOTS; i++) {
 		if(invalidEnemyShot(&enemyShots[i])) continue;
 
+		//Home in on original vector.
+		enemyShots[i].origin.x += enemyShots[i].target.x;
+		enemyShots[i].origin.y += enemyShots[i].target.y;
+
 		//Scroll down screen.
-		enemyShots[i].origin.y += SHOT_SPEED;
+//		enemyShots[i].origin.y += SHOT_SPEED;
 
 		//Parallax it
 		enemyShots[i].parallax = parallax(enemyShots[i].origin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_X, PARALLAX_ADDITIVE);

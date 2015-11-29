@@ -87,7 +87,7 @@ static Asset makeAsset(AssetDef definition) {
 	if(definition.makeAlphaVersion) {
 		SDL_Texture *alphaTexture = SDL_CreateTextureFromSurface(renderer, original);
 		SDL_SetTextureBlendMode(alphaTexture, SDL_BLENDMODE_BLEND);
-		SDL_SetTextureAlphaMod(alphaTexture, 64);
+		SDL_SetTextureAlphaMod(alphaTexture, 164);
 		asset.textures[ASSET_ALPHA] = alphaTexture;
 	}
 	if(definition.makeShadowVersion) {
@@ -145,6 +145,7 @@ static void loadImages(void) {
 		{ "text-laser-upgraded.png", false, true, false, false, false },
 		{ "text-full-power.png", false, true, false, false, false },
 		{ "top-score.png", false, false, false, false, false },
+		{ "font-x.png", false, true, false, false, false },
 		{ "font-00.png", false, true, false, false, false },
 		{ "font-01.png", false, true, false, false, false },
 		{ "font-02.png", false, true, false, false, false },
@@ -178,18 +179,18 @@ static void loadImages(void) {
 		{ "magnet-06.png", true, true, false, false, false },
 		{ "magnet-07.png", true, true, false, false, false },
 		{ "magnet-08.png", true, true, false, false, false },
-		{ "coin-01.png", false, true, false, false, false },
-		{ "coin-02.png", false, true, false, false, false },
-		{ "coin-03.png", false, true, false, false, false },
-		{ "coin-04.png", false, true, false, false, false },
-		{ "coin-05.png", false, true, false, false, false },
-		{ "coin-06.png", false, true, false, false, false },
-		{ "coin-07.png", false, true, false, false, false },
-		{ "coin-08.png", false, true, false, false, false },
-		{ "coin-09.png", false, true, false, false, false },
-		{ "coin-10.png", false, true, false, false, false },
-		{ "coin-11.png", false, true, false, false, false },
-		{ "coin-12.png", false, true, false, false, false },
+		{ "coin-01.png", false, true, false, true, false },
+		{ "coin-02.png", false, true, false, true, false },
+		{ "coin-03.png", false, true, false, true, false },
+		{ "coin-04.png", false, true, false, true, false },
+		{ "coin-05.png", false, true, false, true, false },
+		{ "coin-06.png", false, true, false, true, false },
+		{ "coin-07.png", false, true, false, true, false },
+		{ "coin-08.png", false, true, false, true, false },
+		{ "coin-09.png", false, true, false, true, false },
+		{ "coin-10.png", false, true, false, true, false },
+		{ "coin-11.png", false, true, false, true, false },
+		{ "coin-12.png", false, true, false, true, false },
 		{ "hud-powerup.png", false, false, false, false, false },
 		{ "hud-powerup-double.png", false, false, false, false, false },
 		{ "hud-powerup-triple.png", false, false, false, false, false },

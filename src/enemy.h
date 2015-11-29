@@ -52,12 +52,13 @@ typedef struct {
 	double swayIncX;
 	double swayIncY;
 	Coord offset;
+	bool collided;
 } Enemy;
 
 #define MAX_ENEMIES 150
 extern void resetEnemies();
 extern void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyCombat combat, double speed, double swayInc);
-extern void hitEnemy(Enemy* enemy, double damage);
+extern void hitEnemy(Enemy* enemy, double damage, bool collision);
 extern const int ENEMY_BOUND;
 extern void hit(Enemy p);
 extern Enemy enemies[MAX_ENEMIES];

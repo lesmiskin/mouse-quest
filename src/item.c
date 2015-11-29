@@ -40,6 +40,7 @@ typedef struct {
 	AnimationStyle animStyle;
 	char* baseFrameName;
 	char* realFrameName;
+	bool traveling;
 } Item;
 
 #define MAX_ITEMS 40
@@ -198,7 +199,19 @@ void spawnItem(Coord coord, ItemType type) {
 	}
 
 	//Build, and init first animation frame.
-	Item powerup = { type, coord, itemParallax(coord), 0, swing, 1, maxAnims, animRate, baseFrameName, realFrameName };
+	Item powerup = {
+		type,
+		coord,
+		itemParallax(coord),
+		0,
+		swing,
+		1,
+		maxAnims,
+		animRate,
+		baseFrameName,
+		realFrameName,
+		false
+	};
 	if(shouldAnimate(powerup)) updateAnimationFrame(&powerup);
 
 	items[itemCount++] = powerup;
@@ -207,7 +220,8 @@ void spawnItem(Coord coord, ItemType type) {
 void itemRenderFrame(void) {
   	//Render powerup shadows
 	for(int i=0; i < MAX_ITEMS; i++) {
-		if(invalidPowerup(&items[i])) continue;
+		//NB: We deliberately skip shadows for traveling ones.
+		if(invalidPowerup(&items[i]) || items[i].traveling) continue;
 
 		SDL_Texture *texture = getTextureVersion(items[i].realFrameName, ASSET_SHADOW);
 		Sprite sprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
@@ -220,9 +234,16 @@ void itemRenderFrame(void) {
 	for(int i=0; i < MAX_ITEMS; i++) {
 		if(invalidPowerup(&items[i])) continue;
 
-		SDL_Texture *texture = getTexture(items[i].realFrameName);
+		//Use alpha for traveling pickups.
+		AssetVersion version = items[i].traveling ? ASSET_ALPHA : ASSET_DEFAULT;
+
+		SDL_Texture *texture = getTextureVersion(items[i].realFrameName, version);
 		Sprite sprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
-		drawSpriteAbs(sprite, items[i].parallax);
+		if(items[i].traveling) {
+			drawSpriteAbs(sprite, items[i].origin);
+		}else{
+			drawSpriteAbs(sprite, items[i].parallax);
+		}
 	}
 }
 
@@ -246,6 +267,27 @@ void itemGameFrame(void) {
 	for(int i=0; i < MAX_ITEMS; i++) {
 		if(invalidPowerup(&items[i])) continue;
 
+		if(items[i].traveling) {
+			//Stop when we reach the HUD icon
+			if(items[i].origin.x >= 216) {
+				//Register the action associated with the item.
+				if(items[i].type == TYPE_COIN) {
+					coins++;
+				}
+
+				Item nullItem = {};
+				items[i] = nullItem;
+				continue;
+			}
+
+			//Travel towards the HUD icon
+			Coord travelStep = getStep(makeCoord(216, 27), items[i].origin, 5, false);
+			items[i].origin.x -= travelStep.x;
+			items[i].origin.y -= travelStep.y;
+			items[i].parallax = itemParallax(items[i].origin);
+			continue;
+		}
+
 		//Scroll down screen
 		items[i].origin.y += ITEM_SPEED;
 		items[i].parallax = itemParallax(items[i].origin);
@@ -262,10 +304,11 @@ void itemGameFrame(void) {
 				case TYPE_COIN:
 					play("Pickup_Coin34.wav");
 					raiseScore(25, true);
+					items[i].traveling = true;				//zoom off the screen.
+					items[i].origin = items[i].parallax;	//start from visual origin.
 					break;
 				case TYPE_FRUIT:
 					play("Pickup_Coin34.wav");
-//					play("Pickup_Coin34b.wav");
 					raiseScore(100, true);
 					break;
 				case TYPE_WEAPON:
@@ -279,8 +322,12 @@ void itemGameFrame(void) {
 					spawnPlume(PLUME_POWER);
 					break;
 			}
-			Item nullPowerup = { };
-			items[i] = nullPowerup;
+
+			//Null any non-traveling items immediately.
+			if(!items[i].traveling) {
+				Item nullPowerup = { };
+				items[i] = nullPowerup;
+			}
 		}
 	}
 }

@@ -207,7 +207,7 @@ void pewGameFrame(void) {
 			//If he's within our projectile bounds.
 			Rect enemyBound = makeSquareBounds(enemies[p].parallax, ENEMY_BOUND);
 			if(inBounds(shots[i].coord, enemyBound)) {
-				hitEnemy(&enemies[p], SHOT_DAMAGE);
+				hitEnemy(&enemies[p], SHOT_DAMAGE, false  );
 
 				//Set shot as null, and stop any further hit detection.
 				shots[i] = nullShot();

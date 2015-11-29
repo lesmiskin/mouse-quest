@@ -19,6 +19,7 @@ typedef struct {
 
 int score;
 int topScore;
+int coins = 0;
 static ScorePlume plumes[MAX_PLUMES];
 static int plumeInc = 0;
 static Sprite life, lifeHalf/*, lifeNone*/;
@@ -79,6 +80,7 @@ void hudGameFrame(void) {
 
 void resetHud(void) {
 	score = 0;
+	coins = 0;
 }
 
 void hudAnimateFrame(void) {
@@ -125,16 +127,16 @@ void writeText(int amount, Coord pos) {
 }
 
 void hudRenderFrame(void) {
-
 	//Score HUD
-	if(gameState != STATE_GAME) {
-//		writeText(topScore, makeCoord(pixelGrid.x - 5, 10));
-	}else{
+	if(gameState == STATE_GAME) {
 		writeText(score, makeCoord(pixelGrid.x - 5, 10));
 	}
 
-	//Only show if playing.
-	if(gameState != STATE_GAME) return;
+	//Only show if playing, and *hide* if dying.
+	if(gameState != STATE_GAME || playerState == PSTATE_DYING) return;
+
+	Coord underScore = makeCoord(pixelGrid.x - 7, 26);
+	Coord underLife = makeCoord(10, 27);
 
 	//Draw sprite of current weapon.
 	char* weaponTexture = NULL;
@@ -150,7 +152,14 @@ void hudRenderFrame(void) {
 			break;
 	}
 	Sprite weapon = makeSprite(getTexture(weaponTexture), zeroCoord(), SDL_FLIP_NONE);
-	drawSpriteAbs(weapon, makeCoord(pixelGrid.x - 12, 24));
+	drawSpriteAbs(weapon, underLife);
+
+	//Draw coin status
+	Sprite coin = makeSprite(getTexture("coin-05.png"), zeroCoord(), SDL_FLIP_NONE);
+	drawSpriteAbs(coin, underScore);
+	Sprite x = makeSprite(getTexture("font-x.png"), zeroCoord(), SDL_FLIP_NONE);
+	drawSpriteAbs(x, deriveCoord(underScore, -9, -1));
+	writeText(coins, deriveCoord(underScore, -14, -1));
 
 	//Loop through icons and draw them at the appropriate 'fullness' levels for each health bar.
 	// This algorithm will automatically scale according to whatever we choose to set the player's total health to.

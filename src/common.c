@@ -250,3 +250,36 @@ double cosInc(double offset, double *sineInc, double speed, double magnitude) {
 	double sineOffset = (cos(*sineInc) * magnitude);
 	return offset - sineOffset;
 }
+
+//void angleMove() {
+//	if(titleCoord.x == 0) {
+//		titleCoord = makeCoord(50,50);
+//	}else{
+//		titleCoord.x += cos(45) * 2;
+//		titleCoord.y += sin(45) * 2;
+//	}
+//}
+
+//In radians
+
+
+double getAngle(Coord a, Coord b) {
+	return atan2(b.y - a.y, b.x - a.x);
+}
+
+Coord getStep(Coord a, Coord b, double speed, bool negativeMagic) {
+	//Already there?
+	if(a.x == b.x && a.y == b.y) return zeroCoord();
+
+	//Find the angle.
+	double angle = getAngle(a, b);
+
+	//Do trig to find the width and height of the next movement.
+	//TODO: Figure out weird neg magic going on here...
+	bool negY = sin(angle) < 0;
+	return makeCoord(
+		(cos(angle) * (negativeMagic ? -speed : speed)),
+		(sin(angle) * (negativeMagic ? -speed : speed))
+//		(sin(angle) * (negY ? -speed : speed))
+	);
+}

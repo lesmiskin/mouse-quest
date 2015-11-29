@@ -23,7 +23,7 @@ bool staticBackground;
 
 #define MAX_PLANETS 10
 static Sprite spaceSprite;
-static const double SCROLL_SPEED = 0.5;			//TODO: Should be in FPS.
+static const double SCROLL_SPEED = 0.6;			//TODO: Should be in FPS.
 static Planet planets[MAX_PLANETS];
 static int tileFrame;
 
@@ -37,8 +37,8 @@ static double nextPlanetSpawnSeconds;
 static int PLANET_SPAWN_MIN_SECONDS = 5;
 static int PLANET_SPAWN_MAX_SECONDS = 15;
 static int planetInc;
-static int PLANET_SPEED_MIN = 5;				//will /10
-static int PLANET_SPEED_MAX = 5;
+static int PLANET_SPEED_MIN = 7;				//will /10
+static int PLANET_SPEED_MAX = 7;
 static int PLANET_BOUND = 32;
 
 #define MAX_PLATFORMS 3
@@ -46,7 +46,7 @@ static long lastPlatformTime;
 static double nextPlatformSpawnSeconds;
 static int PLATFORM_SPAWN_MIN_SECONDS = 10;
 static int PLATFORM_SPAWN_MAX_SECONDS = 20;
-static double PLATFORM_SCROLL_SPEED = 0.55;
+static double PLATFORM_SCROLL_SPEED = 0.8;
 static const int PLATFORM_SCALE = 2;
 static Platform platforms[MAX_PLATFORMS];
 static int platformInc;

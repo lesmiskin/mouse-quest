@@ -10,6 +10,7 @@ typedef enum {
 extern void spawnPlume(PlumeType type);
 extern int score;
 extern int topScore;
+extern int coins;
 extern void raiseScore(unsigned amount, bool plume);
 extern void hudGameFrame(void);
 extern void hudRenderFrame(void);
