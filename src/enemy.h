@@ -10,6 +10,7 @@ typedef enum {
 } EnemyAnimation;
 
 typedef enum {
+	ENEMY_MAGNET,
 	ENEMY_DISK,
 	ENEMY_DISK_BLUE,
 	ENEMY_VIRUS,
@@ -20,7 +21,8 @@ typedef enum {
 typedef enum {
 	MOVEMENT_STRAIGHT,
 	MOVEMENT_SNAKE,
-	MOVEMENT_CIRCLE
+	MOVEMENT_CIRCLE,
+	MOVEMENT_TITLE_BOB
 } EnemyMovement;
 
 typedef enum {
@@ -52,7 +54,7 @@ typedef struct {
 	Coord offset;
 } Enemy;
 
-#define MAX_ENEMIES 30
+#define MAX_ENEMIES 150
 extern void resetEnemies();
 extern void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyCombat combat, double speed, double swayInc);
 extern void hitEnemy(Enemy* enemy, double damage);

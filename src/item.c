@@ -133,7 +133,7 @@ void spawnItem(Coord coord, ItemType type) {
 	if(itemCount == MAX_ITEMS) itemCount = 0;
 
 	bool swing;
-	int maxAnims;
+	int maxAnims = 1;
 	AnimationStyle animRate;
 
 	//Reserve space on struct for both string arrays (must be pointers, we can't reassign to arrays)
@@ -168,17 +168,17 @@ void spawnItem(Coord coord, ItemType type) {
 		}
 		case TYPE_WEAPON:
 			swing = true;
-			maxAnims = 2;
 			animRate = ANIM_BOOLEAN;
 
 			char* filename = NULL;
 			switch(weaponInc) {
 				case 0:
 					filename = "powerup-double-";
+					maxAnims = 2;
 					break;
 				case 1:
-					filename = "powerup-double-";
-//					filename = "powerup-triple.png";
+					filename = "powerup-triple-";
+					maxAnims = 2;
 					break;
 				default:
 					filename = "powerup.png";
@@ -264,7 +264,8 @@ void itemGameFrame(void) {
 					raiseScore(25, true);
 					break;
 				case TYPE_FRUIT:
-					play("Pickup_Coin34b.wav");
+					play("Pickup_Coin34.wav");
+//					play("Pickup_Coin34b.wav");
 					raiseScore(100, true);
 					break;
 				case TYPE_WEAPON:

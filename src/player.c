@@ -47,9 +47,9 @@ double playerStrength = 4.0;
 double playerHealth;
 static long deathTime = 0;
 static const double PLAYER_MAX_SPEED = 4.0;
-static const double MOMENTUM_INC_DIVISOR = 6.5;
+//static const double MOMENTUM_INC_DIVISOR = 6.5;	//works well with joystick.
+static const double MOMENTUM_INC_DIVISOR = 7.5;
 static const int ANIMATION_FRAMES = 8;
-static const int DEATH_FRAMES = 7;
 static const int SHOOTING_FRAMES = 2;
 static const int SMILING_FRAMES = 13;
 static int animationInc;
@@ -106,6 +106,9 @@ void hitPlayer(double damage) {
 
 	play("Hit_Hurt18.wav");
 	playerHealth -= damage;
+
+	//Reset weapon to default when hit as *PUNISHMENT* (muahaha!)
+	weaponInc = 0;
 
 	lastHitTime = clock();
 	pain = true;

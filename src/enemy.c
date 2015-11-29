@@ -8,11 +8,8 @@
 #include "item.h"
 #include "hud.h"
 
-//TODO: Reintroduce sprite flickering, but localised on upcoming 'Character' struct (keep original Surface on asset record?).
-//TODO: Reinstate proper flicker effect with white alt graphic.
-//TODO: Centralise enemy sprite frames into own structure (e.g. frame counts).
-//TODO: Rather than frelling about making asset name descriptions on every frame - just keep a pointer to the right asset in an animation array.
-//TODO: Shoudn't need an initial sprite for the enemy -- since we're setting it when animated(?)
+//TODO: Plume flicker
+//TODO: Coin pickup sparkle (see: Super Mario World)
 
 typedef struct {
 	Coord origin;
@@ -40,14 +37,17 @@ typedef struct {
 	EnemyFormation formation;
 	int max;
 	int count;
+	double speed;
 } EnemySpawn;
 
 EnemySpawn spawns[MAX_SPAWNS];
 int spawnInc = 0;
 
-static int ENEMY_SPEED = 7;
+static double ENEMY_SPEED = 0.9;
+static double ENEMY_SPEED_FAST = 1.7;
 static int FORMATION_INTERVAL = 95;
-static int ENEMY_INTERVAL = 23;
+static int ENEMY_DISTANCE = 22;
+
 static double HIT_KNOCKBACK = 0.0;
 static double COLLIDE_DAMAGE = 1;
 static double SHOT_DAMAGE = 1;
@@ -60,12 +60,14 @@ static double SHOT_SPEED = 1.3;
 Enemy enemies[MAX_ENEMIES];
 const int ENEMY_BOUND = 32;
 static int enemyCount;
+static const int MAGNET_IDLE_FRAMES = 8;
 static const int DISK_IDLE_FRAMES = 12;
 static const int VIRUS_IDLE_FRAMES = 6;
 static const int CD_IDLE_FRAMES = 4;
 static const int BUG_IDLE_FRAMES = 6;
 static const int DEATH_FRAMES = 7;
-static const double ENEMY_HEALTH = 4.0;
+static const double ENEMY_HEALTH = 2.0;
+//static const double ENEMY_HEALTH = 4.0;
 
 static EnemyShot enemyShots[MAX_SHOTS];
 static int enemyShotCount;
@@ -240,6 +242,10 @@ void animateEnemy(void) {
 					animGroupName = "virus-%02d.png";
 					maxFrames = VIRUS_IDLE_FRAMES;
 					break;
+				case ENEMY_MAGNET:
+					animGroupName = "magnet-%02d.png";
+					maxFrames = MAGNET_IDLE_FRAMES;
+					break;
 				default:
 					fatalError("Error", "No frames specified for enemy type");
 			}
@@ -272,10 +278,10 @@ void animateEnemy(void) {
 	}
 }
 
-void spawnFormation(int x, EnemyFormation formation, int qty) {
+void spawnFormation(int x, EnemyFormation formation, EnemyType enemyType, int qty, double speed) {
 	if(spawnInc == MAX_SPAWNS) spawnInc = 0;
 
-	EnemySpawn s = { clock(), x, (EnemyType)random(1, 4), formation, qty, 0 };
+	EnemySpawn s = { clock(), x, enemyType, formation, qty, 0, speed };
 	spawns[spawnInc++] = s;
 }
 
@@ -302,7 +308,6 @@ void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyComba
 		type,
 		0,
 		speed,
-//		(random(ENEMY_SPEED_MIN, ENEMY_SPEED_MAX)) * 0.1,
 		"",
 		false,
 		false,
@@ -339,23 +344,11 @@ void resetEnemies() {
 	enemyShotCount = 0;
 	lastDifficultyTime = 0;
 
-//	ENEMY_SPEED = 9;
-//	FORMATION_INTERVAL = 250;
-//	HIT_KNOCKBACK = 5.0;
-//	COLLIDE_DAMAGE = 1;
-//	SHOT_DAMAGE = 1;
-//	SHOT_HZ = 1000 / 0.25;
-//	SHOT_SPEED = 1.3;
+	ENEMY_SPEED = 0.9;
+	FORMATION_INTERVAL = 95;
 }
 
 void enemyGameFrame(void) {
-
-//	static int ENEMY_SPEED = 10;
-//	static int ENEMY_SPAWN_INTERVAL = 25;
-//	static double HIT_KNOCKBACK = 5.0;
-//	static double COLLIDE_DAMAGE = 1;
-//	static double SHOT_DAMAGE = 1;
-
 	//Bob enemies in sine pattern.
 	switch(gameState) {
 		case STATE_INTRO:
@@ -390,10 +383,10 @@ void enemyGameFrame(void) {
 		lastDifficultyTime = clock();
 	}
 
-	if(due(lastDifficultyTime, 30000)) {
-//		ENEMY_SPEED *= 1.1;
-//		FORMATION_INTERVAL /= 1.1;
-////		HIT_KNOCKBACK /= 1.1;
+	if(due(lastDifficultyTime, 100000)) {
+		ENEMY_SPEED *= 1.05;
+		FORMATION_INTERVAL /= 1.2;
+//		HIT_KNOCKBACK /= 1.1;
 //		SHOT_DAMAGE *= 1.1;
 //		COLLIDE_DAMAGE *= 1.1;
 //		SHOT_SPEED *= 1.1;
@@ -407,16 +400,16 @@ void enemyGameFrame(void) {
 
 		switch(random(1, 4)) {
 			case 1:
-				spawnFormation(xSpawnPos, FORMATION_LINE, random(4,6));
+				spawnFormation(xSpawnPos, FORMATION_LINE, (EnemyType)random(0, 5), 4, ENEMY_SPEED_FAST);
 				break;
 			case 2:
-				spawnFormation(xSpawnPos, FORMATION_TRI, 3);
+				spawnFormation(xSpawnPos, FORMATION_TRI, (EnemyType)random(0, 5), 3, ENEMY_SPEED_FAST);
 				break;
 			case 3:
-				spawnFormation(xSpawnPos, FORMATION_CIRCLE, random(3, 5));
+				spawnFormation(xSpawnPos, FORMATION_CIRCLE, (EnemyType)random(0, 5), random(3, 4), ENEMY_SPEED);
 				break;
 			default:
-				spawnFormation(xSpawnPos, FORMATION_SNAKE, random(3, 5));
+				spawnFormation(xSpawnPos, FORMATION_SNAKE, (EnemyType)random(0, 5), random(4, 5), ENEMY_SPEED);
 				break;
 		}
 	}
@@ -424,87 +417,74 @@ void enemyGameFrame(void) {
 	//Formation renderer.
 	for(int i=0; i < MAX_SPAWNS; i++) {
 		//Spawn enemies for formations in view, at spawning intervals, up until it reaches it's max number.
-		if(spawns[i].x == 0 || gameTime % ENEMY_INTERVAL || spawns[i].count	== spawns[i].max) continue;
+		if(spawns[i].x == 0 || spawns[i].count == spawns[i].max) continue;
 
-		switch(spawns[i].formation) {
-			//Spawn all circle members immediately.
-			case FORMATION_CIRCLE:
-				for(; spawns[i].count < spawns[i].max; spawns[i].count++) {
+		int spawnOffset = -ENEMY_DISTANCE;
+
+		for(; spawns[i].count < spawns[i].max; spawns[i].count++) {
+			switch(spawns[i].formation) {
+				//Spawn all circle members immediately.
+				case FORMATION_CIRCLE:
 					spawnEnemy(
 						spawns[i].x,
-						-ENEMY_BOUND,
-						(EnemyType)random(1,4),
+						spawnOffset * 2,             //circle needs a bit more room.
+						spawns[i].type,
 						MOVEMENT_CIRCLE,
 						COMBAT_IDLE,
-						0.7,
+						spawns[i].speed,
 						//Space out spawns proportionally, in a circle.
 						(RADIAN_CIRCLE / (double)spawns[i].max) * spawns[i].count
 					);
-				}
-				break;
-			case FORMATION_SNAKE:
-				spawnEnemy(
-					spawns[i].x,
-					-ENEMY_BOUND,
-					(EnemyType)random(1,4),
-					MOVEMENT_SNAKE,
-					COMBAT_IDLE,
-					0.7,
-					//Space out spawns proportionally, in a circle.
-					(RADIAN_CIRCLE / (double)spawns[i].max) * spawns[i].count
-				);
-				spawns[i].count++;
-				break;
-			case FORMATION_LINE:
-				spawnEnemy(
-					spawns[i].x,
-					-ENEMY_BOUND,
-					(EnemyType)random(1,4),
-					MOVEMENT_STRAIGHT,
-					COMBAT_IDLE,
-					0.85,
-					4
-				);
-				spawns[i].count++;
-				break;
-			case FORMATION_TRI:
-				//Offset the left and right enemies.
-				if(spawns[i].count == 1) {
-					spawnEnemy(
-						spawns[i].x - ENEMY_BOUND/2,
-						-40,
-						(EnemyType)random(1,4),
-						MOVEMENT_STRAIGHT,
-						COMBAT_IDLE,
-						0.85,
-						0
-					);
-					spawns[i].count++;
-
-					spawnEnemy(
-						spawns[i].x + ENEMY_BOUND/2,
-						-40,
-						(EnemyType)random(1,4),
-						MOVEMENT_STRAIGHT,
-						COMBAT_IDLE,
-						0.85,
-						0
-					);
-					spawns[i].count++;
-				//Center enemy remains in the middle.
-				}else{
+					break;
+				case FORMATION_SNAKE:
 					spawnEnemy(
 						spawns[i].x,
-						-ENEMY_BOUND,
-						(EnemyType)random(1,4),
+						spawnOffset - (ENEMY_DISTANCE * spawns[i].count),  //space out evenly.
+						spawns[i].type,
+						MOVEMENT_SNAKE,
+						COMBAT_IDLE,
+						spawns[i].speed,
+						//Space out spawns proportionally, in a circle.
+						(RADIAN_CIRCLE / (double)spawns[i].max) * spawns[i].count
+					);
+					break;
+				case FORMATION_LINE:
+					spawnEnemy(
+						spawns[i].x,
+						spawnOffset - ((ENEMY_DISTANCE + 1) * spawns[i].count),  //+1 so CDs don't overlap.
+						spawns[i].type,
 						MOVEMENT_STRAIGHT,
 						COMBAT_IDLE,
-						0.85,
+						spawns[i].speed,
+						4
+					);
+					break;
+				case FORMATION_TRI: {
+					int xOffset = 0; int yOffset = 0;
+
+					switch(spawns[i].count) {
+						case 0:
+							xOffset = -18;
+							break;
+						case 1:
+							xOffset = 18;
+							break;
+						case 2:
+							yOffset = -28;
+							break;
+					}
+
+					spawnEnemy(
+						(spawns[i].x - ENEMY_BOUND/2) - xOffset,
+						(spawnOffset * 2) - yOffset,
+						spawns[i].type,
+						MOVEMENT_STRAIGHT,
+						COMBAT_IDLE,
+						spawns[i].speed,
 						0
 					);
-					spawns[i].count++;
+					break; }
 				}
-				break;
 		}
 	}
 
@@ -522,11 +502,11 @@ void enemyGameFrame(void) {
 		switch(enemies[i].movement) {
 			case MOVEMENT_CIRCLE:
 				//TODO: Find out why swayIncX and swayIncY need to be swapped :p
-				enemies[i].formationOrigin.y = sineInc(enemies[i].origin.y, &enemies[i].swayIncX, 0.05, 21);
-				enemies[i].formationOrigin.x = cosInc(enemies[i].origin.x, &enemies[i].swayIncY, 0.05, 21);
+				enemies[i].formationOrigin.y = sineInc(enemies[i].origin.y, &enemies[i].swayIncX, 0.04, 21);
+				enemies[i].formationOrigin.x = cosInc(enemies[i].origin.x, &enemies[i].swayIncY, 0.04, 21);
 				break;
 			case MOVEMENT_SNAKE:
-				enemies[i].formationOrigin.x = sineInc(enemies[i].origin.x, &enemies[i].swayIncX, 0.05, 21);
+				enemies[i].formationOrigin.x = sineInc(enemies[i].origin.x, &enemies[i].swayIncX, 0.075, 12);
 				enemies[i].formationOrigin.y = enemies[i].origin.y;
 				break;
 			default:

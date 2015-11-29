@@ -141,7 +141,7 @@ void pew(void) {
 	//The different shot patterns, based on our current weapon.
 	switch(weapons[weaponInc].pattern) {
 		case PATTERN_SINGLE:
-			spawnPew(0, -5, NORTH);
+			spawnPew(-1, -5, NORTH);
 			break;
 		case PATTERN_DUAL:
 			spawnPew(3, -5, NORTH);
@@ -300,7 +300,7 @@ void pewAnimateFrame(){
 }
 
 void pewInit(void) {
-	Weapon w1 = { SPEED_NORMAL, PATTERN_DUAL };
+	Weapon w1 = { SPEED_NORMAL, PATTERN_SINGLE };
 	Weapon w2 = { SPEED_FAST, PATTERN_DUAL };
 	Weapon w3 = { SPEED_FAST, PATTERN_TRIAD };
 

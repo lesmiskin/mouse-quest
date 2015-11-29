@@ -155,7 +155,7 @@ void scriptGameFrame(void) {
 
 					//Enemy roll call.
 					int spacer = -10;
-					EnemyType roll[] = { ENEMY_BUG, ENEMY_DISK, ENEMY_VIRUS, ENEMY_DISK_BLUE, ENEMY_CD };
+					EnemyType roll[] = { ENEMY_BUG, ENEMY_DISK, ENEMY_VIRUS, ENEMY_MAGNET, ENEMY_CD };
 					for(int i=0; i < sizeof(roll) / sizeof(EnemyType); i++) {
 						spawnEnemy(spacer += 40, 135, roll[i], MOVEMENT_CIRCLE, COMBAT_IDLE, 0, 0);
 					}
@@ -280,7 +280,7 @@ void initScripts(void) {
 	intro.scenes[INTRO_BATTLE_MIKE_PAUSE] = 		newTimedStep(SCENE_LOOP, 1000, FADE_NONE);
 	intro.scenes[INTRO_BATTLE_MIKE_SMILING_CUE] = 	newCueStep();
 	intro.scenes[INTRO_BATTLE_MIKE_SMILING] = 		newTimedStep(SCENE_LOOP, 1150, FADE_NONE);
-	intro.scenes[INTRO_BATTLE_MIKE_FIRE] = 			newTimedStep(SCENE_LOOP, 1400, FADE_NONE);
+	intro.scenes[INTRO_BATTLE_MIKE_FIRE] = 			newTimedStep(SCENE_LOOP, 1600, FADE_NONE);
 	intro.scenes[INTRO_BATTLE_MIKE_GLOAT_CUE] =		newCueStep();
 	intro.scenes[INTRO_BATTLE_MIKE_GLOAT] = 		newTimedStep(SCENE_LOOP, 1600, FADE_NONE);
 	intro.scenes[INTRO_BATTLE_MIKE_DEPART_CUE] = 	newCueStep();

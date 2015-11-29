@@ -4,6 +4,7 @@
 #include "assets.h"
 #include "player.h"
 #include "hud.h"
+#include "weapon.h"
 
 #define NUM_HEARTS 4
 #define MAX_PLUMES 10
@@ -134,6 +135,22 @@ void hudRenderFrame(void) {
 
 	//Only show if playing.
 	if(gameState != STATE_GAME) return;
+
+	//Draw sprite of current weapon.
+	char* weaponTexture = NULL;
+	switch(weaponInc) {
+		case 0:
+			weaponTexture = "hud-powerup.png";
+			break;
+		case 1:
+			weaponTexture = "hud-powerup-double.png";
+			break;
+		case 2:
+			weaponTexture = "hud-powerup-triple.png";
+			break;
+	}
+	Sprite weapon = makeSprite(getTexture(weaponTexture), zeroCoord(), SDL_FLIP_NONE);
+	drawSpriteAbs(weapon, makeCoord(pixelGrid.x - 12, 24));
 
 	//Loop through icons and draw them at the appropriate 'fullness' levels for each health bar.
 	// This algorithm will automatically scale according to whatever we choose to set the player's total health to.
