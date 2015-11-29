@@ -168,6 +168,8 @@ static void loadImages(void) {
 		{ "mike-shades-11.png", false, true, false, false, false },
 		{ "mike-shades-12.png", false, true, false, false, false },
 		{ "mike-shades-13.png", false, true, false, false, false },
+		{ "mike-fright-left.png", false, true, false, false, false },
+		{ "mike-fright-right.png", false, true, false, false, false },
 		{ "magnet-01.png", true, true, false, false, false },
 		{ "magnet-02.png", true, true, false, false, false },
 		{ "magnet-03.png", true, true, false, false, false },

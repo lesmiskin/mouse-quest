@@ -171,9 +171,9 @@ void playerAnimate(void) {
 		}
 
 		if(dieDir) {
-			animGroupName = "mike-lean-right-06.png";
+			animGroupName = "mike-fright-right.png";
 		}else{
-			animGroupName = "mike-lean-left-06.png";
+			animGroupName = "mike-fright-left.png";
 		}
 	}
 	//Pain: In shock (change frame)
