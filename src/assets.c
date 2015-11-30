@@ -229,6 +229,7 @@ static void loadImages(void) {
 		{ "super-streak.png", false, false, false, false, false },
 		{ "super-fleck.png", false, false, false, false, false },
 		{ "level-1.png", false, false, false, false, false },
+		{ "game-over.png", false, false, false, false, false },
 		{ "title.png", false, false, false, false, false },
 
 		{ "base-chip.png", false, false, false, false, true },

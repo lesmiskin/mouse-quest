@@ -127,16 +127,24 @@ void writeText(int amount, Coord pos) {
 }
 
 void hudRenderFrame(void) {
-	//Score HUD
-	if(gameState == STATE_GAME) {
+	Coord underScore = makeCoord(pixelGrid.x - 7, 26);
+	Coord underLife = makeCoord(10, 27);
+
+	//Show score and coin HUD during the game, and game over sequences.
+	if(gameState == STATE_GAME || gameState == STATE_GAME_OVER) {
+		//Score HUD
 		writeText(score, makeCoord(pixelGrid.x - 5, 10));
+
+		//Draw coin status
+		Sprite coin = makeSprite(getTexture("coin-05.png"), zeroCoord(), SDL_FLIP_NONE);
+		drawSpriteAbs(coin, underScore);
+		Sprite x = makeSprite(getTexture("font-x.png"), zeroCoord(), SDL_FLIP_NONE);
+		drawSpriteAbs(x, deriveCoord(underScore, -9, -1));
+		writeText(coins, deriveCoord(underScore, -14, -1));
 	}
 
 	//Only show if playing, and *hide* if dying.
-	if(gameState != STATE_GAME || playerState == PSTATE_DYING) return;
-
-	Coord underScore = makeCoord(pixelGrid.x - 7, 26);
-	Coord underLife = makeCoord(10, 27);
+	if(gameState != STATE_GAME) return;
 
 	//Draw sprite of current weapon.
 	char* weaponTexture = NULL;
@@ -153,13 +161,6 @@ void hudRenderFrame(void) {
 	}
 	Sprite weapon = makeSprite(getTexture(weaponTexture), zeroCoord(), SDL_FLIP_NONE);
 	drawSpriteAbs(weapon, underLife);
-
-	//Draw coin status
-	Sprite coin = makeSprite(getTexture("coin-05.png"), zeroCoord(), SDL_FLIP_NONE);
-	drawSpriteAbs(coin, underScore);
-	Sprite x = makeSprite(getTexture("font-x.png"), zeroCoord(), SDL_FLIP_NONE);
-	drawSpriteAbs(x, deriveCoord(underScore, -9, -1));
-	writeText(coins, deriveCoord(underScore, -14, -1));
 
 	//Loop through icons and draw them at the appropriate 'fullness' levels for each health bar.
 	// This algorithm will automatically scale according to whatever we choose to set the player's total health to.

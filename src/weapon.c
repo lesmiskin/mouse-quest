@@ -61,6 +61,8 @@ static Sprite shotSprite;
 static long lastShotTime;
 static int maxFrames = 2;
 static bool bombing = false;
+static long postponeShotTime;
+int const POSTPONE_INITIAL_SHOT = 750;
 
 static short minigunLastSide = 0;
 
@@ -128,8 +130,10 @@ void upgradeWeapon(void) {
 }
 
 void pew(void) {
-	//Rate limit shots.
-	if(!timer(&lastShotTime, weapons[weaponInc].speed)) {
+	//Rate-limiter, and HACK for skipping initial shots post-menu.
+	if(	!timer(&lastShotTime, weapons[weaponInc].speed) ||
+		 ticsToMilliseconds(clock()) < postponeShotTime
+	) {
 		return;
 	}
 
@@ -207,7 +211,7 @@ void pewGameFrame(void) {
 			//If he's within our projectile bounds.
 			Rect enemyBound = makeSquareBounds(enemies[p].parallax, ENEMY_BOUND);
 			if(inBounds(shots[i].coord, enemyBound)) {
-				hitEnemy(&enemies[p], SHOT_DAMAGE, false  );
+				hitEnemy(&enemies[p], SHOT_DAMAGE, false);
 
 				//Set shot as null, and stop any further hit detection.
 				shots[i] = nullShot();
@@ -307,8 +311,11 @@ void pewInit(void) {
 	weapons[0] = w1;
 	weapons[1] = w2;
 	weapons[2] = w3;
+
+	resetPew();
 }
 
 void resetPew(void) {
+	postponeShotTime = ticsToMilliseconds(clock()) + POSTPONE_INITIAL_SHOT;
 	weaponInc = 0;
 }

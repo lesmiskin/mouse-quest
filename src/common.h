@@ -16,7 +16,8 @@ typedef unsigned uint;
 typedef enum {
 	STATE_INTRO = 0,
 	STATE_TITLE = 1,
-	STATE_GAME = 2
+	STATE_GAME = 2,
+	STATE_GAME_OVER = 3
 } GameState;
 GameState gameState;
 

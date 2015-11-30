@@ -43,7 +43,7 @@ bool hideMike;		//still there, but don't render this frame.
 double intervalFrames;
 double dieInc = 0;
 Coord playerOrigin;
-double playerStrength = 4.0;
+double playerStrength = 1.0;
 double playerHealth;
 static long deathTime = 0;
 static const double PLAYER_MAX_SPEED = 4.0;
@@ -166,7 +166,8 @@ void playerAnimate(void) {
 		else if(playerOrigin.y > screenBounds.y + 64){
 			playerState = PSTATE_DEAD;
 			deathTime = 0;
-			triggerState(STATE_TITLE);
+			triggerState(STATE_GAME_OVER);
+//			triggerState(STATE_TITLE);
 			return;
 		}
 

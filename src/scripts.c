@@ -78,6 +78,13 @@ void scriptGameFrame(void) {
 	}
 
 	switch(gameState) {
+		case STATE_GAME_OVER:
+			//Skip to titlescreen if fire button pressed.
+			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
+				triggerState(STATE_TITLE);
+			}
+			break;
+
 		case STATE_INTRO:
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
@@ -220,6 +227,19 @@ void scriptRenderFrame(void) {
 	if(!stateInitialised) return;
 
 	switch(gameState) {
+		case STATE_GAME_OVER: {
+			switch(scriptStatus.sceneNumber) {
+				case 0: {
+					Sprite gameOver = makeSprite(getTexture("game-over.png"), zeroCoord(), SDL_FLIP_NONE);
+					drawSpriteAbs(gameOver, makeCoord(screenBounds.x/2 - 3, 98));
+					break;
+				}
+				case 1:
+					triggerState(STATE_TITLE);
+					break;
+			}
+			break;
+		}
 		case STATE_INTRO:
 			//Use super background for the battle scenes only.
 			if(scriptStatus.sceneNumber > INTRO_BATTLE_CUE && scriptStatus.sceneNumber < INTRO_TITLE_CUE) {
@@ -279,7 +299,7 @@ void scriptRenderFrame(void) {
 }
 
 void initScripts(void) {
-	Script intro, title, game;
+	Script intro, title, game, gameOver;
 
 	//Introduction script.
 	intro.scenes[INTRO_CUE] = 						newCueStep();
@@ -308,4 +328,9 @@ void initScripts(void) {
 	game.scenes[0] = 								newTimedStep(SCENE_INFINITE, 0, FADE_BOTH);
 	game.totalScenes = 1;
 	scripts[STATE_GAME] = game;
+
+	gameOver.scenes[0] = 							newTimedStep(SCENE_LOOP, 5000, FADE_OUT);
+	gameOver.scenes[1] = 							newCueStep();
+	gameOver.totalScenes = 2;
+	scripts[STATE_GAME_OVER] = gameOver;
 }

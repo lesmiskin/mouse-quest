@@ -25,6 +25,7 @@ typedef struct {
 static int gameTime;
 
 typedef enum {
+	FORMATION_RANDOM,
 	FORMATION_LINE,
 	FORMATION_TRI,
 	FORMATION_SNAKE,
@@ -44,9 +45,9 @@ typedef struct {
 EnemySpawn spawns[MAX_SPAWNS];
 int spawnInc = 0;
 
-static double ENEMY_SPEED = 0.9;
-static double ENEMY_SPEED_FAST = 1.7;
-static int FORMATION_INTERVAL = 95;
+static double ENEMY_SPEED = 1.0;
+static double ENEMY_SPEED_FAST = 1.8;
+static int FORMATION_INTERVAL = 60;
 static int ENEMY_DISTANCE = 22;
 
 static double HIT_KNOCKBACK = 0.0;
@@ -67,7 +68,7 @@ static const int VIRUS_IDLE_FRAMES = 6;
 static const int CD_IDLE_FRAMES = 4;
 static const int BUG_IDLE_FRAMES = 6;
 static const int DEATH_FRAMES = 7;
-static const double ENEMY_HEALTH = 2.0;
+static const double ENEMY_HEALTH = 1.0;
 //static const double ENEMY_HEALTH = 4.0;
 
 static EnemyShot enemyShots[MAX_SHOTS];
@@ -372,7 +373,7 @@ void enemyGameFrame(void) {
 			}
 	}
 
-	if(gameState != STATE_GAME) return;
+	if(gameState != STATE_GAME && gameState != STATE_GAME_OVER) return;
 
 	if(lastDifficultyTime == 0) {
 		lastDifficultyTime = clock();
@@ -393,19 +394,23 @@ void enemyGameFrame(void) {
 	if(gameTime % FORMATION_INTERVAL == 0) {
 		int xSpawnPos = random(0, (int)screenBounds.x + 33);			//HACK!
 
-		switch(random(1, 4)) {
-			case 1:
-				spawnFormation(xSpawnPos, FORMATION_LINE, (EnemyType)random(0, 5), 4, ENEMY_SPEED_FAST);
-				break;
-			case 2:
-				spawnFormation(xSpawnPos, FORMATION_TRI, (EnemyType)random(0, 5), 3, ENEMY_SPEED_FAST);
-				break;
-			case 3:
-				spawnFormation(xSpawnPos, FORMATION_CIRCLE, (EnemyType)random(0, 5), random(3, 4), ENEMY_SPEED);
-				break;
-			default:
-				spawnFormation(xSpawnPos, FORMATION_SNAKE, (EnemyType)random(0, 5), random(4, 5), ENEMY_SPEED);
-				break;
+		if(chance(33)) {
+			spawnFormation(xSpawnPos, FORMATION_RANDOM, (EnemyType)random(0, 5), random(4, 6), ENEMY_SPEED);
+		}else{
+			switch(random(1, 4)) {
+				case 1:
+					spawnFormation(xSpawnPos, FORMATION_LINE, (EnemyType)random(0, 5), random(2,4), ENEMY_SPEED_FAST);
+					break;
+				case 2:
+					spawnFormation(xSpawnPos, FORMATION_TRI, (EnemyType)random(0, 5), 3, ENEMY_SPEED_FAST);
+					break;
+				case 3:
+					spawnFormation(xSpawnPos, FORMATION_CIRCLE, (EnemyType)random(0, 5), random(3, 4), ENEMY_SPEED);
+					break;
+				default:
+					spawnFormation(xSpawnPos, FORMATION_SNAKE, (EnemyType)random(0, 5), random(3, 4), ENEMY_SPEED);
+					break;
+			}
 		}
 	}
 
@@ -419,6 +424,17 @@ void enemyGameFrame(void) {
 		for(; spawns[i].count < spawns[i].max; spawns[i].count++) {
 			switch(spawns[i].formation) {
 				//Spawn all circle members immediately.
+				case FORMATION_RANDOM:
+					spawnEnemy(
+						random(ENEMY_BOUND, screenBounds.x - ENEMY_BOUND),
+						spawnOffset - random(0, 300),             //circle needs a bit more room.
+						random(0, sizeof(EnemyType)),
+						chance(50) ? MOVEMENT_STRAIGHT : MOVEMENT_SNAKE,
+						COMBAT_IDLE,
+						spawns[i].speed,
+						4
+					);
+					break;
 				case FORMATION_CIRCLE:
 					spawnEnemy(
 						spawns[i].x,
@@ -517,8 +533,10 @@ void enemyGameFrame(void) {
 		}
 
 		//Spawn shots.
-		if(	(enemies[i].type == ENEMY_VIRUS || enemies[i].type == ENEMY_BUG) &&
-			timer(&enemies[i].lastShotTime, SHOT_HZ)
+		if(
+			(enemies[i].type == ENEMY_VIRUS || enemies[i].type == ENEMY_BUG) &&
+			timer(&enemies[i].lastShotTime, SHOT_HZ) &&
+			enemies[i].origin.y > 0
 		) {
 			if(enemyShotCount == MAX_SHOTS) enemyShotCount = 0;
 			spawnShot(&enemies[i]);

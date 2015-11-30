@@ -131,14 +131,14 @@ int main()  {
 			if(vsync) clearBackground(makeBlack());
 
 			backgroundRenderFrame();
-			scriptRenderFrame();
 			enemyShadowFrame();
 			playerShadowFrame();
 			itemRenderFrame();
  			enemyRenderFrame();
 			pewRenderFrame();
-			playerRenderFrame();
 			hudRenderFrame();
+			scriptRenderFrame();
+			playerRenderFrame();
 			faderRenderFrame();
 			updateCanvas();
 		}

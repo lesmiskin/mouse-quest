@@ -116,8 +116,14 @@ void pollInput(void) {
 							keypress == SDL_SCANCODE_ESCAPE)
 							commands[CMD_PLAYER_SKIP_TO_TITLE] = true;
  						break;
+					case STATE_GAME_OVER:
+						if(	keypress == SDL_SCANCODE_ESCAPE ||
+							keypress == SDL_SCANCODE_SPACE ||
+							keypress == SDL_SCANCODE_LCTRL )
+							commands[CMD_PLAYER_SKIP_TO_TITLE] = true;
+						break;
 					case STATE_GAME:
-						if(keypress == SDL_SCANCODE_ESCAPE)
+						if(	keypress == SDL_SCANCODE_ESCAPE)
 							commands[CMD_PLAYER_SKIP_TO_TITLE] = true;
 						break;
 				}
