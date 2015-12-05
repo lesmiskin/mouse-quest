@@ -4,7 +4,14 @@
 #include "SDL.h"
 #include <stdbool.h>
 
-//#define DEBUG_T500
+//#define DEBUG_WINDOW_T500
+//#define DEBUG_SKIP_TO_GAME
+//#define DEBUG_GODMODE
+//#define DEBUG_FANWEAPONS
+
+extern const bool ENABLE_PARALLAX;
+extern const bool ENABLE_SHADOWS;
+extern const bool ALPHA_SHADOWS;
 
 //MISC
 extern const int ANIMATION_HZ;

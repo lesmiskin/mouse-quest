@@ -6,6 +6,7 @@
 #include "renderer.h"
 #include "player.h"
 #include "hud.h"
+#include "input.h"
 
 //TODO: 'Battery pack' powerup.
 //TODO: Better shooting animation (upward-facing).
@@ -43,7 +44,7 @@ typedef struct {
 	bool traveling;
 } Item;
 
-#define MAX_ITEMS 40
+#define MAX_ITEMS 100
 
 static int itemCount = 0;
 const int POWERUP_CHANCE = 100;
@@ -181,6 +182,9 @@ void spawnItem(Coord coord, ItemType type) {
 					filename = "powerup-triple-";
 					maxAnims = 2;
 					break;
+				case 2:
+					filename = "powerup-fan.png";
+					break;
 				default:
 					filename = "powerup.png";
 					break;
@@ -217,8 +221,8 @@ void spawnItem(Coord coord, ItemType type) {
 	items[itemCount++] = powerup;
 }
 
-void itemRenderFrame(void) {
-  	//Render powerup shadows
+void itemShadowFrame(void) {
+	//Render powerup shadows
 	for(int i=0; i < MAX_ITEMS; i++) {
 		//NB: We deliberately skip shadows for traveling ones.
 		if(invalidPowerup(&items[i]) || items[i].traveling) continue;
@@ -229,15 +233,14 @@ void itemRenderFrame(void) {
 		shadowCoord.y += STATIC_SHADOW_OFFSET;
 		drawSpriteAbs(sprite, shadowCoord);
 	}
+}
 
+void itemRenderFrame(void) {
 	//Render items
 	for(int i=0; i < MAX_ITEMS; i++) {
 		if(invalidPowerup(&items[i])) continue;
 
-		//Use alpha for traveling pickups.
-		AssetVersion version = items[i].traveling ? ASSET_ALPHA : ASSET_DEFAULT;
-
-		SDL_Texture *texture = getTextureVersion(items[i].realFrameName, version);
+		SDL_Texture *texture = getTexture(items[i].realFrameName);
 		Sprite sprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
 		if(items[i].traveling) {
 			drawSpriteAbs(sprite, items[i].origin);
@@ -281,7 +284,10 @@ void itemGameFrame(void) {
 			}
 
 			//Travel towards the HUD icon
+
+			//TODO: Store this on spawn.
 			Coord travelStep = getStep(makeCoord(216, 27), items[i].origin, 5, false);
+
 			items[i].origin.x -= travelStep.x;
 			items[i].origin.y -= travelStep.y;
 			items[i].parallax = itemParallax(items[i].origin);
@@ -322,6 +328,8 @@ void itemGameFrame(void) {
 					spawnPlume(PLUME_POWER);
 					break;
 			}
+
+//			SDL_HapticRumblePlay(haptic, 0.25, 100);
 
 			//Null any non-traveling items immediately.
 			if(!items[i].traveling) {

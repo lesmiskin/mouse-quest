@@ -5,6 +5,7 @@
 #include "player.h"
 #include "hud.h"
 #include "weapon.h"
+#include "enemy.h"
 
 #define NUM_HEARTS 4
 #define MAX_PLUMES 10
@@ -16,6 +17,8 @@ typedef struct {
 	Coord parallax;
 	long spawnTime;
 } ScorePlume;
+
+bool HUD_DEBUG = true;
 
 int score;
 int topScore;
@@ -126,9 +129,23 @@ void writeText(int amount, Coord pos) {
 	}
 }
 
+void showDebugStats(void) {
+	Coord underLife = makeCoord(10, 27);
+
+	//Show player X coordinate:
+	writeText(playerOrigin.x, deriveCoord(underLife, 10, 20));
+
+	if(enemies[0].health > 0) {
+		writeText(enemies[0].origin.x, deriveCoord(underLife, 10, 30));
+		writeText(enemies[0].parallax.x, deriveCoord(underLife, 10, 40));
+	}
+}
+
 void hudRenderFrame(void) {
 	Coord underScore = makeCoord(pixelGrid.x - 7, 26);
 	Coord underLife = makeCoord(10, 27);
+
+//	showDebugStats();
 
 	//Show score and coin HUD during the game, and game over sequences.
 	if(gameState == STATE_GAME || gameState == STATE_GAME_OVER) {
@@ -158,6 +175,9 @@ void hudRenderFrame(void) {
 		case 2:
 			weaponTexture = "hud-powerup-triple.png";
 			break;
+		case 3:
+			weaponTexture = "hud-powerup-fan.png";
+			break;
 	}
 	Sprite weapon = makeSprite(getTexture(weaponTexture), zeroCoord(), SDL_FLIP_NONE);
 	drawSpriteAbs(weapon, underLife);
@@ -172,7 +192,10 @@ void hudRenderFrame(void) {
 
 		//Full bar.
 		if(playerHealth >= barHealth) {
-			drawSpriteAbs(life, lifePositions[bar]);
+			AssetVersion version = godMode ? ASSET_SUPER : ASSET_DEFAULT;
+			Sprite lifeGod = makeSprite(getTextureVersion("battery.png", version), zeroCoord(), SDL_FLIP_NONE);
+
+			drawSpriteAbs(lifeGod, lifePositions[bar]);
 		//Between half and full.
 		}else if(playerHealth >= barHealth - (healthPerHeart/2)) {
 			char noneName[50];

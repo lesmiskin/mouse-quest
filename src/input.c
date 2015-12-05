@@ -2,6 +2,8 @@
 #include "SDL.h"
 #include "input.h"
 #include "common.h"
+#include "weapon.h"
+#include "player.h"
 
 //NB: We bind our SDL key codes to game-meaningful actions, so we can bind our logic against those rather than hard-
 // coding keys throughout our code.
@@ -42,8 +44,6 @@ void initInput(void) {
 		if(SDL_HapticRumbleSupported(haptic)) {
 			hapticSupported = true;
 			SDL_HapticRumbleInit(haptic);
-			int result = SDL_HapticRumblePlay(haptic, 0.75, 2000);
-			int blah = 5;
 		}
 	}
 }
@@ -123,6 +123,20 @@ void pollInput(void) {
 							commands[CMD_PLAYER_SKIP_TO_TITLE] = true;
 						break;
 					case STATE_GAME:
+						if(	keypress == SDL_SCANCODE_G){
+							godMode = !godMode;
+						}
+						if(	keypress == SDL_SCANCODE_H)
+							weaponInc = weaponInc == MAX_WEAPONS-1 ? 0 : weaponInc + 1;
+
+						if(	keypress == SDL_SCANCODE_J){
+							if(playerHealth > 1) {
+								playerHealth = 1;
+							}else{
+								playerHealth = playerStrength;
+							}
+						}
+
 						if(	keypress == SDL_SCANCODE_ESCAPE)
 							commands[CMD_PLAYER_SKIP_TO_TITLE] = true;
 						break;

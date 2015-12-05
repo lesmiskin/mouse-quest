@@ -4,6 +4,8 @@
 #include "common.h"
 #include "renderer.h"
 
+#define MAX_ENEMIES 200
+
 typedef enum {
 	ENEMY_ANIMATION_IDLE = 0,
 	ENEMY_ANIMATION_DEATH = 1,
@@ -55,7 +57,6 @@ typedef struct {
 	bool collided;
 } Enemy;
 
-#define MAX_ENEMIES 150
 extern void resetEnemies();
 extern void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyCombat combat, double speed, double swayInc);
 extern void hitEnemy(Enemy* enemy, double damage, bool collision);

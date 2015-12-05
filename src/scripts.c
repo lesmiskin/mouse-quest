@@ -110,7 +110,6 @@ void scriptGameFrame(void) {
 					spawnEnemy(140, random(40, 65), random(0, sizeof(EnemyType)), MOVEMENT_STRAIGHT, COMBAT_IDLE, 0, 0);
 					playerOrigin.y = screenBounds.y + 16;
 					useMike = true;
-//					showBackground = false;
 					playMusic("intro-battle-3.ogg", 1);
 					break;
 				case INTRO_BATTLE_MIKE_ENTER:
@@ -187,7 +186,7 @@ void scriptGameFrame(void) {
 				resetItems();
 				useMike = true;
 				playMusic("level-01c.ogg", -1);
- 			}
+			}
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
 				triggerState(STATE_TITLE);
@@ -249,14 +248,6 @@ void scriptRenderFrame(void) {
 			switch(scriptStatus.sceneNumber) {
 				//Show "Les Miskin presents"
 				case INTRO_LOGO: {
-//					if(step.x == 0) {
-//						step = makeCoord(100,100);
-//					}
-//					Coord a = makeCoord(150,150);
-//					Coord stepInc = getStep(a, step);
-//					step.x -= stepInc.x;
-//					step.y -= stepInc.y;
-
 					Sprite presents = makeSprite(getTexture("lm-presents.png"), zeroCoord(), SDL_FLIP_NONE);
 					drawSpriteAbs(presents, /*step*/makeCoord(screenBounds.x/2 - 3, 98));
 					break;

@@ -14,6 +14,7 @@ extern bool canSpawn(ItemType type);
 extern void spawnItem(Coord coord, ItemType type);
 extern void itemInit(void);
 extern void itemGameFrame(void);
+extern void itemShadowFrame(void);
 extern void itemRenderFrame(void);
 extern void itemAnimateFrame(void);
 extern void resetItems(void);

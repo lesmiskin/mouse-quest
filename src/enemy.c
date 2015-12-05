@@ -11,18 +11,8 @@
 //TODO: Plume flicker
 //TODO: Coin pickup sparkle (see: Super Mario World)
 
-typedef struct {
-	Coord origin;
-	Coord parallax;
-	int animFrame;
-	EnemyType enemyType;
-	Coord target;
-} EnemyShot;
-
-#define MAX_SHOTS 25
+#define MAX_SHOTS 500
 #define MAX_SPAWNS 10
-
-static int gameTime;
 
 typedef enum {
 	FORMATION_RANDOM,
@@ -31,6 +21,14 @@ typedef enum {
 	FORMATION_SNAKE,
 	FORMATION_CIRCLE,
 } EnemyFormation;
+
+typedef struct {
+	Coord origin;
+	Coord parallax;
+	int animFrame;
+	EnemyType enemyType;
+	Coord target;
+} EnemyShot;
 
 typedef struct {
 	double lastSpawnTime;
@@ -42,43 +40,52 @@ typedef struct {
 	double speed;
 } EnemySpawn;
 
-EnemySpawn spawns[MAX_SPAWNS];
-int spawnInc = 0;
-
-static double ENEMY_SPEED = 1.0;
-static double ENEMY_SPEED_FAST = 1.8;
-static int FORMATION_INTERVAL = 60;
-static int ENEMY_DISTANCE = 22;
-
-static double HIT_KNOCKBACK = 0.0;
-static double COLLIDE_DAMAGE = 1;
-static double SHOT_DAMAGE = 1;
-static double SHOT_HZ = 1500;
-static double SHOT_SPEED = 1.3;
 
 //TODO: Homing.
 //TODO: Shooter chance ratio.
 
+EnemySpawn spawns[MAX_SPAWNS];
 Enemy enemies[MAX_ENEMIES];
-const int ENEMY_BOUND = 32;
+int spawnInc = 0;
+
+static int gameTime;
 static int enemyCount;
+static int enemyShotCount;
+static EnemyShot enemyShots[MAX_SHOTS];
+static long lastDifficultyTime;
+static double rollSine[5] = { 0.0, 1.25, 2.5, 3.75, 5.0 };
+
+//Debugging settings...
+//static int FORMATION_INTERVAL = 20;
+//static double ENEMY_SPEED = 0.4;
+//static double ENEMY_SPEED_FAST = 0.4;
+//static const double ENEMY_HEALTH = 1.0;
+//static double SHOT_HZ = 500;
+
+static int FORMATION_INTERVAL = 75;
+static double ENEMY_SPEED = 0.9;
+static double ENEMY_SPEED_FAST = 1.8;
+static double SHOT_HZ = 1500;
+static double SHOT_SPEED = 2;
+static const double ENEMY_HEALTH = 2.0;
+
+static double SHOT_DAMAGE = 1;
+
+const int ENEMY_BOUND = 26;
+static const int ENEMY_SHOT_BOUND = 8;
+static const double DIFFICULTY_INTERVAL = 5 / 1000;
+static int ENEMY_DISTANCE = 22;
+static double HIT_KNOCKBACK = 0.0;
+static double COLLIDE_DAMAGE = 1;
+
 static const int MAGNET_IDLE_FRAMES = 8;
 static const int DISK_IDLE_FRAMES = 12;
 static const int VIRUS_IDLE_FRAMES = 6;
 static const int CD_IDLE_FRAMES = 4;
 static const int BUG_IDLE_FRAMES = 6;
 static const int DEATH_FRAMES = 7;
-static const double ENEMY_HEALTH = 1.0;
-//static const double ENEMY_HEALTH = 4.0;
-
-static EnemyShot enemyShots[MAX_SHOTS];
-static int enemyShotCount;
-static const int ENEMY_SHOT_BOUND = 24;
 static const int MAX_VIRUS_SHOT_FRAMES = 4;
 static const int MAX_PLASMA_SHOT_FRAMES = 2;
-static const double DIFFICULTY_INTERVAL = 5 / 1000;
-static long lastDifficultyTime;
-static double rollSine[5] = { 0.0, 1.25, 2.5, 3.75, 5.0 };
 
 static bool invalidEnemy(Enemy *enemy) {
 	return
@@ -90,7 +97,7 @@ static bool invalidEnemyShot(EnemyShot *enemyShot) {
 	return
 		(enemyShot->origin.x == 0 &&
 		enemyShot->origin.y == 0) ||
-		(enemyShot->origin.y > screenBounds.y + ENEMY_SHOT_BOUND/2 ||
+		(enemyShot->parallax.y > screenBounds.y + ENEMY_SHOT_BOUND/2 ||
 		enemyShot->parallax.x > screenBounds.x + ENEMY_SHOT_BOUND/2 ||
 		enemyShot->parallax.x < 0 - ENEMY_SHOT_BOUND/2
 		);
@@ -183,11 +190,11 @@ void animateEnemy(void) {
 
 				//Spawn powerup (only in-game, and punish collisions)
 				if(gameState == STATE_GAME && !enemies[i].collided){
-					if(chance(2) && canSpawn(TYPE_HEALTH)) {
-						spawnItem(enemies[i].formationOrigin, TYPE_HEALTH);
-					}else if(chance(1) && canSpawn(TYPE_WEAPON)) {
+					if(chance(5) && canSpawn(TYPE_WEAPON)) {
 						spawnItem(enemies[i].formationOrigin, TYPE_WEAPON);
-					}else if(chance(10)){
+					}else if(chance(3) && canSpawn(TYPE_HEALTH)) {
+						spawnItem(enemies[i].formationOrigin, TYPE_HEALTH);
+					}else if(chance(15)){
 						spawnItem(enemies[i].formationOrigin, TYPE_FRUIT);
 					}else{
 						spawnItem(enemies[i].formationOrigin, TYPE_COIN);
@@ -317,11 +324,12 @@ void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyComba
 static void spawnShot(Enemy* enemy) {
 	play("Laser_Shoot34.wav");
 
-	Coord travelStep = getStep(playerOrigin, enemy->parallax, 2, true);
+	Coord adjustedShotParallax = parallax(enemy->formationOrigin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_XY, PARALLAX_ADDITIVE);
+	Coord travelStep = getStep(playerOrigin, adjustedShotParallax, SHOT_SPEED, true);
 
 	//TODO: Remove initial texture (not needed - we animate)
 	SDL_Texture* texture = getTexture("virus-shot.png");
-	Sprite defaultSprite = makeSprite(texture, zeroCoord(), SDL_FLIP_VERTICAL);
+	makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
 	EnemyShot shot = {
 		enemy->origin,
 		enemy->parallax,
@@ -340,8 +348,8 @@ void resetEnemies() {
 	enemyShotCount = 0;
 	lastDifficultyTime = 0;
 
-	ENEMY_SPEED = 0.9;
-	FORMATION_INTERVAL = 95;
+//	ENEMY_SPEED = 0.9;
+//	formationInterval = 75;
 }
 
 void enemyGameFrame(void) {
@@ -352,7 +360,6 @@ void enemyGameFrame(void) {
 			for(int i=0; i < enemyCount; i++) {
 				//Increment, looping on 2Pi radians (360 degrees)
 				enemies[i].parallax.y = sineInc(enemies[i].origin.y, &rollSine[i], 0.125, 8);
-//				enemies[i].parallax.x = cosInc(enemies[i].origin.x, &rollSine[i], 0.1, 32);
 			}
 	}
 
@@ -360,7 +367,6 @@ void enemyGameFrame(void) {
 	switch(gameState) {
 		case STATE_INTRO:
 		case STATE_GAME:
-		case STATE_TITLE:
 			for (int i = 0; i < MAX_ENEMIES; i++) {
 				//Skip zeroed, or exploding (the explosion can stay where it is).
 				if (invalidEnemy(&enemies[i]) || enemies[i].dying) continue;
@@ -379,16 +385,16 @@ void enemyGameFrame(void) {
 		lastDifficultyTime = clock();
 	}
 
-	if(due(lastDifficultyTime, 100000)) {
-		ENEMY_SPEED *= 1.05;
-		FORMATION_INTERVAL /= 1.2;
-//		HIT_KNOCKBACK /= 1.1;
-//		SHOT_DAMAGE *= 1.1;
-//		COLLIDE_DAMAGE *= 1.1;
-//		SHOT_SPEED *= 1.1;
-
-		lastDifficultyTime = clock();
-	}
+//	if(due(lastDifficultyTime, 100000)) {
+//		ENEMY_SPEED *= 1.05;
+//		formationInterval /= 1.2;
+////		HIT_KNOCKBACK /= 1.1;
+////		SHOT_DAMAGE *= 1.1;
+////		COLLIDE_DAMAGE *= 1.1;
+////		SHOT_SPEED *= 1.1;
+//
+//		lastDifficultyTime = clock();
+//	}
 
 	//Formation spawner.
 	if(gameTime % FORMATION_INTERVAL == 0) {
@@ -399,7 +405,7 @@ void enemyGameFrame(void) {
 		}else{
 			switch(random(1, 4)) {
 				case 1:
-					spawnFormation(xSpawnPos, FORMATION_LINE, (EnemyType)random(0, 5), random(2,4), ENEMY_SPEED_FAST);
+					spawnFormation(xSpawnPos, FORMATION_LINE, (EnemyType)random(0, 5), 1, ENEMY_SPEED_FAST);
 					break;
 				case 2:
 					spawnFormation(xSpawnPos, FORMATION_TRI, (EnemyType)random(0, 5), 3, ENEMY_SPEED_FAST);
@@ -419,7 +425,7 @@ void enemyGameFrame(void) {
 		//Spawn enemies for formations in view, at spawning intervals, up until it reaches it's max number.
 		if(spawns[i].x == 0 || spawns[i].count == spawns[i].max) continue;
 
-		int spawnOffset = -ENEMY_DISTANCE;
+		int spawnOffset = -ENEMY_DISTANCE * 2;		//HACK: We x2 due to inherent offset in Y-axis parallax fix.
 
 		for(; spawns[i].count < spawns[i].max; spawns[i].count++) {
 			switch(spawns[i].formation) {
@@ -504,10 +510,7 @@ void enemyGameFrame(void) {
 		//Skip zeroed, or exploding (the explosion can stay where it is).
 		if(invalidEnemy(&enemies[i]) || enemies[i].dying) continue;
 
-		//Set parallax against the formation origin.
-		enemies[i].parallax = parallax(enemies[i].formationOrigin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_X, PARALLAX_ADDITIVE);
-
-		//Otherwise, scroll them down the screen
+		//Scroll them down the screen
 		enemies[i].origin.y += enemies[i].speed;
 
 		switch(enemies[i].movement) {
@@ -524,6 +527,9 @@ void enemyGameFrame(void) {
 				enemies[i].formationOrigin = enemies[i].origin;
 				break;
 		}
+
+		//Set parallax against the formation origin.
+		enemies[i].parallax = parallax(enemies[i].formationOrigin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_XY, PARALLAX_ADDITIVE);
 
 		//Have we hit the player? (pass through if dying)
 		Rect enemyBound = makeSquareBounds(enemies[i].parallax, ENEMY_BOUND);
@@ -551,11 +557,8 @@ void enemyGameFrame(void) {
 		enemyShots[i].origin.x += enemyShots[i].target.x;
 		enemyShots[i].origin.y += enemyShots[i].target.y;
 
-		//Scroll down screen.
-//		enemyShots[i].origin.y += SHOT_SPEED;
-
 		//Parallax it
-		enemyShots[i].parallax = parallax(enemyShots[i].origin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_X, PARALLAX_ADDITIVE);
+		enemyShots[i].parallax = parallax(enemyShots[i].origin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_XY, PARALLAX_ADDITIVE);
 
 		//Hit the player?
 		Rect shotBounds = makeSquareBounds(enemyShots[i].parallax, ENEMY_SHOT_BOUND);

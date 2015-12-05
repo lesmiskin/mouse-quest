@@ -12,6 +12,7 @@ typedef enum {
 	PSTATE_DEAD = 32
 } PlayerState;
 
+extern bool godMode;
 extern void smile(void);
 extern bool atFullhealth(void);
 extern void restoreHealth(void);

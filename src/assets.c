@@ -87,13 +87,15 @@ static Asset makeAsset(AssetDef definition) {
 	if(definition.makeAlphaVersion) {
 		SDL_Texture *alphaTexture = SDL_CreateTextureFromSurface(renderer, original);
 		SDL_SetTextureBlendMode(alphaTexture, SDL_BLENDMODE_BLEND);
-		SDL_SetTextureAlphaMod(alphaTexture, 164);
+		SDL_SetTextureAlphaMod(alphaTexture, 96);
 		asset.textures[ASSET_ALPHA] = alphaTexture;
 	}
 	if(definition.makeShadowVersion) {
 		SDL_Texture *shadowTexture = SDL_CreateTextureFromSurface(renderer, original);
 		SDL_SetTextureColorMod(shadowTexture, 0, 0, 0);
-		SDL_SetTextureAlphaMod(shadowTexture, 225);
+		if(ALPHA_SHADOWS) {
+			SDL_SetTextureAlphaMod(shadowTexture, 225);
+		}
 		asset.textures[ASSET_SHADOW] = shadowTexture;
 	}
 	if(definition.makeSuperVersion) {
@@ -194,6 +196,7 @@ static void loadImages(void) {
 		{ "hud-powerup.png", false, false, false, false, false },
 		{ "hud-powerup-double.png", false, false, false, false, false },
 		{ "hud-powerup-triple.png", false, false, false, false, false },
+		{ "hud-powerup-fan.png", false, false, false, false, false },
 		{ "powerup.png", false, true, false, false, false },
 		{ "powerup-double.png", false, true, false, false, false },
 		{ "powerup-double-01.png", false, true, false, false, false },
@@ -203,6 +206,7 @@ static void loadImages(void) {
 		{ "powerup-triple-01.png", false, true, false, false, false },
 		{ "powerup-triple-02.png", false, true, false, false, false },
 		{ "powerup-triple-x2.png", false, true, false, false, false },
+		{ "powerup-fan.png", false, true, false, false, false },
 		{ "grape-01.png", false, true, false, false, false },
 		{ "grape-02.png", false, true, false, false, false },
 		{ "grapes.png", false, true, false, false, false },
@@ -212,13 +216,15 @@ static void loadImages(void) {
 		{ "battery-pack.png", false, true, false, false, false },
 		{ "battery-pack-01.png", false, true, false, false, false },
 		{ "battery-pack-02.png", false, true, false, false, false },
-		{ "battery.png", false, true, false, false, false },
-		{ "battery-half.png", false, false, false, false, false },
-		{ "battery-none.png", false, false, false, false, false },
-		{ "battery-none-01.png", false, false, false, false, false },
-		{ "battery-none-02.png", false, false, false, false, false },
-		{ "battery-low-01.png", false, false, false, false, false },
-		{ "battery-low-02.png", false, false, false, false, false },
+
+		{ "battery.png", true, true, true, true, false },
+		{ "battery-half.png", true, true, true, true, false },
+		{ "battery-low-01.png", true, true, true, true, false },
+		{ "battery-low-02.png", true, true, true, true, false },
+
+		{ "battery-none.png", false, false, true, false, false },
+		{ "battery-none-01.png", false, false, true, false, false },
+		{ "battery-none-02.png", false, false, true, false, false },
 		{ "life.png", false, false, false, false, false },
 		{ "life-half.png", false, false, false, false, false },
 		{ "life-none.png", false, false, false, false, false },

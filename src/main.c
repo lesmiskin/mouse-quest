@@ -17,7 +17,13 @@
 #include "item.h"
 
 static const char *GAME_TITLE = "Mouse Quest";
-static const bool FULLSCREEN = true;
+
+#ifdef DEBUG_WINDOW_T500
+	static const bool FULLSCREEN = false;
+#else
+	static const bool FULLSCREEN = true;
+#endif
+
 bool running = true;
 
 static void initSDL(void) {
@@ -41,7 +47,7 @@ static void initSDL(void) {
 static void initWindow(void) {
 	window = SDL_CreateWindow(
 		GAME_TITLE,
-#ifdef DEBUG_T500
+#ifdef DEBUG_WINDOW_T500
 		1250,		//Off to the window side.
 		0,
 #else
@@ -93,8 +99,20 @@ int main()  {
 	pewInit();
 	itemInit();
 
+
+#ifdef DEBUG_SKIP_TO_GAME
+	triggerState(STATE_GAME);
+#else
 	triggerState(STATE_INTRO);
-//	triggerState(STATE_GAME);
+#endif
+
+#ifdef DEBUG_GODMODE
+	godMode = true;
+#endif
+
+#ifdef DEBUG_FANWEAPONS
+	weaponInc = 3;
+#endif
 
 	long lastRenderFrameTime = clock();
 	long lastGameFrameTime = lastRenderFrameTime;
@@ -131,14 +149,18 @@ int main()  {
 			if(vsync) clearBackground(makeBlack());
 
 			backgroundRenderFrame();
-			enemyShadowFrame();
-			playerShadowFrame();
+			if(ENABLE_SHADOWS) {
+				pewShadowFrame();
+				enemyShadowFrame();
+				playerShadowFrame();
+				itemShadowFrame();
+			}
 			itemRenderFrame();
  			enemyRenderFrame();
 			pewRenderFrame();
-			hudRenderFrame();
 			scriptRenderFrame();
 			playerRenderFrame();
+			hudRenderFrame();
 			faderRenderFrame();
 			updateCanvas();
 		}

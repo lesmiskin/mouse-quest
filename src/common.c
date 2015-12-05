@@ -6,6 +6,10 @@ SDL_Window *window = NULL;
 GameState gameState;
 const bool vsync = false;
 
+const bool ENABLE_PARALLAX = true;
+const bool ENABLE_SHADOWS = true;
+const bool ALPHA_SHADOWS = false;
+
 //Windowed resolutions
 //Coord windowSize = { 224, 256 };		//1:1 scale
 //Coord windowSize = { 448, 512 };		//2:1 scale
@@ -18,14 +22,13 @@ const bool vsync = false;
 //Coord windowSize = { 1600, 900 };
 
 //Native resolution
-Coord windowSize = { 1680, 1050 };
 
-
-#ifdef DEBUG_T500
+#ifdef DEBUG_WINDOW_T500
 	Coord windowSize = { 448, 512 };		//x3 (1px == 4px)
 #else
-//	Coord windowSize = { 896, 1024 };		//x3 (1px == 4px)
-//	Coord windowSize = { 1680, 1050 };		//x3 (1px == 4px)
+	Coord windowSize = { 1680, 1050 };
+//	Coord windowSize = { 896, 1024 };
+//	Coord windowSize = { 1680, 1050 };
 #endif
 
 const int ANIMATION_HZ = 1000 / 12;		//12fps
@@ -251,18 +254,6 @@ double cosInc(double offset, double *sineInc, double speed, double magnitude) {
 	return offset - sineOffset;
 }
 
-//void angleMove() {
-//	if(titleCoord.x == 0) {
-//		titleCoord = makeCoord(50,50);
-//	}else{
-//		titleCoord.x += cos(45) * 2;
-//		titleCoord.y += sin(45) * 2;
-//	}
-//}
-
-//In radians
-
-
 double getAngle(Coord a, Coord b) {
 	return atan2(b.y - a.y, b.x - a.x);
 }
@@ -276,10 +267,8 @@ Coord getStep(Coord a, Coord b, double speed, bool negativeMagic) {
 
 	//Do trig to find the width and height of the next movement.
 	//TODO: Figure out weird neg magic going on here...
-	bool negY = sin(angle) < 0;
 	return makeCoord(
 		(cos(angle) * (negativeMagic ? -speed : speed)),
 		(sin(angle) * (negativeMagic ? -speed : speed))
-//		(sin(angle) * (negY ? -speed : speed))
 	);
 }

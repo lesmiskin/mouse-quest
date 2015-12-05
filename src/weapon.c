@@ -5,6 +5,9 @@
 #include "enemy.h"
 #include "SDL2/SDL_mixer.h"
 #include "weapon.h"
+#include "input.h"
+
+#define MAX_SHOTS 500
 
 typedef enum {
 	NORTH,
@@ -48,8 +51,6 @@ typedef struct {
 	WeaponPattern pattern;
 } Weapon;
 
-#define MAX_SHOTS 50
-const bool SHOT_SHADOWS = true;
 int weaponInc = 0;
 static Weapon weapons[MAX_WEAPONS];
 //static const int SHOT_HZ = 1000 / 11 ;
@@ -129,6 +130,8 @@ void upgradeWeapon(void) {
 	weaponInc++;
 }
 
+static int fanPewInc = 0;
+
 void pew(void) {
 	//Rate-limiter, and HACK for skipping initial shots post-menu.
 	if(	!timer(&lastShotTime, weapons[weaponInc].speed) ||
@@ -137,6 +140,7 @@ void pew(void) {
 		return;
 	}
 
+//	SDL_HapticRumblePlay(haptic, 0.4, 100);
 	play("Laser_Shoot18.wav");
 
 	//Ensure we stick within the bounds of our Shot array.
@@ -148,13 +152,13 @@ void pew(void) {
 			spawnPew(-1, -5, NORTH);
 			break;
 		case PATTERN_DUAL:
-			spawnPew(3, -5, NORTH);
-			spawnPew(-3, -5, NORTH);
+			spawnPew(2, -5, NORTH);
+			spawnPew(-4, -5, NORTH);
 			break;
 		case PATTERN_TRIAD:
-			spawnPew(0, -5, NORTH);
-			spawnPew(-2, -2, NORTH_EAST);
-			spawnPew(2, -2, NORTH_WEST);
+			spawnPew(-1, -5, NORTH);
+			spawnPew(-3, -2, NORTH_EAST);
+			spawnPew(1, -2, NORTH_WEST);
 			break;
 		case PATTERN_MINI:
 			if(minigunLastSide == 0) {
@@ -186,14 +190,35 @@ void pew(void) {
 			}
 			break;
 		case PATTERN_FAN:
-			spawnPew(0, -5, NORTH);
-			spawnPew(-2, -2, NORTH_EAST);
-			spawnPew(-2, 0, EAST);
-			spawnPew(-2, 2, SOUTH_EAST);
-			spawnPew(0, 2, SOUTH);
-			spawnPew(2, 2, SOUTH_WEST);
-			spawnPew(5, 0, WEST);
-			spawnPew(2, -2, NORTH_WEST);
+			fanPewInc = fanPewInc == 7 ? 0 : fanPewInc + 1;
+
+			switch(fanPewInc) {
+				case 0:
+					spawnPew(-1, -5, NORTH);
+					break;
+				case 1:
+					spawnPew(-1, -2, NORTH_EAST);
+					break;
+				case 2:
+					spawnPew(-1, 0, EAST);
+					break;
+				case 3:
+					spawnPew(-1, 2, SOUTH_EAST);
+					break;
+				case 4:
+					spawnPew(-1, 2, SOUTH);
+					break;
+				case 5:
+					spawnPew(1, 2, SOUTH_WEST);
+					break;
+				case 6:
+					spawnPew(5, 0, WEST);
+					break;
+				case 7:
+					spawnPew(1, -2, NORTH_WEST);
+					break;
+			}
+
 			break;
 	}
 }
@@ -213,72 +238,74 @@ void pewGameFrame(void) {
 			if(inBounds(shots[i].coord, enemyBound)) {
 				hitEnemy(&enemies[p], SHOT_DAMAGE, false);
 
-				//Set shot as null, and stop any further hit detection.
+				//Set shot as null, and cancel out of this loop (since this shot is now finished with).
 				shots[i] = nullShot();
 				break;
 			}
 		}
 
+		//If we left the above loop early (e.g. hit something) continue onto the next shot.
+		if(invalidShot(&shots[i])) {
+			continue;
+		}
+
 		//If we haven't hit anything - adjust shot for velocity and heading.
-		if(!invalidShot(&shots[i])){
-			switch(shots[i].direction) {
-				case NORTH:
-					shots[i].coord = deriveCoord(shots[i].coord, 0, -shots[i].speed);
-					break;
-				case SOUTH:
-					shots[i].coord = deriveCoord(shots[i].coord, 0, shots[i].speed);
-					shots[i].angle = 180;
-					break;
-				case EAST:
-					shots[i].coord = deriveCoord(shots[i].coord, +shots[i].speed, 0);
-					shots[i].angle = 90;
-					break;
-				case WEST:
-					shots[i].coord = deriveCoord(shots[i].coord, -shots[i].speed, 0);
-					shots[i].angle = 270;
-					break;
-				case NORTH_EAST:
-					shots[i].coord = deriveCoord(shots[i].coord, shots[i].speed, -shots[i].speed);
-					shots[i].angle = 45;
-					break;
-				case NORTH_WEST:
-					shots[i].coord = deriveCoord(shots[i].coord, -shots[i].speed, -shots[i].speed);
-					shots[i].angle = 315;
-					break;
-				case SOUTH_EAST:
-					shots[i].angle = 135;
-					shots[i].coord = deriveCoord(shots[i].coord, shots[i].speed, shots[i].speed);
-					break;
-				case SOUTH_WEST:
-					shots[i].angle = 225;
-					shots[i].coord = deriveCoord(shots[i].coord, -shots[i].speed, shots[i].speed);
-					break;
- 			}
+		switch(shots[i].direction) {
+			case NORTH:
+				shots[i].coord = deriveCoord(shots[i].coord, 0, -shots[i].speed);
+				break;
+			case SOUTH:
+				shots[i].coord = deriveCoord(shots[i].coord, 0, shots[i].speed);
+				shots[i].angle = 180;
+				break;
+			case EAST:
+				shots[i].coord = deriveCoord(shots[i].coord, +shots[i].speed, 0);
+				shots[i].angle = 90;
+				break;
+			case WEST:
+				shots[i].coord = deriveCoord(shots[i].coord, -shots[i].speed, 0);
+				shots[i].angle = 270;
+				break;
+			case NORTH_EAST:
+				shots[i].coord = deriveCoord(shots[i].coord, shots[i].speed, -shots[i].speed);
+				shots[i].angle = 45;
+				break;
+			case NORTH_WEST:
+				shots[i].coord = deriveCoord(shots[i].coord, -shots[i].speed, -shots[i].speed);
+				shots[i].angle = 315;
+				break;
+			case SOUTH_EAST:
+				shots[i].angle = 135;
+				shots[i].coord = deriveCoord(shots[i].coord, shots[i].speed, shots[i].speed);
+				break;
+			case SOUTH_WEST:
+				shots[i].angle = 225;
+				shots[i].coord = deriveCoord(shots[i].coord, -shots[i].speed, shots[i].speed);
+				break;
 		}
 	}
 }
 
-void pewRenderFrame(void) {
+void pewShadowFrame(void) {
+	//Draw the shadows first (so we don't shadow on top of other shots)
+	for(int i=0; i < MAX_SHOTS; i++) {
+		//Skip zeroed.
+		if (invalidShot(&shots[i])) continue;
 
-	if(SHOT_SHADOWS) {
-		//Draw the shadows first (so we don't shadow on top of other shots)
-		for(int i=0; i < MAX_SHOTS; i++) {
-			//Skip zeroed.
-			if (invalidShot(&shots[i])) continue;
+		//Choose frame.
+		char frameFile[50];
+		sprintf(frameFile, "shot-neon-%02d.png", shots[i].animFrame);
+		SDL_Texture *shotShadowTexture = getTextureVersion(frameFile, ASSET_SHADOW);
 
-			//Choose frame.
-			char frameFile[50];
-			sprintf(frameFile, "shot-neon-%02d.png", shots[i].animFrame);
-			SDL_Texture *shotShadowTexture = getTextureVersion(frameFile, ASSET_SHADOW);
-
-			//Shadow.
-			Sprite shotShadow = makeSprite(shotShadowTexture, zeroCoord(), SDL_FLIP_NONE);
-			Coord shadowCoord = parallax(shots[i].coord, PARALLAX_SUN, PARALLAX_LAYER_SHADOW, PARALLAX_X, PARALLAX_SUBTRACTIVE);
-			shadowCoord.y += STATIC_SHADOW_OFFSET;
-			drawSpriteAbsRotated(shotShadow, shadowCoord, shots[i].angle);
-		}
+		//Shadow.
+		Sprite shotShadow = makeSprite(shotShadowTexture, zeroCoord(), SDL_FLIP_NONE);
+		Coord shadowCoord = parallax(shots[i].coord, PARALLAX_SUN, PARALLAX_LAYER_SHADOW, PARALLAX_X, PARALLAX_SUBTRACTIVE);
+		shadowCoord.y += STATIC_SHADOW_OFFSET;
+		drawSpriteAbsRotated(shotShadow, shadowCoord, shots[i].angle);
 	}
+}
 
+void pewRenderFrame(void) {
 	//We loop through the projectile array, drawing any shots that are still initialised.
 	for(int i=0; i < MAX_SHOTS; i++) {
 		//Skip zeroed.
@@ -307,10 +334,12 @@ void pewInit(void) {
 	Weapon w1 = { SPEED_NORMAL, PATTERN_SINGLE };
 	Weapon w2 = { SPEED_FAST, PATTERN_DUAL };
 	Weapon w3 = { SPEED_FAST, PATTERN_TRIAD };
+	Weapon w4 = { 1000 / 70, PATTERN_FAN };
 
 	weapons[0] = w1;
 	weapons[1] = w2;
 	weapons[2] = w3;
+	weapons[3] = w4;
 
 	resetPew();
 }

@@ -38,12 +38,13 @@ static bool isDying() {
 	return playerState == PSTATE_DYING;
 }
 
+bool godMode = false;
 bool useMike;		//onscreen, responds to actions etc.
 bool hideMike;		//still there, but don't render this frame.
 double intervalFrames;
 double dieInc = 0;
 Coord playerOrigin;
-double playerStrength = 1.0;
+double playerStrength = 8.0;
 double playerHealth;
 static long deathTime = 0;
 static const double PLAYER_MAX_SPEED = 4.0;
@@ -67,7 +68,7 @@ static const double HIT_KNOCKBACK = 0.5;
 bool playerShooting;
 bool begunShooting;
 static double BUBBLE_TIME_SECONDS = 1.5;
-static bool BUBBLE_FINISHED = false;
+static bool bubbleFinished = false;
 static long bubbleLastTime;
 static char* frameName;
 static long lastHitTime;
@@ -92,6 +93,8 @@ extern bool atFullhealth(void) {
 }
 
 extern void restoreHealth(void) {
+	if(godMode) return;
+
 	playerHealth = playerStrength;
 }
 
@@ -104,11 +107,15 @@ void hitPlayer(double damage) {
 		return;
 	}
 
+//	SDL_HapticRumblePlay(haptic, 5.00, 750);
 	play("Hit_Hurt18.wav");
-	playerHealth -= damage;
 
-	//Reset weapon to default when hit as *PUNISHMENT* (muahaha!)
-	weaponInc = 0;
+	//Only apply lasting effects if we don't have godmode on.
+	if(!godMode) {
+		playerHealth -= damage;
+		//Reset weapon to default when hit as *PUNISHMENT* (muahaha!)
+		weaponInc = 0;
+	}
 
 	lastHitTime = clock();
 	pain = true;
@@ -272,9 +279,9 @@ void playerRenderFrame(void) {
 			break;
 
 		case STATE_GAME:
-			if(!BUBBLE_FINISHED) {
+			if(!bubbleFinished) {
 				if(timer(&bubbleLastTime, toMilliseconds(BUBBLE_TIME_SECONDS))) {
-					BUBBLE_FINISHED = true;
+					bubbleFinished = true;
 				}else{
 					Sprite bubbleSprite = makeSprite(getTexture("speech-entry.png"), zeroCoord(), SDL_FLIP_NONE);
 					Coord position = playerOrigin;
@@ -412,6 +419,7 @@ void resetPlayer() {
 	playerHealth = playerStrength;
 	momentumState = zeroCoord();
 	pain = false;
+	bubbleFinished = false;
 
 	playerOrigin = makeCoord(
 		(screenBounds.x / 2),

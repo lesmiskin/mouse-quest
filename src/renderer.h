@@ -36,6 +36,7 @@ typedef enum {
 } ParallaxDimensions;
 
 extern const int STATIC_SHADOW_OFFSET;
+extern Coord getParallaxOffset(void);
 extern Coord parallax(Coord subject, ParallaxReference reference, ParallaxLayer layer, ParallaxDimensions dimensions, ParallaxMode mode);
 extern bool inScreenBounds(Coord subject);
 extern Coord screenBounds;

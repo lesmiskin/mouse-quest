@@ -131,13 +131,19 @@ Coord getSunPosition(void) {
 }
 
 Coord getParallaxOffset(void) {
+	//IMPORTANT: We only ever want the *X axis parallax*. Omitting the
+	// Y axis causes trig enemy shots to work correctly, when
+	// parallax is enabled.
+
 	return makeCoord(
 		(screenBounds.x / 2) - playerOrigin.x,
-		(screenBounds.y / 2) - playerOrigin.y
+		(screenBounds.y / 2)
 	);
 }
 
 Coord parallax(Coord subject, ParallaxReference reference, ParallaxLayer layer, ParallaxDimensions dimensions, ParallaxMode mode) {
+	if(!ENABLE_PARALLAX) return subject;
+
 	//Use a different frame of reference depending on parameter.
 	Coord relativeOrigin = reference == PARALLAX_SUN ?
 		getSunPosition() :
