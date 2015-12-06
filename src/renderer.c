@@ -8,6 +8,7 @@
 //TODO: Stop sharing the renderScale, and do it properly! (Present an already-scaled data structure).
 //TODO: Better way of returning/zeroing structures?
 
+SDL_Texture *renderBuffer;
 const int STATIC_SHADOW_OFFSET = 8;
 SDL_Renderer *renderer = NULL;
 static int renderScale;
@@ -110,9 +111,20 @@ void clearBackground(Colour colour) {
 	SDL_RenderClear(renderer);
 }
 void updateCanvas(void) {
-	SDL_RenderPresent(renderer);			//For geometry/font updates.
+	//Change rendering target to window.
+	SDL_SetRenderTarget(renderer, NULL);
+
+	//Activate scaler, and blit the buffer to the screen.
+	SDL_RenderSetLogicalSize(renderer, pixelGrid.x, pixelGrid.y);
+	SDL_RenderCopy(renderer, renderBuffer, NULL, NULL);
+
+	//Actually update the screen itself.
 //	SDL_RenderClear(renderer);
+	SDL_RenderPresent(renderer);
 //	SDL_UpdateWindowSurface(window);
+
+	//Reset render target back to texture buffer
+	SDL_SetRenderTarget(renderer, renderBuffer);
 }
 
 void shutdownRenderer(void) {
@@ -258,10 +270,21 @@ void initRenderer(void) {
 		BASE_SCALE_HEIGHT / renderScale
 	);
 
+	//IMPORTANT: Make a texture which we render all contents to, then efficiently scale just this one
+	// texture upon rendering. This creates a *massive* speedup. Thanks to: https://forums.libsdl.org/viewtopic.php?t=10567
+	renderBuffer = SDL_CreateTexture(
+		renderer,
+		SDL_PIXELFORMAT_RGB24,
+		SDL_TEXTUREACCESS_TARGET,
+		(int)pixelGrid.x,
+		(int)pixelGrid.y
+	);
+	SDL_SetRenderTarget(renderer, renderBuffer);
+
 	//Use SDL to scale our game activity so it's independent of the output resolution.
 	//Base it on height, since we use a portrait, not landscape game window.
-	double sdlScale = windowSize.y / BASE_SCALE_HEIGHT;
-	SDL_RenderSetScale(renderer, sdlScale, sdlScale);
+//	double sdlScale = windowSize.y / BASE_SCALE_HEIGHT;
+//	SDL_RenderSetScale(renderer, sdlScale, sdlScale);
 
 	//Clear the entire canvas, then use SDL to scale up our virtual resolution -
 	// allowing us to have a centered, portrait window :)
@@ -269,8 +292,8 @@ void initRenderer(void) {
 	//Rachaie's background.
 //	SDL_SetRenderDrawColor(renderer, 255,128,240,64);
 
-	SDL_RenderClear(renderer);
-	SDL_RenderSetLogicalSize(renderer, pixelGrid.x, pixelGrid.y);
+//	SDL_RenderClear(renderer);
+//	SDL_RenderSetLogicalSize(renderer, pixelGrid.x, pixelGrid.y);
 
 	//Alternative clipping strategy:
 //	SDL_Rect viewportRect = {100, 0, pixelGrid.x, pixelGrid.y};
@@ -280,8 +303,14 @@ void initRenderer(void) {
 //  SDL_Rect clipRect = {0, 0, pixelGrid.x, pixelGrid.y};
 //	SDL_RenderSetClipRect(renderer, &clipRect);
 
-//	SDL_SetWindowDisplayMode()
-
+/*	SDL_DisplayMode dp = {
+		SDL_PIXELFORMAT_RGB24,
+		200,
+		200,
+		60
+	};
+	SDL_SetWindowDisplayMode(window, &dp);
+*/
 	assert(renderer != NULL);
 
 	makeFader();

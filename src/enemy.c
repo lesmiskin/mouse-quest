@@ -11,7 +11,7 @@
 //TODO: Plume flicker
 //TODO: Coin pickup sparkle (see: Super Mario World)
 
-#define MAX_SHOTS 500
+#define MAX_SHOTS 100
 #define MAX_SPAWNS 10
 
 typedef enum {
@@ -87,7 +87,7 @@ static const int DEATH_FRAMES = 7;
 static const int MAX_VIRUS_SHOT_FRAMES = 4;
 static const int MAX_PLASMA_SHOT_FRAMES = 2;
 
-static bool invalidEnemy(Enemy *enemy) {
+bool invalidEnemy(Enemy *enemy) {
 	return
 		enemy->animFrame == 0 ||
 		enemy->parallax.y > screenBounds.y + ENEMY_BOUND / 2;

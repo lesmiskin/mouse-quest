@@ -194,11 +194,16 @@ void playerAnimate(void) {
 		//Pain: Flicker during recovery time.
 		if(pain) {
 			if(flickerPain) {
-				frameVersion = ASSET_ALPHA;
+//				frameVersion = ASSET_ALPHA;
+				hideMike = true;
 				flickerPain = false;
 			}else{
+				hideMike = false;
 				flickerPain = true;
 			}
+		//Ensure mike is always restored after being in pain.
+		}else if(hideMike) {
+			hideMike = false;
 		}
 
 		//Shooting.

@@ -84,6 +84,7 @@ extern double getFPS(long now, long lastFrameTime);
 extern bool due(long compareTime, double milliseconds);
 
 extern SDL_Window *window;
+extern SDL_PixelFormat *screenFormat;
 extern bool running;
 extern bool fileExists(const char *path);
 extern long ticsToMilliseconds(long tics);

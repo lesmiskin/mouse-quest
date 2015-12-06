@@ -58,8 +58,16 @@ static const int PLATFORM_SEED_X = 3;
 static const int PLATFORM_SEED_Y = 3;
 static const int PLATFORM_SEED_DENSITY = 75;
 
-static bool isNullPlanet(Planet* planet) {
-	return planet->speed == 0;
+static bool invalidPlanet(Planet* planet) {
+	return
+		planet->speed == 0 ||
+		planet->origin.y - PLANET_BOUND > screenBounds.y;
+}
+
+static bool invalidPlatform(Platform* platform) {
+	return
+		platform->origin.x == 0 ||
+		platform->origin.y - (PLATFORM_SEED_Y * PLATFORM_SCALE * PLATFORM_TILE_SIZE) > screenBounds.y;
 }
 
 SDL_Texture* createPlatformTexture(void) {
@@ -67,8 +75,8 @@ SDL_Texture* createPlatformTexture(void) {
 		renderer,
 		SDL_PIXELFORMAT_UNKNOWN,
 		SDL_TEXTUREACCESS_TARGET,
-		(int)PLATFORM_SEED_X * PLATFORM_SCALE * PLATFORM_TILE_SIZE,
-		(int)PLATFORM_SEED_Y * PLATFORM_SCALE * PLATFORM_TILE_SIZE
+		PLATFORM_SEED_X * PLATFORM_SCALE * PLATFORM_TILE_SIZE,
+		PLATFORM_SEED_Y * PLATFORM_SCALE * PLATFORM_TILE_SIZE
 	);
 }
 
@@ -122,11 +130,11 @@ void backgroundRenderFrame(void) {
 
 	//If we're not showing the background, at least clear it on every frame so we don't keep previously-
 	// rendered sprites around on it (think: Doom noclip).
-	if(!showBackground) {
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-		SDL_RenderClear(renderer);
-		return;
-	}
+//	if(!showBackground) {
+//		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+//		SDL_RenderClear(renderer);
+//		return;
+//	}
 
 	//We show two large textures, one after the other, to create a seamless scroll. Once the first texture
 	// moves out of the viewport, however, we snap it back to the top.
@@ -167,7 +175,7 @@ void backgroundRenderFrame(void) {
 	//Render planets.
 	for(int i=0; i < MAX_PLANETS; i++) {
 		//Skip null planets.
-		if(isNullPlanet(&planets[i])) continue;
+		if(invalidPlanet(&planets[i])) continue;
 		Coord parallaxOrigin = parallax(planets[i].origin, PARALLAX_PAN, PARALLAX_LAYER_PLANET, PARALLAX_X, PARALLAX_ADDITIVE);
 		drawSpriteAbs(planets[i].sprite, parallaxOrigin);
 	}
@@ -175,7 +183,7 @@ void backgroundRenderFrame(void) {
 	//Draw 'base' platforms.
 	for(int i=0; i < MAX_PLATFORMS; i++) {
 		//Skip null platforms.
-		if(platforms[i].origin.x == 0) continue;
+		if(invalidPlatform(&platforms[i])) continue;
 
 		Coord parallaxOrigin = parallax(platforms[i].origin, PARALLAX_PAN, PARALLAX_LAYER_PLATFORM, PARALLAX_X, PARALLAX_ADDITIVE);
 		drawSpriteAbs(platforms[i].sprite, parallaxOrigin);
@@ -343,6 +351,7 @@ void backgroundGameFrame(void) {
 
 	//Scroll planets.
 	for(int i=0; i < MAX_PLANETS; i++) {
+		if(invalidPlanet(&planets[i])) continue;
 		planets[i].origin.y += planets[i].speed;
 	}
 
@@ -360,8 +369,9 @@ void backgroundGameFrame(void) {
 		nextPlatformSpawnSeconds = random(PLATFORM_SPAWN_MIN_SECONDS, PLATFORM_SPAWN_MAX_SECONDS);
 	}
 
-	//Scroll planets.
+	//Scroll platforms.
 	for(int i=0; i < MAX_PLATFORMS; i++) {
+		if(invalidPlatform(&platforms[i])) continue;
 		platforms[i].origin.y += PLATFORM_SCROLL_SPEED;
 	}
 }

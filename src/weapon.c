@@ -7,7 +7,7 @@
 #include "weapon.h"
 #include "input.h"
 
-#define MAX_SHOTS 500
+#define MAX_SHOTS 50
 
 typedef enum {
 	NORTH,
@@ -231,7 +231,7 @@ void pewGameFrame(void) {
 		//Toggle hit animation on enemies if within range.
 		for(int p=0; p < MAX_ENEMIES; p++) {
 			//Skip if the enemy is already dying.
-			if(enemies[p].dying) continue;
+			if(invalidEnemy(&enemies[p]) || enemies[p].dying) continue;
 
 			//If he's within our projectile bounds.
 			Rect enemyBound = makeSquareBounds(enemies[p].parallax, ENEMY_BOUND);
@@ -245,9 +245,7 @@ void pewGameFrame(void) {
 		}
 
 		//If we left the above loop early (e.g. hit something) continue onto the next shot.
-		if(invalidShot(&shots[i])) {
-			continue;
-		}
+		if(invalidShot(&shots[i])) continue;
 
 		//If we haven't hit anything - adjust shot for velocity and heading.
 		switch(shots[i].direction) {
@@ -293,7 +291,7 @@ void pewShadowFrame(void) {
 		if (invalidShot(&shots[i])) continue;
 
 		//Choose frame.
-		char frameFile[50];
+		char frameFile[20];
 		sprintf(frameFile, "shot-neon-%02d.png", shots[i].animFrame);
 		SDL_Texture *shotShadowTexture = getTextureVersion(frameFile, ASSET_SHADOW);
 
@@ -312,7 +310,7 @@ void pewRenderFrame(void) {
 		if(invalidShot(&shots[i])) continue;
 
 		//Choose frame.
-		char frameFile[50];
+		char frameFile[20];
 		sprintf(frameFile, "shot-neon-%02d.png", shots[i].animFrame);
 		SDL_Texture *shotTexture = getTexture(frameFile);
 

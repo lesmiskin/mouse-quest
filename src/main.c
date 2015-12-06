@@ -56,8 +56,14 @@ static void initWindow(void) {
 #endif
 		(int)windowSize.x,					//dimensions
 		(int)windowSize.y,
-		SDL_WINDOW_OPENGL | (FULLSCREEN ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_MAXIMIZED)
+		SDL_WINDOW_OPENGL |
+		SDL_WINDOW_INPUT_FOCUS |
+		SDL_WINDOW_MOUSE_FOCUS |
+		(FULLSCREEN ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_MAXIMIZED)
 	);
+
+	//So we know what format we need to convert assets to.
+	screenFormat = SDL_GetWindowSurface(window)->format;
 
 	//Hide cursor in fullscreen
 	if(FULLSCREEN) SDL_ShowCursor(SDL_DISABLE);
