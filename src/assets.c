@@ -64,7 +64,7 @@ static Asset makeAsset(AssetDef definition) {
 
 	//Load file from disk.
 	SDL_Surface *original = IMG_Load(absPath);
-//	SDL_Surface *original = SDL_ConvertSurface(unoptimised, screenFormat, 0);
+//	SDL_Surface *original = SDL_ConvertSurface(unoptimised, SDL_PIXELFORMAT_ABGR8888, 0);
 	free(absPath);
 
 	Asset asset = {	definition.filename	};

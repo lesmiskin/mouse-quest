@@ -256,6 +256,7 @@ void initRenderer(void) {
 		-1,							            //insert at default index position for renderer list.
 		SDL_RENDERER_ACCELERATED |              //should use hardware acceleration
 		SDL_RENDERER_TARGETTEXTURE          	//supports rendering to textures.
+//		| SDL_RENDERER_PRESENTVSYNC
 	);
 
 	//TODO: We need some prose to describe the concepts at play here. Currently very confusing.
@@ -279,7 +280,6 @@ void initRenderer(void) {
 		(int)pixelGrid.x,
 		(int)pixelGrid.y
 	);
-	SDL_SetRenderTarget(renderer, renderBuffer);
 
 	//Use SDL to scale our game activity so it's independent of the output resolution.
 	//Base it on height, since we use a portrait, not landscape game window.
@@ -290,9 +290,11 @@ void initRenderer(void) {
 	// allowing us to have a centered, portrait window :)
 
 	//Rachaie's background.
-//	SDL_SetRenderDrawColor(renderer, 255,128,240,64);
-
 //	SDL_RenderClear(renderer);
+//	SDL_RenderPresent(renderer);
+
+	SDL_SetRenderTarget(renderer, renderBuffer);
+
 //	SDL_RenderSetLogicalSize(renderer, pixelGrid.x, pixelGrid.y);
 
 	//Alternative clipping strategy:
@@ -311,6 +313,11 @@ void initRenderer(void) {
 	};
 	SDL_SetWindowDisplayMode(window, &dp);
 */
+//	SDL_SetHint(SDL_HINT_FRAMEBUFFER_ACCELERATION, "opengl");
+//	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+//	SDL_SetHint(SDL_HINT_FRAMEBUFFER_ACCELERATION, "1");
+
+//	SDL_SetWindowDisplayMode(window, &dp);
 	assert(renderer != NULL);
 
 	makeFader();

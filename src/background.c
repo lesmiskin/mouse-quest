@@ -121,7 +121,7 @@ SDL_Texture* initBackgroundFrame(char* filename) {
 	}
 
 	//Restore renderer context back to the window canvas.
-	SDL_SetRenderTarget(renderer, NULL);
+	SDL_SetRenderTarget(renderer, renderBuffer);
 
 	return tileMap;
 }
@@ -312,8 +312,8 @@ Platform makePlatform(Coord origin) {
 		}
 	}
 
-	//Restore renderer context back to the window canvas.
-	SDL_SetRenderTarget(renderer, NULL);
+	//Restore renderer context back to the render buffer.
+	SDL_SetRenderTarget(renderer, renderBuffer);
 	p.sprite = makeSprite(canvas, zeroCoord(), SDL_FLIP_NONE);
 
 	return p;

@@ -190,35 +190,15 @@ void pew(void) {
 			}
 			break;
 		case PATTERN_FAN:
-			fanPewInc = fanPewInc == 7 ? 0 : fanPewInc + 1;
-
-			switch(fanPewInc) {
-				case 0:
-					spawnPew(-1, -5, NORTH);
-					break;
-				case 1:
-					spawnPew(-1, -2, NORTH_EAST);
-					break;
-				case 2:
-					spawnPew(-1, 0, EAST);
-					break;
-				case 3:
-					spawnPew(-1, 2, SOUTH_EAST);
-					break;
-				case 4:
-					spawnPew(-1, 2, SOUTH);
-					break;
-				case 5:
-					spawnPew(1, 2, SOUTH_WEST);
-					break;
-				case 6:
-					spawnPew(5, 0, WEST);
-					break;
-				case 7:
-					spawnPew(1, -2, NORTH_WEST);
-					break;
-			}
-
+//			fanPewInc = fanPewInc == 7 ? 0 : fanPewInc + 1;
+			spawnPew(-1, -5, NORTH);
+			spawnPew(-1, -2, NORTH_EAST);
+			spawnPew(-1, 0, EAST);
+			spawnPew(-1, 2, SOUTH_EAST);
+			spawnPew(-1, 2, SOUTH);
+			spawnPew(1, 2, SOUTH_WEST);
+			spawnPew(5, 0, WEST);
+			spawnPew(1, -2, NORTH_WEST);
 			break;
 	}
 }
@@ -332,7 +312,7 @@ void pewInit(void) {
 	Weapon w1 = { SPEED_NORMAL, PATTERN_SINGLE };
 	Weapon w2 = { SPEED_FAST, PATTERN_DUAL };
 	Weapon w3 = { SPEED_FAST, PATTERN_TRIAD };
-	Weapon w4 = { 1000 / 70, PATTERN_FAN };
+	Weapon w4 = { SPEED_FAST, PATTERN_FAN };
 
 	weapons[0] = w1;
 	weapons[1] = w2;

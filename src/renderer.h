@@ -35,6 +35,7 @@ typedef enum {
 	PARALLAX_XY = 3,
 } ParallaxDimensions;
 
+extern SDL_Texture *renderBuffer;
 extern const int STATIC_SHADOW_OFFSET;
 extern Coord getParallaxOffset(void);
 extern Coord parallax(Coord subject, ParallaxReference reference, ParallaxLayer layer, ParallaxDimensions dimensions, ParallaxMode mode);
