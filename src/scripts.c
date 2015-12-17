@@ -320,7 +320,7 @@ void initScripts(void) {
 	game.totalScenes = 1;
 	scripts[STATE_GAME] = game;
 
-	gameOver.scenes[0] = 							newTimedStep(SCENE_LOOP, 5000, FADE_OUT);
+	gameOver.scenes[0] = 							newTimedStep(SCENE_LOOP, 10000, FADE_OUT);
 	gameOver.scenes[1] = 							newCueStep();
 	gameOver.totalScenes = 2;
 	scripts[STATE_GAME_OVER] = gameOver;

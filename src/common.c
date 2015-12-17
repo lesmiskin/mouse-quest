@@ -25,8 +25,10 @@ const bool ALPHA_SHADOWS = false;
 //Native resolution
 
 #ifdef DEBUG_WINDOW_T500
+	bool FULLSCREEN = false;
 	Coord windowSize = { 448, 512 };		//x3 (1px == 4px)
 #else
+	bool FULLSCREEN = true;
 	Coord windowSize = { 1680, 1050 };
 //Coord windowSize = { 1360, 768 };		//Perfect 3:1.
 //	Coord windowSize = { 896, 1024 };

@@ -400,8 +400,8 @@ void enemyGameFrame(void) {
 	if(gameTime % FORMATION_INTERVAL == 0) {
 		int xSpawnPos = random(0, (int)screenBounds.x + 33);			//HACK!
 
-		if(chance(33)) {
-			spawnFormation(xSpawnPos, FORMATION_RANDOM, (EnemyType)random(0, 5), random(4, 6), ENEMY_SPEED);
+   		if(chance(5)) {
+			spawnFormation(xSpawnPos, FORMATION_RANDOM, (EnemyType)random(0, 5), random(3, 4), ENEMY_SPEED);
 		}else{
 			switch(random(1, 4)) {
 				case 1:

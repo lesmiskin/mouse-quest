@@ -4,6 +4,8 @@
 #include "SDL.h"
 #include <stdbool.h>
 
+extern bool FULLSCREEN;
+
 //#define DEBUG_WINDOW_T500
 //#define DEBUG_SKIP_TO_GAME
 //#define DEBUG_GODMODE

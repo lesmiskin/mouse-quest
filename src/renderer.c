@@ -13,8 +13,19 @@ const int STATIC_SHADOW_OFFSET = 8;
 SDL_Renderer *renderer = NULL;
 static int renderScale;
 static const double PIXEL_SCALE = 1;				//pixel doubling for assets.
-static const int BASE_SCALE_WIDTH = 224;		//our base scale for all game activity.
-static const int BASE_SCALE_HEIGHT = 256;		//our base scale for all game activity.
+
+//ORIGINAL
+static const int BASE_SCALE_WIDTH = 224;
+static const int BASE_SCALE_HEIGHT = 256;
+
+//4:3
+//static const int BASE_SCALE_WIDTH = 320;
+//static const int BASE_SCALE_HEIGHT = 240;
+
+//16:10
+//static const int BASE_SCALE_WIDTH = 380;
+//static const int BASE_SCALE_HEIGHT = 240;
+
 Coord pixelGrid;								//helps aligning things to the tiled background.
 Coord screenBounds;
 static const int PARALLAX_SCALE_DIVISOR = 10;
@@ -63,7 +74,7 @@ void drawSprite(Sprite drawSprite, Coord origin) {
 }
 
 //Optional absolutely-positioned drawing, for precise character movements.
-void drawSpriteAbsRotated(Sprite sprite, Coord origin, double angle) {
+void drawSpriteAbsRotated2(Sprite sprite, Coord origin, double angle, double scale) {
 	//Ensure we're always calling this with an initialised sprite_t.
 	assert(sprite.texture != NULL);
 
@@ -79,8 +90,8 @@ void drawSpriteAbsRotated(Sprite sprite, Coord origin, double angle) {
 	SDL_Rect destination  = {
 		(origin.x + offsetX),
 		(origin.y + offsetY),
-		sprite.size.x * renderScale,
-		sprite.size.y * renderScale
+		sprite.size.x * scale,
+		sprite.size.y * scale
 	};
 
 	//Rotation
@@ -91,6 +102,10 @@ void drawSpriteAbsRotated(Sprite sprite, Coord origin, double angle) {
 	};
 
 	SDL_RenderCopyEx(renderer, sprite.texture, NULL, &destination, angle, &rotateOrigin, sprite.flip);
+}
+
+void drawSpriteAbsRotated(Sprite sprite, Coord origin, double angle) {
+	drawSpriteAbsRotated2(sprite, origin, angle, 1);
 }
 
 void drawSpriteAbs(Sprite sprite, Coord origin) {
@@ -243,6 +258,25 @@ void faderRenderFrame(void) {
 	SDL_RenderCopy(renderer, fadeOverlay, NULL, NULL);
 }
 
+void toggleFullscreen(void) {
+	//IMPORTANT: We need to set the size, *THEN* toggle fullscreen for a smooth transition.
+
+	//TODO: Fix bug: Won't position window in center of display(!)
+	//TODO: Fix bug: Needs to calculate best scaling constant for current resolution.
+
+	//Change window size in anticipation of next mode change.
+	if(FULLSCREEN) {
+		SDL_SetWindowPosition(window,SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+		SDL_SetWindowSize(window, pixelGrid.x * 4, pixelGrid.y * 4);
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_SHOWN);
+	}else{
+		SDL_SetWindowSize(window, windowSize.x, windowSize.y);
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+	}
+
+	FULLSCREEN = !FULLSCREEN;
+}
+
 void initRenderer(void) {
 	//Enable v-sync in SDL.
 	if(vsync) SDL_GL_SetSwapInterval(1);
@@ -254,7 +288,7 @@ void initRenderer(void) {
 	renderer = SDL_CreateRenderer(
 		window,
 		-1,							            //insert at default index position for renderer list.
-		SDL_RENDERER_ACCELERATED |              //should use hardware acceleration
+//		SDL_RENDERER_SOFTWARE |
 		SDL_RENDERER_TARGETTEXTURE          	//supports rendering to textures.
 //		| SDL_RENDERER_PRESENTVSYNC
 	);
@@ -290,7 +324,7 @@ void initRenderer(void) {
 	// allowing us to have a centered, portrait window :)
 
 	//Rachaie's background.
-//	SDL_RenderClear(renderer);
+	SDL_RenderClear(renderer);
 //	SDL_RenderPresent(renderer);
 
 	SDL_SetRenderTarget(renderer, renderBuffer);
