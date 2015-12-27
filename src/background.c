@@ -58,17 +58,25 @@ static const int PLATFORM_SEED_X = 3;
 static const int PLATFORM_SEED_Y = 3;
 static const int PLATFORM_SEED_DENSITY = 75;
 
-static bool isNullPlanet(Planet* planet) {
-	return planet->speed == 0;
+static bool invalidPlanet(Planet* planet) {
+	return
+			planet->speed == 0 ||
+			planet->origin.y - PLANET_BOUND > screenBounds.y;
+}
+
+static bool invalidPlatform(Platform* platform) {
+	return
+			platform->origin.x == 0 ||
+			platform->origin.y - (PLATFORM_SEED_Y * PLATFORM_SCALE * PLATFORM_TILE_SIZE) > screenBounds.y;
 }
 
 SDL_Texture* createPlatformTexture(void) {
 	return SDL_CreateTexture(
-		renderer,
-		SDL_PIXELFORMAT_UNKNOWN,
-		SDL_TEXTUREACCESS_TARGET,
-		(int)PLATFORM_SEED_X * PLATFORM_SCALE * PLATFORM_TILE_SIZE,
-		(int)PLATFORM_SEED_Y * PLATFORM_SCALE * PLATFORM_TILE_SIZE
+			renderer,
+			SDL_PIXELFORMAT_UNKNOWN,
+			SDL_TEXTUREACCESS_TARGET,
+			PLATFORM_SEED_X * PLATFORM_SCALE * PLATFORM_TILE_SIZE,
+			PLATFORM_SEED_Y * PLATFORM_SCALE * PLATFORM_TILE_SIZE
 	);
 }
 
@@ -85,16 +93,16 @@ SDL_Texture* initBackgroundFrame(char* filename) {
 
 	//We want to scale the sprite_t up to our pixel grid.
 	Coord tileSize = makeCoord(
-		spaceSprite.size.x,
-		spaceSprite.size.y
+			spaceSprite.size.x,
+			spaceSprite.size.y
 	);
 
 	//Create tile map canvas texture.
 	SDL_Texture* tileMap = SDL_CreateTexture(
-		renderer,
-		SDL_PIXELFORMAT_UNKNOWN,
-		SDL_TEXTUREACCESS_TARGET,
-		(int)pixelGrid.x, (int)pixelGrid.y
+			renderer,
+			SDL_PIXELFORMAT_UNKNOWN,
+			SDL_TEXTUREACCESS_TARGET,
+			(int)pixelGrid.x, (int)pixelGrid.y
 	);
 
 	//Change renderer context to output onto the tilemap.
@@ -104,8 +112,8 @@ SDL_Texture* initBackgroundFrame(char* filename) {
 	for(int x=0; x < pixelGrid.x; x += tileSize.x){
 		for(int y=0; y < pixelGrid.y; y += tileSize.y) {
 			SDL_Rect destination  = {
-				x, y,
-				(int)tileSize.x, (int)tileSize.y
+					x, y,
+					(int)tileSize.x, (int)tileSize.y
 			};
 
 			SDL_RenderCopy(renderer, spaceSprite.texture, NULL, &destination);
@@ -122,11 +130,11 @@ void backgroundRenderFrame(void) {
 
 	//If we're not showing the background, at least clear it on every frame so we don't keep previously-
 	// rendered sprites around on it (think: Doom noclip).
-	if(!showBackground) {
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-		SDL_RenderClear(renderer);
-		return;
-	}
+//	if(!showBackground) {
+//		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+//		SDL_RenderClear(renderer);
+//		return;
+//	}
 
 	//We show two large textures, one after the other, to create a seamless scroll. Once the first texture
 	// moves out of the viewport, however, we snap it back to the top.
@@ -143,15 +151,15 @@ void backgroundRenderFrame(void) {
 
 	//Blit out our first texture
 	SDL_Rect destination  = {
-		0, (int)bgOffset,
-		(int)screenBounds.x, (int)screenBounds.y
+			0, (int)bgOffset,
+			(int)screenBounds.x, (int)screenBounds.y
 	};
 	SDL_RenderCopy(renderer, tileMap, NULL, &destination);
 
 	//Blit out our second texture, offset by the first texture accordingly.
 	SDL_Rect destination2 = {
-		0, (int)bgOffset - (int)screenBounds.y,
-		(int)screenBounds.x, (int)screenBounds.y
+			0, (int)bgOffset - (int)screenBounds.y,
+			(int)screenBounds.x, (int)screenBounds.y
 	};
 	SDL_RenderCopy(renderer, tileMap, NULL, &destination2);
 
@@ -167,7 +175,7 @@ void backgroundRenderFrame(void) {
 	//Render planets.
 	for(int i=0; i < MAX_PLANETS; i++) {
 		//Skip null planets.
-		if(isNullPlanet(&planets[i])) continue;
+		if(invalidPlanet(&planets[i])) continue;
 		Coord parallaxOrigin = parallax(planets[i].origin, PARALLAX_PAN, PARALLAX_LAYER_PLANET, PARALLAX_X, PARALLAX_ADDITIVE);
 		drawSpriteAbs(planets[i].sprite, parallaxOrigin);
 	}
@@ -175,7 +183,7 @@ void backgroundRenderFrame(void) {
 	//Draw 'base' platforms.
 	for(int i=0; i < MAX_PLATFORMS; i++) {
 		//Skip null platforms.
-		if(platforms[i].origin.x == 0) continue;
+		if(invalidPlatform(&platforms[i])) continue;
 
 		Coord parallaxOrigin = parallax(platforms[i].origin, PARALLAX_PAN, PARALLAX_LAYER_PLATFORM, PARALLAX_X, PARALLAX_ADDITIVE);
 		drawSpriteAbs(platforms[i].sprite, parallaxOrigin);
@@ -192,9 +200,9 @@ typedef enum {
 
 Platform makePlatform(Coord origin) {
 	int seedMap[3][3] = {
-		{ 1, 1, 1 },
-		{ 1, 1, 1 },
-		{ 1, 1, 1 }
+			{ 1, 1, 1 },
+			{ 1, 1, 1 },
+			{ 1, 1, 1 }
 	};
 
 	//Create an initial 'seed map' to base eventual platform appearance on. This can scale based on a constant.
@@ -232,8 +240,8 @@ Platform makePlatform(Coord origin) {
 		for(double y=0; y < PLATFORM_SEED_Y * PLATFORM_SCALE; y += 1 / (double)PLATFORM_SCALE, yTile += tileSize.y) {
 			if(!seedMap[(int)floor(x)][(int)floor(y)]) continue;
 			SDL_Rect destination  = {
-				xTile, yTile,
-				(int)tileSize.x, (int)tileSize.y
+					xTile, yTile,
+					(int)tileSize.x, (int)tileSize.y
 			};
 
 			int ix = (int)floor(x);
@@ -282,10 +290,10 @@ Platform makePlatform(Coord origin) {
 				}
 				default: {
 					filename = chance(50) ?
-						"base-large-chip.png" :
-						"base-large-resistor.png";
+							   "base-large-chip.png" :
+							   "base-large-resistor.png";
 
-//					int rand = random(0, 100);
+//					int rand = randomMq(0, 100);
 //					if(rand < 33) {
 //						filename = "base-large.png";
 //					}else if(rand > 66) {
@@ -324,25 +332,26 @@ void backgroundGameFrame(void) {
 
 		//Choose random planet type.
 		char planetFile[50];
-		int randPlanet = random(1, 4);
+		int randPlanet = randomMq(1, 4);
 		sprintf(planetFile, "planet-%02d.png", randPlanet);
 
 		SDL_Texture *planetTexture = getTexture(planetFile);
 		Sprite planetSprite = makeSprite(planetTexture, zeroCoord(), SDL_FLIP_NONE);
 
 		Planet planet = {
-			makeCoord(random(0, (int)screenBounds.x), -PLANET_BOUND),
-			planetSprite,
-			(random(PLANET_SPEED_MIN, PLANET_SPEED_MAX)) * 0.1
+				makeCoord(randomMq(0, (int)screenBounds.x), -PLANET_BOUND),
+				planetSprite,
+				(randomMq(PLANET_SPEED_MIN, PLANET_SPEED_MAX)) * 0.1
 		};
 		planets[++planetInc] = planet;
 
 		//Spawn next planet at a random time.
-		nextPlanetSpawnSeconds = random(PLANET_SPAWN_MIN_SECONDS, PLANET_SPAWN_MAX_SECONDS);
+		nextPlanetSpawnSeconds = randomMq(PLANET_SPAWN_MIN_SECONDS, PLANET_SPAWN_MAX_SECONDS);
 	}
 
 	//Scroll planets.
 	for(int i=0; i < MAX_PLANETS; i++) {
+		if(invalidPlanet(&planets[i])) continue;
 		planets[i].origin.y += planets[i].speed;
 	}
 
@@ -352,16 +361,17 @@ void backgroundGameFrame(void) {
 		//TODO: Algorithm to remove free-floating, or otherwise corner-hinged tiles from platform geometry.
 		//TODO: Decorate borders with edge sprites.
 
-		Coord origin = makeCoord(random(0, (int)screenBounds.x), -(PLATFORM_SEED_Y * PLATFORM_SCALE * PLATFORM_TILE_SIZE) / 2);
+		Coord origin = makeCoord(randomMq(0, (int)screenBounds.x), -(PLATFORM_SEED_Y * PLATFORM_SCALE * PLATFORM_TILE_SIZE) / 2);
 		Platform platform = makePlatform(origin);
 		platforms[++platformInc] = platform;
 
 		//Spawn next planet at a random time.
-		nextPlatformSpawnSeconds = random(PLATFORM_SPAWN_MIN_SECONDS, PLATFORM_SPAWN_MAX_SECONDS);
+		nextPlatformSpawnSeconds = randomMq(PLATFORM_SPAWN_MIN_SECONDS, PLATFORM_SPAWN_MAX_SECONDS);
 	}
 
-	//Scroll planets.
+	//Scroll platforms.
 	for(int i=0; i < MAX_PLATFORMS; i++) {
+		if(invalidPlatform(&platforms[i])) continue;
 		platforms[i].origin.y += PLATFORM_SCROLL_SPEED;
 	}
 }

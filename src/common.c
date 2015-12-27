@@ -47,7 +47,7 @@ void triggerState(GameState newState) {
 	stateInitialised = false;
 }
 
-int random(int min, int max) {
+int randomMq(int min, int max) {
 	return (rand() % (max + 1 - min)) + min;
 }
 
@@ -59,9 +59,9 @@ bool chance(int probability) {
 		return true;
 	}
 
-	//TODO: Consider simplified random expression based on size of probability (e.g. 50% needs only range of 1).
+	//TODO: Consider simplified randomMq expression based on size of probability (e.g. 50% needs only range of 1).
 
-	int roll = random(0, 100);			//dice roll up to 100 (to match with a percentage-based probability amount)
+	int roll = randomMq(0, 100);			//dice roll up to 100 (to match with a percentage-based probability amount)
 	return probability >= roll;			//e.g. 99% is higher than a roll of 5, 50, and 75.
 }
 

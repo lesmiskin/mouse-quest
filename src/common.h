@@ -70,7 +70,7 @@ extern int getPixel(SDL_Surface *surface, int x, int y);
 extern void setPixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
 extern SDL_Surface *colouriseSprite(SDL_Surface *original, Colour colour, ColourisationMethod method);
 
-extern int random(int min, int max);
+extern int randomMq(int min, int max);
 extern bool chance(int probability);
 extern char *combineStrings(const char *a, const char *b);
 extern void quit(void);

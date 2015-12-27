@@ -104,10 +104,10 @@ void scriptGameFrame(void) {
 					break;
 
 				case INTRO_BATTLE_CUE:
-					//Spawn random assortment of enemies.
-					spawnEnemy(80,  random(40, 65), random(0, sizeof(EnemyType)), MOVEMENT_STRAIGHT, COMBAT_IDLE, 0, 0);
-					spawnEnemy(110, random(40, 65), random(0, sizeof(EnemyType)), MOVEMENT_STRAIGHT, COMBAT_IDLE, 0, 0);
-					spawnEnemy(140, random(40, 65), random(0, sizeof(EnemyType)), MOVEMENT_STRAIGHT, COMBAT_IDLE, 0, 0);
+					//Spawn randomMq assortment of enemies.
+					spawnEnemy(80,  randomMq(40, 65), randomMq(0, sizeof(EnemyType)), MOVEMENT_STRAIGHT, COMBAT_IDLE, 0, 0);
+					spawnEnemy(110, randomMq(40, 65), randomMq(0, sizeof(EnemyType)), MOVEMENT_STRAIGHT, COMBAT_IDLE, 0, 0);
+					spawnEnemy(140, randomMq(40, 65), randomMq(0, sizeof(EnemyType)), MOVEMENT_STRAIGHT, COMBAT_IDLE, 0, 0);
 					playerOrigin.y = screenBounds.y + 16;
 					useMike = true;
 					playMusic("intro-battle-3.ogg", 1);
@@ -203,14 +203,14 @@ void superRenderFrame(void) {
 //	Sprite streak = makeSprite(getTexture("super-streak.png"), zeroCoord(), SDL_FLIP_NONE);
 //	drawSpriteAbs(streak, makeCoord(screenBounds.x/2, screenBounds.y/2));
 //
-//	//Spawn a bunch of random white streaks to give the impression of fast motion.
+//	//Spawn a bunch of randomMq white streaks to give the impression of fast motion.
 //	Sprite fleck = makeSprite(getTexture("super-fleck.png"), zeroCoord(), SDL_FLIP_NONE);
 //	for(int i=0; i < 16; i++) {
 //		drawSpriteAbs(
 //			fleck,
 //			makeCoord(
-//				random((screenBounds.x/2) - 55, (screenBounds.x/2) + 56),
-//				random(0, screenBounds.y)
+//				randomMq((screenBounds.x/2) - 55, (screenBounds.x/2) + 56),
+//				randomMq(0, screenBounds.y)
 //			)
 //		);
 //	}

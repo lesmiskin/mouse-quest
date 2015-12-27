@@ -169,7 +169,7 @@ void playerAnimate(void) {
 			//Save score.
 			if(score > topScore) topScore = score;
 		}
-		//Flag once bounced completely offscreen (with a little padding)
+			//Flag once bounced completely offscreen (with a little padding)
 		else if(playerOrigin.y > screenBounds.y + 64){
 			playerState = PSTATE_DEAD;
 			deathTime = 0;
@@ -184,21 +184,26 @@ void playerAnimate(void) {
 			animGroupName = "mike-fright-left.png";
 		}
 	}
-	//Pain: In shock (change frame)
+		//Pain: In shock (change frame)
 	else if(pain && !painShocked) {
 		animGroupName = "mike-shock3.png";
 		painShocked = true;
 	}
-	//Idle frames.
+		//Idle frames.
 	else{
 		//Pain: Flicker during recovery time.
 		if(pain) {
 			if(flickerPain) {
-				frameVersion = ASSET_ALPHA;
+//				frameVersion = ASSET_ALPHA;
+				hideMike = true;
 				flickerPain = false;
 			}else{
+				hideMike = false;
 				flickerPain = true;
 			}
+			//Ensure mike is always restored after being in pain.
+		}else if(hideMike) {
+			hideMike = false;
 		}
 
 		//Shooting.
@@ -220,7 +225,7 @@ void playerAnimate(void) {
 				animGroupName = "mike-shoot-%02d.png";
 			}
 		}
-		//Regular idle.
+			//Regular idle.
 		else{
 			if(leanDirection == LEAN_LEFT) {
 				animGroupName = "mike-lean-left-%02d.png";
@@ -257,8 +262,8 @@ void playerShadowFrame(void) {
 		shadowCoord.y += STATIC_SHADOW_OFFSET;
 
 		drawSpriteAbs(
-			shadow,
-			shadowCoord
+				shadow,
+				shadowCoord
 		);
 	}
 }
@@ -349,7 +354,7 @@ static void recogniseThrust(void) {
 		thrustState.x = 1;
 		leanDirection = LEAN_RIGHT;
 	}
-	//Reset lean direction when unpressed.
+		//Reset lean direction when unpressed.
 	else if(leanDirection != LEAN_NONE){
 		leanDirection = LEAN_NONE;
 	}
@@ -362,8 +367,8 @@ void playerGameFrame(void) {
 		if(!begunDyingGame) {
 			//Bounce towards opposite side of screen so we don't miss him.
 			dieDir = playerOrigin.x < (screenBounds.x / 2);
-			dieBounce = (double)random(30, 55) / 10;
-			dieSide = (double)random(65, 85) / 100;
+			dieBounce = (double)randomMq(30, 55) / 10;
+			dieSide = (double)randomMq(65, 85) / 100;
 			begunDyingGame = true;
 		}
 
@@ -396,8 +401,8 @@ void playerGameFrame(void) {
 	applyMomentum();
 	thrustState = zeroCoord();
 
-	//Firing.
-	if(checkCommand(CMD_PLAYER_FIRE)) {
+	//Firing / auto-fire
+	if(checkCommand(CMD_PLAYER_FIRE) || autoFire && gameState == STATE_GAME) {
 		pew();
 		playerShooting = true;
 	} else {
@@ -422,8 +427,8 @@ void resetPlayer() {
 	bubbleFinished = false;
 
 	playerOrigin = makeCoord(
-		(screenBounds.x / 2),
-		(int)(screenBounds.y * 0.9)
+			(screenBounds.x / 2),
+			(int)(screenBounds.y * 0.9)
 	);
 }
 
@@ -432,10 +437,10 @@ void playerInit(void) {
 
 	//Calculate (in advance) the map boundary limitations.
 	movementBounds = makeRect(
-		PLAYER_SIZE.x / 2,
-		PLAYER_SIZE.y / 2,
-		screenBounds.x - (PLAYER_SIZE.x / 2),
-		screenBounds.y - (PLAYER_SIZE.y / 2)
+			PLAYER_SIZE.x / 2,
+			PLAYER_SIZE.y / 2,
+			screenBounds.x - (PLAYER_SIZE.x / 2),
+			screenBounds.y - (PLAYER_SIZE.y / 2)
 	);
 
 	resetPlayer();

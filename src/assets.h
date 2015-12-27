@@ -1,8 +1,8 @@
 #ifndef ASSETS_H
 #define ASSETS_H
 
-#include "SDL2/SDL_image.h"
-#include "SDL2/SDL_mixer.h"
+#include "SDL2_Image/SDL_image.h"
+#include "SDL2_Mixer/SDL_mixer.h"
 
 #define ASSET_VERSIONS 5
 typedef enum {

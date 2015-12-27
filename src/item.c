@@ -150,7 +150,7 @@ void spawnItem(Coord coord, ItemType type) {
 			strcpy(baseFrameName, "coin-");
 			break;
 		case TYPE_FRUIT: {
-			int chance = random(0, 100);
+			int chance = randomMq(0, 100);
 
 			if(chance < 33) {
 				strcpy(baseFrameName, "cherries-");

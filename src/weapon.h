@@ -3,6 +3,7 @@
 
 #define MAX_WEAPONS 4
 
+extern bool autoFire;
 extern int weaponInc;
 extern bool atMaxWeapon();
 extern void upgradeWeapon(void);

@@ -19,6 +19,10 @@ static SDL_Joystick* joystick = NULL;
 static bool usingJoystick = false;
 static const int JOYSTICK_DEADZONE = 8000;
 
+void command(int commandFlag) {
+	commands[commandFlag] = true;
+}
+
 void scriptCommand(int commandFlag) {
 	scriptCommands[commandFlag] = true;
 }
@@ -123,9 +127,12 @@ void pollInput(void) {
 							commands[CMD_PLAYER_SKIP_TO_TITLE] = true;
 						break;
 					case STATE_GAME:
-						if(	keypress == SDL_SCANCODE_G){
+						if(	keypress == SDL_SCANCODE_F)
+							autoFire = !autoFire;
+
+						if(	keypress == SDL_SCANCODE_G)
 							godMode = !godMode;
-						}
+
 						if(	keypress == SDL_SCANCODE_H)
 							weaponInc = weaponInc == MAX_WEAPONS-1 ? 0 : weaponInc + 1;
 

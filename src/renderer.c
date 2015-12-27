@@ -35,7 +35,7 @@ Coord getTextureSize(SDL_Texture *texture) {
 
 Sprite makeSprite(SDL_Texture *texture, Coord offset, SDL_RendererFlip flip) {
 	Sprite sprite = {
-		texture, offset, getTextureSize(texture), flip
+			texture, offset, getTextureSize(texture), flip
 	};
 	return sprite;
 }
@@ -47,8 +47,8 @@ Sprite makeSimpleSprite(char *textureName) {
 
 bool inScreenBounds(Coord subject) {
 	return
-		subject.x > 0 && subject.x < screenBounds.x &&
-		subject.y > 0 && subject.y < screenBounds.y;
+			subject.x > 0 && subject.x < screenBounds.x &&
+			subject.y > 0 && subject.y < screenBounds.y;
 }
 
 int scalePixels(int pixels) {
@@ -76,10 +76,10 @@ void drawSpriteAbsRotated(Sprite sprite, Coord origin, double angle) {
 
 	//Configure target location output sprite_t size, adjusting the latter for the constant sprite_t scaling factor.
 	SDL_Rect destination  = {
-		(origin.x + offsetX),
-		(origin.y + offsetY),
-		sprite.size.x * renderScale,
-		sprite.size.y * renderScale
+			(origin.x + offsetX),
+			(origin.y + offsetY),
+			sprite.size.x * renderScale,
+			sprite.size.y * renderScale
 	};
 
 	//Rotation
@@ -98,11 +98,11 @@ void drawSpriteAbs(Sprite sprite, Coord origin) {
 
 void setDrawColour(Colour colour) {
 	SDL_SetRenderDrawColor(
-		renderer,
-		colour.red,
-		colour.green,
-		colour.blue,
-		colour.alpha
+			renderer,
+			colour.red,
+			colour.green,
+			colour.blue,
+			colour.alpha
 	);
 }
 void clearBackground(Colour colour) {
@@ -124,9 +124,9 @@ void shutdownRenderer(void) {
 
 Coord getSunPosition(void) {
 	return makeCoord(
-		screenBounds.x / 2,
+			screenBounds.x / 2,
 //		screenBounds.x + (screenBounds.x / 2),
-		-screenBounds.y / 3
+			-screenBounds.y / 3
 	);
 }
 
@@ -136,8 +136,8 @@ Coord getParallaxOffset(void) {
 	// parallax is enabled.
 
 	return makeCoord(
-		(screenBounds.x / 2) - playerOrigin.x,
-		(screenBounds.y / 2)
+			(screenBounds.x / 2) - playerOrigin.x,
+			(screenBounds.y / 2)
 	);
 }
 
@@ -146,14 +146,14 @@ Coord parallax(Coord subject, ParallaxReference reference, ParallaxLayer layer, 
 
 	//Use a different frame of reference depending on parameter.
 	Coord relativeOrigin = reference == PARALLAX_SUN ?
-		getSunPosition() :
-	   	getParallaxOffset();
+						   getSunPosition() :
+						   getParallaxOffset();
 
 	//Calculate distance between points, soften by layer divisor, use mode positive or negative to determine direction,
 	// and offset the subject coordinate accordingly.
 	return makeCoord(
-		dimensions & PARALLAX_X ? subject.x + (((relativeOrigin.x - subject.x) / layer) * mode) : subject.x,
-		dimensions & PARALLAX_Y ? subject.y + (((relativeOrigin.y - subject.y) / layer) * mode) : subject.y
+			dimensions & PARALLAX_X ? subject.x + (((relativeOrigin.x - subject.x) / layer) * mode) : subject.x,
+			dimensions & PARALLAX_Y ? subject.y + (((relativeOrigin.y - subject.y) / layer) * mode) : subject.y
 	);
 }
 
@@ -179,10 +179,10 @@ static void makeFader(void) {
 
 //	Create tile map canvas texture.
 	fadeOverlay = SDL_CreateTexture(
-		renderer,
-		SDL_PIXELFORMAT_ARGB8888,
-		SDL_TEXTUREACCESS_TARGET,
-		(int)pixelGrid.x, (int)pixelGrid.y
+			renderer,
+			SDL_PIXELFORMAT_ARGB8888,
+			SDL_TEXTUREACCESS_TARGET,
+			(int)pixelGrid.x, (int)pixelGrid.y
 	);
 
 	//Allow the texture to blend into other things when rendered.
@@ -240,10 +240,10 @@ void initRenderer(void) {
 
 	//Init SDL renderer
 	renderer = SDL_CreateRenderer(
-		window,
-		-1,							            //insert at default index position for renderer list.
-		SDL_RENDERER_ACCELERATED |              //should use hardware acceleration
-		SDL_RENDERER_TARGETTEXTURE          	//supports rendering to textures.
+			window,
+			-1,							            //insert at default index position for renderer list.
+			SDL_RENDERER_ACCELERATED |              //should use hardware acceleration
+			SDL_RENDERER_TARGETTEXTURE          	//supports rendering to textures.
 	);
 
 	//TODO: We need some prose to describe the concepts at play here. Currently very confusing.
@@ -254,8 +254,8 @@ void initRenderer(void) {
 
 	//Pixel grid is the blocky rendering grid we use to help tile things (i.e. backgrounds).
 	pixelGrid = makeCoord(
-		BASE_SCALE_WIDTH / renderScale,
-		BASE_SCALE_HEIGHT / renderScale
+			BASE_SCALE_WIDTH / renderScale,
+			BASE_SCALE_HEIGHT / renderScale
 	);
 
 	//Use SDL to scale our game activity so it's independent of the output resolution.

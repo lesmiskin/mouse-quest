@@ -3,11 +3,11 @@
 #include "player.h"
 #include "assets.h"
 #include "enemy.h"
-#include "SDL2/SDL_mixer.h"
+#include "SDL2_mixer/SDL_mixer.h"
 #include "weapon.h"
 #include "input.h"
 
-#define MAX_SHOTS 500
+#define MAX_SHOTS 50
 
 typedef enum {
 	NORTH,
@@ -51,6 +51,7 @@ typedef struct {
 	WeaponPattern pattern;
 } Weapon;
 
+bool autoFire = false;
 int weaponInc = 0;
 static Weapon weapons[MAX_WEAPONS];
 //static const int SHOT_HZ = 1000 / 11 ;
@@ -70,8 +71,8 @@ static short minigunLastSide = 0;
 //Used for checking whether Shot is valid in array.
 static bool invalidShot(Shot *shot) {
 	return
-		shot->speed == 0 ||				//was never set (i.e. when all are NULL at start of game)
-		!inScreenBounds(shot->coord);	//if out of range in any screen boundary (important for diag and fan patterns).
+			shot->speed == 0 ||				//was never set (i.e. when all are NULL at start of game)
+			!inScreenBounds(shot->coord);	//if out of range in any screen boundary (important for diag and fan patterns).
 }
 
 static Shot nullShot(void) {
@@ -107,16 +108,19 @@ static void spawnPew(int xOffset, int yOffset, ShotDir direction) {
 	}
 
 	//Make the shot.
-  	Shot shot = {
-		SHOT_SPEED,
-		deriveCoord(playerOrigin, xOffset, yOffset),
-		1,
-		direction,
-		angle
+	Shot shot = {
+			SHOT_SPEED,
+			deriveCoord(playerOrigin, xOffset, yOffset),
+			1,
+			direction,
+			angle
 	};
 
-	//Add to the shot list.
-	shots[shotInc++] = shot;
+    //Ensure we stick within the bounds of our Shot array.
+    shotInc+1 > MAX_SHOTS ? shotInc = 0 : shotInc++;
+
+    //Add to the shot list.
+	shots[shotInc] = shot;
 }
 
 bool atMaxWeapon(void) {
@@ -135,16 +139,13 @@ static int fanPewInc = 0;
 void pew(void) {
 	//Rate-limiter, and HACK for skipping initial shots post-menu.
 	if(	!timer(&lastShotTime, weapons[weaponInc].speed) ||
-		 ticsToMilliseconds(clock()) < postponeShotTime
-	) {
+		   ticsToMilliseconds(clock()) < postponeShotTime
+			) {
 		return;
 	}
 
 //	SDL_HapticRumblePlay(haptic, 0.4, 100);
 	play("Laser_Shoot18.wav");
-
-	//Ensure we stick within the bounds of our Shot array.
-	if(shotInc == sizeof(shots) / sizeof(Shot)) shotInc = 0;
 
 	//The different shot patterns, based on our current weapon.
 	switch(weapons[weaponInc].pattern) {
@@ -190,35 +191,14 @@ void pew(void) {
 			}
 			break;
 		case PATTERN_FAN:
-			fanPewInc = fanPewInc == 7 ? 0 : fanPewInc + 1;
-
-			switch(fanPewInc) {
-				case 0:
-					spawnPew(-1, -5, NORTH);
-					break;
-				case 1:
-					spawnPew(-1, -2, NORTH_EAST);
-					break;
-				case 2:
-					spawnPew(-1, 0, EAST);
-					break;
-				case 3:
-					spawnPew(-1, 2, SOUTH_EAST);
-					break;
-				case 4:
-					spawnPew(-1, 2, SOUTH);
-					break;
-				case 5:
-					spawnPew(1, 2, SOUTH_WEST);
-					break;
-				case 6:
-					spawnPew(5, 0, WEST);
-					break;
-				case 7:
-					spawnPew(1, -2, NORTH_WEST);
-					break;
-			}
-
+            spawnPew(-1, -5, NORTH);
+            spawnPew(-1, -2, NORTH_EAST);
+            spawnPew(-1, 0, EAST);
+            spawnPew(-1, 2, SOUTH_EAST);
+            spawnPew(-1, 2, SOUTH);
+            spawnPew(1, 2, SOUTH_WEST);
+            spawnPew(5, 0, WEST);
+            spawnPew(1, -2, NORTH_WEST);
 			break;
 	}
 }
@@ -334,7 +314,7 @@ void pewInit(void) {
 	Weapon w1 = { SPEED_NORMAL, PATTERN_SINGLE };
 	Weapon w2 = { SPEED_FAST, PATTERN_DUAL };
 	Weapon w3 = { SPEED_FAST, PATTERN_TRIAD };
-	Weapon w4 = { 1000 / 70, PATTERN_FAN };
+	Weapon w4 = { SPEED_FAST, PATTERN_FAN };
 
 	weapons[0] = w1;
 	weapons[1] = w2;
@@ -347,4 +327,5 @@ void pewInit(void) {
 void resetPew(void) {
 	postponeShotTime = ticsToMilliseconds(clock()) + POSTPONE_INITIAL_SHOT;
 	weaponInc = 0;
+	shotInc = 0;
 }
