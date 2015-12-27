@@ -21,7 +21,6 @@ static const char *GAME_TITLE = "Mouse Quest";
 #ifdef DEBUG_WINDOW_T500
 	static const bool FULLSCREEN = false;
 #else
-	static const bool FULLSCREEN = true;
 #endif
 
 bool running = true;

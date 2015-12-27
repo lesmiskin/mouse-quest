@@ -9,6 +9,7 @@ const bool vsync = false;
 const bool ENABLE_PARALLAX = true;
 const bool ENABLE_SHADOWS = true;
 const bool ALPHA_SHADOWS = false;
+bool FULLSCREEN = true;
 
 //Windowed resolutions
 //Coord windowSize = { 224, 256 };		//1:1 scale

@@ -12,6 +12,7 @@
 extern const bool ENABLE_PARALLAX;
 extern const bool ENABLE_SHADOWS;
 extern const bool ALPHA_SHADOWS;
+extern bool FULLSCREEN;
 
 //MISC
 extern const int ANIMATION_HZ;

@@ -35,7 +35,10 @@ typedef enum {
 	PARALLAX_XY = 3,
 } ParallaxDimensions;
 
+extern SDL_Texture *renderBuffer;
 extern const int STATIC_SHADOW_OFFSET;
+
+extern void toggleFullscreen(void);
 extern Coord getParallaxOffset(void);
 extern Coord parallax(Coord subject, ParallaxReference reference, ParallaxLayer layer, ParallaxDimensions dimensions, ParallaxMode mode);
 extern bool inScreenBounds(Coord subject);
@@ -45,6 +48,7 @@ extern SDL_Renderer *renderer;
 extern Coord pixelGrid;
 extern Sprite makeSimpleSprite(char *textureName);
 extern Sprite makeSprite(SDL_Texture *texture, Coord offset, SDL_RendererFlip flip);
+extern void drawSpriteAbsRotated2(Sprite sprite, Coord origin, double angle, double scale);
 extern void drawSpriteAbsRotated(Sprite drawSprite, Coord origin, double angle);
 extern void drawSpriteAbs(Sprite drawSprite, Coord origin);
 extern void drawSprite(Sprite drawSprite, Coord origin);
