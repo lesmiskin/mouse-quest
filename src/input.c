@@ -4,6 +4,7 @@
 #include "common.h"
 #include "weapon.h"
 #include "player.h"
+#include "renderer.h"
 
 //NB: We bind our SDL key codes to game-meaningful actions, so we can bind our logic against those rather than hard-
 // coding keys throughout our code.
@@ -103,6 +104,10 @@ void pollInput(void) {
 				if(event.key.repeat) break;
 
 				SDL_Keycode keypress = event.key.keysym.scancode;
+
+				if(keypress == SDL_SCANCODE_F11) {
+					toggleFullscreen();
+				}
 
 				//Bind SDL keycodes to our custom actions, so we don't have to duplicate/remember keybindings everywhere in our code.
 				switch(gameState) {

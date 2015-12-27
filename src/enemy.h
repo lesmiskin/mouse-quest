@@ -57,6 +57,7 @@ typedef struct {
 	bool collided;
 } Enemy;
 
+extern bool invalidEnemy(Enemy* enemy);
 extern void resetEnemies();
 extern void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyCombat combat, double speed, double swayInc);
 extern void hitEnemy(Enemy* enemy, double damage, bool collision);

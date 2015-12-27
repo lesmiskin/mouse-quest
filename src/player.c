@@ -425,6 +425,7 @@ void resetPlayer() {
 	momentumState = zeroCoord();
 	pain = false;
 	bubbleFinished = false;
+	animationInc = 0;
 
 	playerOrigin = makeCoord(
 			(screenBounds.x / 2),
