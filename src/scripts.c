@@ -294,7 +294,7 @@ void initScripts(void) {
 
 	//Introduction script.
 	intro.scenes[INTRO_CUE] = 						newCueStep();
-	intro.scenes[INTRO_LOGO] = 						newTimedStep(SCENE_LOOP, 1000, FADE_BOTH);
+	intro.scenes[INTRO_LOGO] = 						newTimedStep(SCENE_LOOP, 2000, FADE_BOTH);
 	intro.scenes[INTRO_BATTLE_CUE] = 				newCueStep();
 	intro.scenes[INTRO_BATTLE_PRELUDE] = 			newTimedStep(SCENE_LOOP, 3000, FADE_IN);
 	intro.scenes[INTRO_BATTLE_MIKE_ENTER] = 		newTimedStep(SCENE_LOOP, 200, FADE_NONE);

@@ -192,7 +192,10 @@ void backgroundRenderFrame(void) {
 		Sprite sprite = makeSprite(getTexture(
 			stars[i].layer == 0 ? "star-dark.png" : stars[i].layer == 1 ? "star-dim.png" : "star-bright.png"
 		), zeroCoord(), SDL_FLIP_NONE);
-		drawSprite(sprite, stars[i].position);
+
+		Coord parallaxOrigin = parallax(stars[i].position, PARALLAX_PAN, PARALLAX_LAYER_STAR, PARALLAX_X, PARALLAX_ADDITIVE);
+
+		drawSprite(sprite, parallaxOrigin);
 	}
 
 	//Don't do planet, platform rendering, or star scrolling for static backgrounds.
