@@ -405,6 +405,11 @@ static void loadImages(void) {
 		{ "exp-04.png", false, true, false, false, false },
 		{ "exp-05.png", false, true, false, false, false },
 		{ "exp-06.png", false, true, false, false, false },
+		{ "bg.png", false, false, false, false, false },
+		{ "bg-8.png", false, false, false, false, false },
+		{ "star-bright.png", false, false, false, false, true },
+		{ "star-dim.png", false, false, false, false, false },
+		{ "star-dark.png", false, false, false, false, false },
 	};
 
 	//Infer asset path from current directory.

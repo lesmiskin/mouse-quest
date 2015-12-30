@@ -58,6 +58,18 @@ static const int PLATFORM_SEED_X = 3;
 static const int PLATFORM_SEED_Y = 3;
 static const int PLATFORM_SEED_DENSITY = 75;
 
+typedef struct {
+	Coord position;
+	int layer;
+	int brightness;
+} Star;
+
+#define MAX_STARS 64
+static int STAR_DELAY = 150;	//lower is greater.
+static Star stars[MAX_STARS];
+static long lastStarTime = 0;
+static int starInc = 0;
+
 static bool invalidPlanet(Planet* planet) {
 	return
 			planet->speed == 0 ||
@@ -126,51 +138,68 @@ SDL_Texture* initBackgroundFrame(char* filename) {
 	return tileMap;
 }
 
+static bool starsBegun = false;
+
 void backgroundRenderFrame(void) {
 
 	//If we're not showing the background, at least clear it on every frame so we don't keep previously-
 	// rendered sprites around on it (think: Doom noclip).
-//	if(!showBackground) {
-//		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-//		SDL_RenderClear(renderer);
-//		return;
-//	}
+	if(!showBackground) {
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+		SDL_RenderClear(renderer);
+		return;
+	}
+
+	//Draw nebulous background.
+	Sprite s = makeSprite(getTexture("bg.png"), zeroCoord(), SDL_FLIP_VERTICAL);
+	drawSpriteAbsRotated2(s, zeroCoord(), 0, 2);
+
+	//Display an initial screen of stars.
+	if(!starsBegun) {
+		for(int i=0; i < 40; i++) {
+			Star star = {
+				makeCoord(
+					randomMq(0, screenBounds.x),
+					randomMq(0, screenBounds.y)
+				),
+				randomMq(0, 2),		//layer
+				randomMq(0, 2),		//brightness
+			};
+			stars[i++] = star;
+		}
+		starsBegun = true;
+	}
+
+	//Spawn stars based on designated density.
+	if(timer(&lastStarTime, STAR_DELAY)) {
+		Star star = {
+			makeCoord(
+				randomMq(0, screenBounds.x),  //spawn across the width of the screen
+				0
+			),
+			randomMq(0, 2),		//layer
+			randomMq(0, 2),		//brightness
+		};
+
+		starInc = starInc == MAX_STARS ? 0 : starInc++;
+		stars[starInc++] = star;
+	}
+
+	//Scroll stars.
+	for(int i=0; i < MAX_STARS; i++) {
+		stars[i].position.y +=
+			stars[i].brightness == 0 ? 0.5 : stars[i].brightness == 1 ? 0.65 : 0.8;
+		Sprite sprite = makeSprite(getTexture(
+			stars[i].layer == 0 ? "star-dark.png" : stars[i].layer == 1 ? "star-dim.png" : "star-bright.png"
+		), zeroCoord(), SDL_FLIP_NONE);
+		drawSprite(sprite, stars[i].position);
+	}
+
+	//Don't do planet, platform rendering, or star scrolling for static backgrounds.
+	if(staticBackground) return;
 
 	//We show two large textures, one after the other, to create a seamless scroll. Once the first texture
 	// moves out of the viewport, however, we snap it back to the top.
-
-	//Animate.
-	if(timer(&lastTileFrameTime, TILE_HERTZ_SECONDS)) {
-		if(tileFrame == TILE_FRAMES-1){
-			tileFrame = 0;
-		}else{
-			tileFrame++;
-		}
-	}
-	SDL_Texture *tileMap = tileMaps[tileFrame];
-
-	//Blit out our first texture
-	SDL_Rect destination  = {
-			0, (int)bgOffset,
-			(int)screenBounds.x, (int)screenBounds.y
-	};
-	SDL_RenderCopy(renderer, tileMap, NULL, &destination);
-
-	//Blit out our second texture, offset by the first texture accordingly.
-	SDL_Rect destination2 = {
-			0, (int)bgOffset - (int)screenBounds.y,
-			(int)screenBounds.x, (int)screenBounds.y
-	};
-	SDL_RenderCopy(renderer, tileMap, NULL, &destination2);
-
-	//Blit the fader overlay to the screen.
-	SDL_Rect faderDestination = {
-			0, 0,
-			(int)screenBounds.x, (int)screenBounds.y
-	};
-
-	//Don't do planet or platform rendering for static backgrounds.
-	if(staticBackground) return;
 
 	//Render planets.
 	for(int i=0; i < MAX_PLANETS; i++) {
