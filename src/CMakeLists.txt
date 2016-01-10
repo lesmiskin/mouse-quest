@@ -19,7 +19,7 @@ find_package(SDL2_Image REQUIRED)
 find_package(SDL2_Mixer REQUIRED)
 include_directories(${SDL2_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIR} ${SDL2_MIXER_INCLUDE_DIR})
 
-target_link_libraries(mouse-quest ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2MIXER_LIBRARY})
+target_link_libraries(mouse-quest -lm ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2MIXER_LIBRARY})
 
 # Leverage CMake to discover the SDL module.
 #INCLUDE(FindPkgConfig)

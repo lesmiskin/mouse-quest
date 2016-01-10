@@ -142,17 +142,16 @@ static bool starsBegun = false;
 
 void backgroundRenderFrame(void) {
 
-	//If we're not showing the background, at least clear it on every frame so we don't keep previously-
-	// rendered sprites around on it (think: Doom noclip).
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	SDL_RenderClear(renderer);
+
 	if(!showBackground) {
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-		SDL_RenderClear(renderer);
 		return;
 	}
 
 	//Draw nebulous background.
-	Sprite s = makeSprite(getTexture("bg.png"), zeroCoord(), SDL_FLIP_VERTICAL);
-	drawSpriteAbsRotated2(s, zeroCoord(), 0, 2);
+//	Sprite s = makeSprite(getTexture("bg.png"), zeroCoord(), SDL_FLIP_VERTICAL);
+//	drawSpriteAbsRotated2(s, zeroCoord(), 0, 2);
 
 	//Display an initial screen of stars.
 	if(!starsBegun) {
@@ -188,7 +187,7 @@ void backgroundRenderFrame(void) {
 	//Scroll stars.
 	for(int i=0; i < MAX_STARS; i++) {
 		stars[i].position.y +=
-			stars[i].brightness == 0 ? 0.5 : stars[i].brightness == 1 ? 0.65 : 0.8;
+			stars[i].brightness == 0 ? 0.75 : stars[i].brightness == 1 ? 1 : 1.25;
 		Sprite sprite = makeSprite(getTexture(
 			stars[i].layer == 0 ? "star-dark.png" : stars[i].layer == 1 ? "star-dim.png" : "star-bright.png"
 		), zeroCoord(), SDL_FLIP_NONE);

@@ -1,8 +1,8 @@
 #include <time.h>
 #include <assert.h>
 #include "SDL.h"
-#include "SDL2_Image/SDL_image.h"
-#include "SDL2_Mixer/SDL_mixer.h"
+#include "SDL2/SDL_image.h"
+#include "SDL2/SDL_mixer.h"
 #include "common.h"
 #include "assets.h"
 #include "renderer.h"

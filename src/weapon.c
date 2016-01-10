@@ -3,7 +3,7 @@
 #include "player.h"
 #include "assets.h"
 #include "enemy.h"
-#include "SDL2_mixer/SDL_mixer.h"
+#include "SDL2/SDL_mixer.h"
 #include "weapon.h"
 #include "input.h"
 

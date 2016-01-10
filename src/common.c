@@ -7,7 +7,7 @@ GameState gameState;
 const bool vsync = false;
 
 const bool ENABLE_PARALLAX = true;
-const bool ENABLE_SHADOWS = false;
+const bool ENABLE_SHADOWS = true;
 const bool ALPHA_SHADOWS = false;
 bool FULLSCREEN = true;
 
@@ -27,8 +27,8 @@ bool FULLSCREEN = true;
 #ifdef DEBUG_WINDOW_T500
 	Coord windowSize = { 448, 512 };		//x3 (1px == 4px)
 #else
-//	Coord windowSize = { 1680, 1050 };
-	Coord windowSize = { 745, 1050 };
+	Coord windowSize = { 1680, 1050 };
+//	Coord windowSize = { 745, 1050 };
 #endif
 
 const int ANIMATION_HZ = 1000 / 12;		//12fps
