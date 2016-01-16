@@ -5,6 +5,7 @@
 #include "renderer.h"
 #include "input.h"
 #include "hud.h"
+#include "sound.h"
 
 //NB: There is a conceptual distinction between realtime and animated effects. e.g. movment is realtime, whereas the
 // animation frames are not. This is consistent with the presentation of Tyrian, and rotating powerups/weapons in
@@ -100,21 +101,22 @@ extern void restoreHealth(void) {
 
 void hitPlayer(double damage) {
 	//Don't take damage when in hit recovery mode.
-	if(pain && !isDying()) return;
+	if(pain && !isDying() || godMode) return;
 
 	if(begunDyingGame && dieBounce < 1) {
 		dieBounce = 4.0;
 		return;
 	}
 
-//	SDL_HapticRumblePlay(haptic, 5.00, 750);
+	//Take damage.
+	playerHealth -= damage;
 	play("Hit_Hurt18.wav");
+//	SDL_HapticRumblePlay(haptic, 5.00, 750);
 
-	//Only apply lasting effects if we don't have godmode on.
-	if(!godMode) {
-		playerHealth -= damage;
-		//Reset weapon to default when hit as *PUNISHMENT* (muahaha!)
+	//Remove any powerups / reset weapon to default..
+	if(weaponInc > 0) {
 		weaponInc = 0;
+		play("loss.wav");
 	}
 
 	lastHitTime = clock();
