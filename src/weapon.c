@@ -33,8 +33,8 @@ typedef struct {
 } Bomb;
 
 typedef enum {
-	SPEED_NORMAL = 1000 / 8,
-	SPEED_FAST = 1000 / 12,
+	SPEED_NORMAL = 1000 / 10,
+	SPEED_FAST = 1000 / 14,
 } WeaponSpeed;
 
 typedef enum {

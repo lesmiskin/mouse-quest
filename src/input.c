@@ -2,6 +2,7 @@
 #include "SDL.h"
 #include "input.h"
 #include "common.h"
+#include "sound.h"
 #include "weapon.h"
 #include "player.h"
 #include "renderer.h"
@@ -10,6 +11,16 @@
 // coding keys throughout our code.
 
 #define MAX_COMMANDS 20
+
+typedef enum {
+	PS3_DPAD_UP = 4,
+	PS3_DPAD_RIGHT = 5,
+	PS3_DPAD_DOWN = 6,
+	PS3_DPAD_LEFT = 7,
+	PS3_BUTTON_X = 14,
+	PS3_BUTTON_PS = 16,
+	PS3_BUTTON_START = 3
+} Ps3Buttons;
 
 SDL_Haptic* haptic = NULL;
 bool hapticSupported = false;
@@ -53,16 +64,6 @@ void initInput(void) {
 	}
 }
 
-typedef enum {
-	PS3_DPAD_UP = 4,
-	PS3_DPAD_RIGHT = 5,
-	PS3_DPAD_DOWN = 6,
-	PS3_DPAD_LEFT = 7,
-	PS3_BUTTON_X = 14,
-	PS3_BUTTON_PS = 16,
-	PS3_BUTTON_START = 3
-} Ps3Buttons;
-
 void pollInput(void) {
 	//Tell SDL we want to examine events (otherwise getKeyboardState won't work).
 	SDL_PumpEvents();
@@ -99,11 +100,21 @@ void pollInput(void) {
 				}
 				break;
 			}
+			//Presses
 			case SDL_KEYDOWN: {
 				//Ignore held keys.
 				if(event.key.repeat) break;
 
 				SDL_Keycode keypress = event.key.keysym.scancode;
+
+				switch(keypress) {
+					case SDL_SCANCODE_F10:
+						toggleMusic();
+						break;
+					case SDL_SCANCODE_F11:
+						toggleFullscreen();
+						break;
+				}
 
 				if(keypress == SDL_SCANCODE_F11) {
 					toggleFullscreen();

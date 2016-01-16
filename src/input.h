@@ -9,7 +9,8 @@ typedef enum {
 	CMD_PLAYER_RIGHT = 4,
 	CMD_PLAYER_FIRE = 5,
 	CMD_PLAYER_BOMB = 6,
-	CMD_PLAYER_SKIP_TO_TITLE = 7
+	CMD_PLAYER_SKIP_TO_TITLE = 7,
+	CMD_MUSIC_TOGGLE = 8
 } Command;
 
 extern void initInput(void);

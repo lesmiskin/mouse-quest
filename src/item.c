@@ -7,6 +7,7 @@
 #include "player.h"
 #include "hud.h"
 #include "input.h"
+#include "sound.h"
 
 //TODO: 'Battery pack' powerup.
 //TODO: Better shooting animation (upward-facing).

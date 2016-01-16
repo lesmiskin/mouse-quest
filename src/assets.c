@@ -46,14 +46,6 @@ SoundAsset getSound(char *path) {
 	fatalError("Could not find Asset in register", path);
 }
 
-void playMusic(char* path, int loops) {
-	Mix_PlayMusic(getMusic(path).music, loops);
-}
-
-void play(char* path) {
-	Mix_PlayChannel(-1, getSound(path).sound, 0);
-}
-
 static Asset makeAsset(AssetDef definition) {
 	assert(renderer != NULL);
 
