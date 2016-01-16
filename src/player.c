@@ -113,9 +113,9 @@ void hitPlayer(double damage) {
 	play("Hit_Hurt18.wav");
 //	SDL_HapticRumblePlay(haptic, 5.00, 750);
 
-	//Remove any powerups / reset weapon to default..
+	//Remove any powerups / reset weapon to default.
 	if(weaponInc > 0) {
-		weaponInc = 0;
+		changeWeapon(0);
 		play("loss.wav");
 	}
 

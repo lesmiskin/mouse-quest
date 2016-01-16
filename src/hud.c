@@ -23,6 +23,7 @@ bool HUD_DEBUG = true;
 int score;
 int topScore;
 int coins = 0;
+bool weaponChanging = false;
 static ScorePlume plumes[MAX_PLUMES];
 static int plumeInc = 0;
 static Sprite life, lifeHalf/*, lifeNone*/;
@@ -33,6 +34,8 @@ static const int BATTERY_BLINK_RATE = 500;
 static long lastBlinkTime;
 static Sprite letters[10];
 static const int LETTER_WIDTH = 4;
+static double weapSweepInc = 0;
+static bool weapSweepDir = false;	//false=out, true=in
 
 void spawnScorePlume(PlumeType type, int score) {
 	if(plumeInc+1 == MAX_PLUMES) plumeInc = 0;
@@ -141,9 +144,14 @@ void showDebugStats(void) {
 	}
 }
 
+//FIXME: Hack... :p
+Coord underLife = { 10, 27 };
+Coord sweepPos = { 10, 27 };
+bool sweeping = false;
+bool sweepDir = false;
+
 void hudRenderFrame(void) {
 	Coord underScore = makeCoord(pixelGrid.x - 7, 26);
-	Coord underLife = makeCoord(10, 27);
 
 //	showDebugStats();
 
@@ -163,9 +171,25 @@ void hudRenderFrame(void) {
 	//Only show if playing, and *hide* if dying.
 	if(gameState != STATE_GAME) return;
 
-	//Draw sprite of current weapon.
+	//Animate the weapon change.
+	if(weaponChanging) {
+		if(!sweeping || sweepPos.x < underLife.x) {
+			sweepPos.x = sineInc(sweepPos.x, &weapSweepInc, 0.2, 2.3);
+			if(!sweeping) sweeping = true;
+			if(sweepPos.x < -10) sweepDir = true;		//toggle direction when offscreen
+		} else {
+			sweepPos.x = underLife.x;
+			weaponChanging = false;
+			sweeping = false;
+			weapSweepInc = 0;
+			sweepDir = false;
+		}
+	}
+
+	//Draw sprite of current/changing weapon.
 	char* weaponTexture = NULL;
-	switch(weaponInc) {
+	int weaponToDraw = weaponChanging && !sweepDir ? lastWeapon : weaponInc;
+	switch(weaponToDraw) {
 		case 0:
 			weaponTexture = "hud-powerup.png";
 			break;
@@ -179,8 +203,10 @@ void hudRenderFrame(void) {
 			weaponTexture = "hud-powerup-fan.png";
 			break;
 	}
+
+	//Draw the weapon sprite.
 	Sprite weapon = makeSprite(getTexture(weaponTexture), zeroCoord(), SDL_FLIP_NONE);
-	drawSpriteAbs(weapon, underLife);
+	drawSpriteAbs(weapon, sweepPos);
 
 	//Loop through icons and draw them at the appropriate 'fullness' levels for each health bar.
 	// This algorithm will automatically scale according to whatever we choose to set the player's total health to.

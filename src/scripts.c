@@ -10,6 +10,7 @@
 #include "weapon.h"
 #include "item.h"
 #include "hud.h"
+#include "sound.h"
 
 //DONE: Fix frame blinking during super scene (cue-frames doing this - render skip, or immediate reprocess?)
 //DONE: On subsequent intro runs, we skip past the logo too soon.

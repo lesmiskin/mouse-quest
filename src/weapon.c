@@ -6,6 +6,8 @@
 #include "SDL2/SDL_mixer.h"
 #include "weapon.h"
 #include "input.h"
+#include "sound.h"
+#include "hud.h"
 
 #define MAX_SHOTS 50
 
@@ -28,10 +30,6 @@ typedef struct {
 	double angle;
 } Shot;
 
-typedef struct {
-	Coord coord;
-} Bomb;
-
 typedef enum {
 	SPEED_NORMAL = 1000 / 10,
 	SPEED_FAST = 1000 / 14,
@@ -52,6 +50,7 @@ typedef struct {
 } Weapon;
 
 bool autoFire = false;
+int lastWeapon = 0;
 int weaponInc = 0;
 static Weapon weapons[MAX_WEAPONS];
 //static const int SHOT_HZ = 1000 / 11 ;
@@ -62,7 +61,6 @@ static int shotInc = 0;
 static Sprite shotSprite;
 static long lastShotTime;
 static int maxFrames = 2;
-static bool bombing = false;
 static long postponeShotTime;
 int const POSTPONE_INITIAL_SHOT = 750;
 
@@ -127,11 +125,20 @@ bool atMaxWeapon(void) {
 	return weaponInc + 1 == MAX_WEAPONS;
 }
 
-void upgradeWeapon(void) {
-	//Limit to available
-	if(atMaxWeapon()) return;
+void changeWeapon(int newWeapon) {
+	//This is the 'official' place to change the weapon, since we trigger things like the HUD sweep here.
 
-	weaponInc++;
+	//Don't change if the same.
+	if(newWeapon == weaponInc) return;
+
+	weaponChanging = true;		//set flag for HUD animation sweep.
+	lastWeapon = weaponInc;
+	weaponInc = newWeapon;
+}
+
+void upgradeWeapon(void) {
+	if(atMaxWeapon()) return;
+	changeWeapon(weaponInc+1);
 }
 
 static int fanPewInc = 0;

@@ -149,8 +149,13 @@ void pollInput(void) {
 						if(	keypress == SDL_SCANCODE_G)
 							godMode = !godMode;
 
-						if(	keypress == SDL_SCANCODE_H)
-							weaponInc = weaponInc == MAX_WEAPONS-1 ? 0 : weaponInc + 1;
+						if(	keypress == SDL_SCANCODE_H) {
+							if(atMaxWeapon()) {
+								changeWeapon(0);
+							}else{
+								upgradeWeapon();
+							}
+						}
 
 						if(	keypress == SDL_SCANCODE_J){
 							if(playerHealth > 1) {
