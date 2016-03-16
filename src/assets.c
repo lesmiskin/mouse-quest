@@ -1,5 +1,5 @@
 #include <assert.h>
-#include <SDL_mixer.h>
+#include "SDL2/SDL_mixer.h"
 #include "assets.h"
 #include "common.h"
 #include "renderer.h"
@@ -44,14 +44,6 @@ SoundAsset getSound(char *path) {
 	}
 
 	fatalError("Could not find Asset in register", path);
-}
-
-void playMusic(char* path, int loops) {
-	Mix_PlayMusic(getMusic(path).music, loops);
-}
-
-void play(char* path) {
-	Mix_PlayChannel(-1, getSound(path).sound, 0);
 }
 
 static Asset makeAsset(AssetDef definition) {
@@ -406,6 +398,11 @@ static void loadImages(void) {
 		{ "exp-04.png", false, true, false, false, false },
 		{ "exp-05.png", false, true, false, false, false },
 		{ "exp-06.png", false, true, false, false, false },
+		{ "bg.png", false, false, false, false, false },
+		{ "bg-8.png", false, false, false, false, false },
+		{ "star-bright.png", false, false, false, false, true },
+		{ "star-dim.png", false, false, false, false, false },
+		{ "star-dark.png", false, false, false, false, false },
 	};
 
 	//Infer asset path from current directory.
@@ -430,6 +427,7 @@ static void loadSounds(void) {
 		{ "mike-die.wav", SOUND_VOLUME * 4 },
 		{ "intro-presents.wav", SOUND_VOLUME * 2 },
 		{ "Powerup8.wav", SOUND_VOLUME * 4 },
+		{ "loss.wav", SOUND_VOLUME * 5 },
 		{ "Pickup_Coin4.wav", (int)ceil(SOUND_VOLUME * 1.5) },
 		{ "Pickup_Coin14.wav", (int)ceil(SOUND_VOLUME * 1.5) },
 		{ "Pickup_Coin34.wav", SOUND_VOLUME },

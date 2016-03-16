@@ -21,12 +21,11 @@
  */
 
 ScriptStatus scriptStatus;
+Script scripts[MAX_SCRIPTS];
 
 bool sceneInitialised(void) {
 	return scriptStatus.sceneProgress > SCENE_UNINITIALISED;
 }
-
-Script scripts[MAX_SCRIPTS];
 
 Script getScript(void) {
 	return scripts[gameState];

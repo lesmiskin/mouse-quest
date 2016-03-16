@@ -16,7 +16,17 @@
 #include "hud.h"
 #include "item.h"
 
+/* BUG: We use 'sizeof' way too often on things like Enums. This is *NOT* a good way to
+		check for sizes, in fact it may just be pure coincidence that it works at all.
+		If we're getting frequent attempts to render enemies without any textures, say,
+ 		then this is definitely the source of the problem. */
+
 static const char *GAME_TITLE = "Mouse Quest";
+
+#ifdef DEBUG_WINDOW_T500
+	static const bool FULLSCREEN = false;
+#else
+#endif
 
 bool running = true;
 
@@ -50,13 +60,8 @@ static void initWindow(void) {
 #endif
 		(int)windowSize.x,					//dimensions
 		(int)windowSize.y,
-//		SDL_WINDOW_INPUT_FOCUS |
-//		SDL_WINDOW_MOUSE_FOCUS |
-		(FULLSCREEN ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_MAXIMIZED)
+		SDL_WINDOW_OPENGL | (FULLSCREEN ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_MAXIMIZED)
 	);
-
-	//So we know what format we need to convert assets to.
-	screenFormat = SDL_GetWindowSurface(window)->format;
 
 	//Hide cursor in fullscreen
 	if(FULLSCREEN) SDL_ShowCursor(SDL_DISABLE);
@@ -79,7 +84,7 @@ static void shutdownMain(void) {
 }
 
 int main()  {
-	//Seed random number generator
+	//Seed randomMq number generator
 	srand(time(NULL));
 
 	atexit(shutdownMain);
@@ -97,7 +102,6 @@ int main()  {
 	hudInit();
 	pewInit();
 	itemInit();
-
 
 #ifdef DEBUG_SKIP_TO_GAME
 	triggerState(STATE_GAME);
@@ -142,7 +146,6 @@ int main()  {
 		}
 
 		//Renderer frame
-		double renderFPS;
 		if(timer(&lastRenderFrameTime, RENDER_HZ)) {
 			//V-sync requires us to clear on every frame.
 			if(vsync) clearBackground(makeBlack());

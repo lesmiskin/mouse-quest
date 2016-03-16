@@ -3,13 +3,14 @@
 #include <time.h>
 
 SDL_Window *window = NULL;
-SDL_PixelFormat   *screenFormat = NULL;
 GameState gameState;
 const bool vsync = false;
 
 const bool ENABLE_PARALLAX = true;
 const bool ENABLE_SHADOWS = true;
 const bool ALPHA_SHADOWS = false;
+bool FULLSCREEN = true;
+bool MUSIC = true;
 
 //Windowed resolutions
 //Coord windowSize = { 224, 256 };		//1:1 scale
@@ -25,14 +26,10 @@ const bool ALPHA_SHADOWS = false;
 //Native resolution
 
 #ifdef DEBUG_WINDOW_T500
-	bool FULLSCREEN = false;
 	Coord windowSize = { 448, 512 };		//x3 (1px == 4px)
 #else
-	bool FULLSCREEN = true;
 	Coord windowSize = { 1680, 1050 };
-//Coord windowSize = { 1360, 768 };		//Perfect 3:1.
-//	Coord windowSize = { 896, 1024 };
-//	Coord windowSize = { 1680, 1050 };
+//	Coord windowSize = { 745, 1050 };
 #endif
 
 const int ANIMATION_HZ = 1000 / 12;		//12fps
@@ -51,7 +48,7 @@ void triggerState(GameState newState) {
 	stateInitialised = false;
 }
 
-int random(int min, int max) {
+int randomMq(int min, int max) {
 	return (rand() % (max + 1 - min)) + min;
 }
 
@@ -63,9 +60,9 @@ bool chance(int probability) {
 		return true;
 	}
 
-	//TODO: Consider simplified random expression based on size of probability (e.g. 50% needs only range of 1).
+	//TODO: Consider simplified randomMq expression based on size of probability (e.g. 50% needs only range of 1).
 
-	int roll = random(0, 100);			//dice roll up to 100 (to match with a percentage-based probability amount)
+	int roll = randomMq(0, 100);			//dice roll up to 100 (to match with a percentage-based probability amount)
 	return probability >= roll;			//e.g. 99% is higher than a roll of 5, 50, and 75.
 }
 

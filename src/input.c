@@ -2,6 +2,7 @@
 #include "SDL.h"
 #include "input.h"
 #include "common.h"
+#include "sound.h"
 #include "weapon.h"
 #include "player.h"
 #include "renderer.h"
@@ -11,6 +12,16 @@
 
 #define MAX_COMMANDS 20
 
+typedef enum {
+	PS3_DPAD_UP = 4,
+	PS3_DPAD_RIGHT = 5,
+	PS3_DPAD_DOWN = 6,
+	PS3_DPAD_LEFT = 7,
+	PS3_BUTTON_X = 14,
+	PS3_BUTTON_PS = 16,
+	PS3_BUTTON_START = 3
+} Ps3Buttons;
+
 SDL_Haptic* haptic = NULL;
 bool hapticSupported = false;
 
@@ -19,6 +30,10 @@ static bool scriptCommands[MAX_COMMANDS];
 static SDL_Joystick* joystick = NULL;
 static bool usingJoystick = false;
 static const int JOYSTICK_DEADZONE = 8000;
+
+void command(int commandFlag) {
+	commands[commandFlag] = true;
+}
 
 void scriptCommand(int commandFlag) {
 	scriptCommands[commandFlag] = true;
@@ -48,16 +63,6 @@ void initInput(void) {
 		}
 	}
 }
-
-typedef enum {
-	PS3_DPAD_UP = 4,
-	PS3_DPAD_RIGHT = 5,
-	PS3_DPAD_DOWN = 6,
-	PS3_DPAD_LEFT = 7,
-	PS3_BUTTON_X = 14,
-	PS3_BUTTON_PS = 16,
-	PS3_BUTTON_START = 3
-} Ps3Buttons;
 
 void pollInput(void) {
 	//Tell SDL we want to examine events (otherwise getKeyboardState won't work).
@@ -95,11 +100,21 @@ void pollInput(void) {
 				}
 				break;
 			}
+			//Presses
 			case SDL_KEYDOWN: {
 				//Ignore held keys.
 				if(event.key.repeat) break;
 
 				SDL_Keycode keypress = event.key.keysym.scancode;
+
+				switch(keypress) {
+					case SDL_SCANCODE_F10:
+						toggleMusic();
+						break;
+					case SDL_SCANCODE_F11:
+						toggleFullscreen();
+						break;
+				}
 
 				if(keypress == SDL_SCANCODE_F11) {
 					toggleFullscreen();
@@ -128,11 +143,19 @@ void pollInput(void) {
 							commands[CMD_PLAYER_SKIP_TO_TITLE] = true;
 						break;
 					case STATE_GAME:
-						if(	keypress == SDL_SCANCODE_G){
+						if(	keypress == SDL_SCANCODE_F)
+							autoFire = !autoFire;
+
+						if(	keypress == SDL_SCANCODE_G)
 							godMode = !godMode;
+
+						if(	keypress == SDL_SCANCODE_H) {
+							if(atMaxWeapon()) {
+								changeWeapon(0);
+							}else{
+								upgradeWeapon();
+							}
 						}
-						if(	keypress == SDL_SCANCODE_H)
-							weaponInc = weaponInc == MAX_WEAPONS-1 ? 0 : weaponInc + 1;
 
 						if(	keypress == SDL_SCANCODE_J){
 							if(playerHealth > 1) {

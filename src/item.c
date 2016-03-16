@@ -7,18 +7,11 @@
 #include "player.h"
 #include "hud.h"
 #include "input.h"
-
-//TODO: 'Battery pack' powerup.
-//TODO: Better shooting animation (upward-facing).
-//TODO: When moving left and right, use front-facing expression.
+#include "sound.h"
 
 //TODO: Proper error message when asset version can't be found.
-//TODO: Add coin HUD display.
 //TODO: Add Mario-style starry animation on coin pickup.
 //TODO: Add battery 'pop' animation when hurt.
-//TODO: Add coin 'travel' animation on pickup.
-//TODO: Add silver coins.
-//TODO: Add point plume.
 
 typedef enum {
 	SPAWN_ALWAYS,
@@ -47,11 +40,9 @@ typedef struct {
 #define MAX_ITEMS 100
 
 static int itemCount = 0;
-const int POWERUP_CHANCE = 100;
 static Item items[MAX_ITEMS];
 static const double ITEM_SPEED = 1.0;
 const int POWERUP_BOUND = 24;
-static const int slowAnimTime = 500 / 1000;
 static bool boolAnimFrame = false;
 static long lastBoolAnimTime;
 
@@ -150,7 +141,7 @@ void spawnItem(Coord coord, ItemType type) {
 			strcpy(baseFrameName, "coin-");
 			break;
 		case TYPE_FRUIT: {
-			int chance = random(0, 100);
+			int chance = randomMq(0, 100);
 
 			if(chance < 33) {
 				strcpy(baseFrameName, "cherries-");

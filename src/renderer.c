@@ -28,13 +28,11 @@ static const int BASE_SCALE_HEIGHT = 256;
 
 Coord pixelGrid;								//helps aligning things to the tiled background.
 Coord screenBounds;
-static const int PARALLAX_SCALE_DIVISOR = 10;
 
 const FadeMode FADE_BOTH = FADE_IN | FADE_OUT;
 static SDL_Texture* fadeOverlay;
 static const int FADE_DURATION = 1000;
 static int fadeAlphaInc;
-static long currentFadeStartTime;
 static FadeMode currentFadeMode;
 static int currentFadeAlpha;
 
@@ -47,7 +45,7 @@ Coord getTextureSize(SDL_Texture *texture) {
 
 Sprite makeSprite(SDL_Texture *texture, Coord offset, SDL_RendererFlip flip) {
 	Sprite sprite = {
-		texture, offset, getTextureSize(texture), flip
+			texture, offset, getTextureSize(texture), flip
 	};
 	return sprite;
 }
@@ -59,12 +57,8 @@ Sprite makeSimpleSprite(char *textureName) {
 
 bool inScreenBounds(Coord subject) {
 	return
-		subject.x > 0 && subject.x < screenBounds.x &&
-		subject.y > 0 && subject.y < screenBounds.y;
-}
-
-int scalePixels(int pixels) {
-	return pixels * renderScale;
+			subject.x > 0 && subject.x < screenBounds.x &&
+			subject.y > 0 && subject.y < screenBounds.y;
 }
 
 //Default sprite_t drawing scales with pixel grid, for easy tiling.
@@ -88,10 +82,10 @@ void drawSpriteAbsRotated2(Sprite sprite, Coord origin, double angle, double sca
 
 	//Configure target location output sprite_t size, adjusting the latter for the constant sprite_t scaling factor.
 	SDL_Rect destination  = {
-		(origin.x + offsetX),
-		(origin.y + offsetY),
-		sprite.size.x * scale,
-		sprite.size.y * scale
+			(origin.x + offsetX),
+			(origin.y + offsetY),
+			sprite.size.x * scale,
+			sprite.size.y * scale
 	};
 
 	//Rotation
@@ -114,11 +108,11 @@ void drawSpriteAbs(Sprite sprite, Coord origin) {
 
 void setDrawColour(Colour colour) {
 	SDL_SetRenderDrawColor(
-		renderer,
-		colour.red,
-		colour.green,
-		colour.blue,
-		colour.alpha
+			renderer,
+			colour.red,
+			colour.green,
+			colour.blue,
+			colour.alpha
 	);
 }
 void clearBackground(Colour colour) {
@@ -134,9 +128,7 @@ void updateCanvas(void) {
 	SDL_RenderCopy(renderer, renderBuffer, NULL, NULL);
 
 	//Actually update the screen itself.
-//	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
-//	SDL_UpdateWindowSurface(window);
 
 	//Reset render target back to texture buffer
 	SDL_SetRenderTarget(renderer, renderBuffer);
@@ -151,9 +143,9 @@ void shutdownRenderer(void) {
 
 Coord getSunPosition(void) {
 	return makeCoord(
-		screenBounds.x / 2,
-//		screenBounds.x + (screenBounds.x / 2),
-		-screenBounds.y / 3
+			screenBounds.x / 2,
+//			screenBounds.x + (screenBounds.x / 2),
+			-screenBounds.y / 3
 	);
 }
 
@@ -173,14 +165,14 @@ Coord parallax(Coord subject, ParallaxReference reference, ParallaxLayer layer, 
 
 	//Use a different frame of reference depending on parameter.
 	Coord relativeOrigin = reference == PARALLAX_SUN ?
-		getSunPosition() :
-	   	getParallaxOffset();
+	   getSunPosition() :
+	   getParallaxOffset();
 
 	//Calculate distance between points, soften by layer divisor, use mode positive or negative to determine direction,
 	// and offset the subject coordinate accordingly.
 	return makeCoord(
-		dimensions & PARALLAX_X ? subject.x + (((relativeOrigin.x - subject.x) / layer) * mode) : subject.x,
-		dimensions & PARALLAX_Y ? subject.y + (((relativeOrigin.y - subject.y) / layer) * mode) : subject.y
+			dimensions & PARALLAX_X ? subject.x + (((relativeOrigin.x - subject.x) / layer) * mode) : subject.x,
+			dimensions & PARALLAX_Y ? subject.y + (((relativeOrigin.y - subject.y) / layer) * mode) : subject.y
 	);
 }
 
@@ -191,17 +183,14 @@ bool isFading(void) {
 void fadeIn(void) {
 	currentFadeMode = FADE_IN;
 	currentFadeAlpha = 255;
-	currentFadeStartTime = clock();
 }
 
 void fadeOut(void) {
 	currentFadeMode = FADE_OUT;
 	currentFadeAlpha = 0;
-	currentFadeStartTime = clock();
 }
 
-static void makeFader(void) {
-
+static void initFader(void) {
 	fadeAlphaInc = (255 * RENDER_HZ) / (double)FADE_DURATION;
 
 //	Create tile map canvas texture.
@@ -216,6 +205,7 @@ static void makeFader(void) {
 	SDL_SetTextureBlendMode(fadeOverlay, SDL_BLENDMODE_BLEND);
 
 	//Change renderer context to output onto the tilemap.
+	SDL_Texture* oldTarget = SDL_GetRenderTarget(renderer);
 	SDL_SetRenderTarget(renderer, fadeOverlay);
 
 	//Can either render a texture with an alpha value, and alter the alpha value of it,
@@ -225,9 +215,8 @@ static void makeFader(void) {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
 
-	//Restore renderer context back to the window canvas, and reset draw colour.
-	SDL_SetRenderTarget(renderer, NULL);
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	//Restore render target to the buffer.
+	SDL_SetRenderTarget(renderer, oldTarget);
 }
 
 void faderRenderFrame(void) {
@@ -288,12 +277,10 @@ void initRenderer(void) {
 	renderer = SDL_CreateRenderer(
 		window,
 		-1,							            //insert at default index position for renderer list.
-//		SDL_RENDERER_SOFTWARE |
 		SDL_RENDERER_TARGETTEXTURE          	//supports rendering to textures.
 //		| SDL_RENDERER_PRESENTVSYNC
 	);
-
-	//TODO: We need some prose to describe the concepts at play here. Currently very confusing.
+	assert(renderer != NULL);
 
 	//Set virtual screen size and pixel doubling ratio.
 	screenBounds = makeCoord(BASE_SCALE_WIDTH, BASE_SCALE_HEIGHT);		//virtual screen size
@@ -305,8 +292,9 @@ void initRenderer(void) {
 		BASE_SCALE_HEIGHT / renderScale
 	);
 
-	//IMPORTANT: Make a texture which we render all contents to, then efficiently scale just this one
-	// texture upon rendering. This creates a *massive* speedup. Thanks to: https://forums.libsdl.org/viewtopic.php?t=10567
+	/* IMPORTANT: Make a texture which we render all contents to, then efficiently scale just
+	 * this one texture upon rendering. This creates a *massive* speedup.
+	 * Thanks to: https://forums.libsdl.org/viewtopic.php?t=10567 */
 	renderBuffer = SDL_CreateTexture(
 		renderer,
 		SDL_PIXELFORMAT_RGB24,
@@ -315,44 +303,15 @@ void initRenderer(void) {
 		(int)pixelGrid.y
 	);
 
-	//Use SDL to scale our game activity so it's independent of the output resolution.
-	//Base it on height, since we use a portrait, not landscape game window.
-//	double sdlScale = windowSize.y / BASE_SCALE_HEIGHT;
-//	SDL_RenderSetScale(renderer, sdlScale, sdlScale);
-
-	//Clear the entire canvas, then use SDL to scale up our virtual resolution -
-	// allowing us to have a centered, portrait window :)
-
-	//Rachaie's background.
+	/* Clear the entire window surface to a solid colour (need to do this since our actual
+	 * drawing area is a small vertical rectangle in the middle of the screen - leaving the
+	 * sides undrawn per-frame. */
+	SDL_SetRenderTarget(renderer, NULL);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_RenderClear(renderer);
-//	SDL_RenderPresent(renderer);
 
+	// Everything from now on should be rendered on the clipped buffer region.
 	SDL_SetRenderTarget(renderer, renderBuffer);
 
-//	SDL_RenderSetLogicalSize(renderer, pixelGrid.x, pixelGrid.y);
-
-	//Alternative clipping strategy:
-//	SDL_Rect viewportRect = {100, 0, pixelGrid.x, pixelGrid.y};
-//	SDL_RenderSetViewport(renderer, &viewportRect);
-
-	//Alternative clipping strategy:
-//  SDL_Rect clipRect = {0, 0, pixelGrid.x, pixelGrid.y};
-//	SDL_RenderSetClipRect(renderer, &clipRect);
-
-/*	SDL_DisplayMode dp = {
-		SDL_PIXELFORMAT_RGB24,
-		200,
-		200,
-		60
-	};
-	SDL_SetWindowDisplayMode(window, &dp);
-*/
-//	SDL_SetHint(SDL_HINT_FRAMEBUFFER_ACCELERATION, "opengl");
-//	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
-//	SDL_SetHint(SDL_HINT_FRAMEBUFFER_ACCELERATION, "1");
-
-//	SDL_SetWindowDisplayMode(window, &dp);
-	assert(renderer != NULL);
-
-	makeFader();
+	initFader();
 }

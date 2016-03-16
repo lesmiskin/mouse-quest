@@ -7,11 +7,12 @@
 #include "player.h"
 #include "item.h"
 #include "hud.h"
+#include "sound.h"
 
 //TODO: Plume flicker
 //TODO: Coin pickup sparkle (see: Super Mario World)
 
-#define MAX_SHOTS 100
+#define MAX_SHOTS 500
 #define MAX_SPAWNS 10
 
 typedef enum {
@@ -40,10 +41,6 @@ typedef struct {
 	double speed;
 } EnemySpawn;
 
-
-//TODO: Homing.
-//TODO: Shooter chance ratio.
-
 EnemySpawn spawns[MAX_SPAWNS];
 Enemy enemies[MAX_ENEMIES];
 int spawnInc = 0;
@@ -52,7 +49,6 @@ static int gameTime;
 static int enemyCount;
 static int enemyShotCount;
 static EnemyShot enemyShots[MAX_SHOTS];
-static long lastDifficultyTime;
 static double rollSine[5] = { 0.0, 1.25, 2.5, 3.75, 5.0 };
 
 //Debugging settings...
@@ -73,7 +69,6 @@ static double SHOT_DAMAGE = 1;
 
 const int ENEMY_BOUND = 26;
 static const int ENEMY_SHOT_BOUND = 8;
-static const double DIFFICULTY_INTERVAL = 5 / 1000;
 static int ENEMY_DISTANCE = 22;
 static double HIT_KNOCKBACK = 0.0;
 static double COLLIDE_DAMAGE = 1;
@@ -96,10 +91,10 @@ bool invalidEnemy(Enemy *enemy) {
 static bool invalidEnemyShot(EnemyShot *enemyShot) {
 	return
 		(enemyShot->origin.x == 0 &&
-		enemyShot->origin.y == 0) ||
+		 enemyShot->origin.y == 0) ||
 		(enemyShot->parallax.y > screenBounds.y + ENEMY_SHOT_BOUND/2 ||
-		enemyShot->parallax.x > screenBounds.x + ENEMY_SHOT_BOUND/2 ||
-		enemyShot->parallax.x < 0 - ENEMY_SHOT_BOUND/2
+		 enemyShot->parallax.x > screenBounds.x + ENEMY_SHOT_BOUND/2 ||
+		 enemyShot->parallax.x < 0 - ENEMY_SHOT_BOUND/2
 		);
 }
 
@@ -126,7 +121,7 @@ void hitEnemy(Enemy* enemy, double damage, bool collision) {
 void enemyShadowFrame(void) {
 	//Render enemy shadows first (so everything else is above them).
 	for(int i=0; i < MAX_ENEMIES; i++) {
- 		if(invalidEnemy(&enemies[i]) || !enemies[i].initialFrameChosen) continue;
+		if(invalidEnemy(&enemies[i]) || !enemies[i].initialFrameChosen) continue;
 
 		//Draw shadow, if a shadow version exists for the current frame.
 		SDL_Texture* shadowTexture = getTextureVersion(enemies[i].frameName, ASSET_SHADOW);
@@ -185,7 +180,7 @@ void animateEnemy(void) {
 		if(enemies[i].dying) {
 			//Switch over from idle (check what sequence we're currently on).
 			if(enemies[i].animSequence != ENEMY_ANIMATION_DEATH){
- 				enemies[i].animSequence = ENEMY_ANIMATION_DEATH;
+				enemies[i].animSequence = ENEMY_ANIMATION_DEATH;
 				enemies[i].animFrame = 1;
 
 				//Spawn powerup (only in-game, and punish collisions)
@@ -200,7 +195,7 @@ void animateEnemy(void) {
 						spawnItem(enemies[i].formationOrigin, TYPE_COIN);
 					}
 				}
-			//Zero if completely dead.
+				//Zero if completely dead.
 			}else if(enemies[i].animFrame == DEATH_FRAMES){
 				enemies[i] = nullEnemy();
 				raiseScore(10, false);
@@ -209,7 +204,7 @@ void animateEnemy(void) {
 
 			animGroupName = "exp-%02d.png";
 		}
-		//Regular idle animation.
+			//Regular idle animation.
 		else{
 			//Being hit - change frame variant.
 			if(enemies[i].hitAnimate && !enemies[i].wasHitLastFrame){
@@ -270,7 +265,7 @@ void animateEnemy(void) {
 	for(int i=0; i < MAX_SHOTS; i++) {
 		if (invalidEnemyShot(&enemyShots[i])) continue;
 		if(	(enemyShots[i].enemyType == ENEMY_VIRUS && enemyShots[i].animFrame == MAX_VIRUS_SHOT_FRAMES) ||
-			(enemyShots[i].enemyType == ENEMY_CD && enemyShots[i].animFrame == MAX_PLASMA_SHOT_FRAMES)){
+			   (enemyShots[i].enemyType == ENEMY_CD && enemyShots[i].animFrame == MAX_PLASMA_SHOT_FRAMES)){
 			enemyShots[i].animFrame = 0;
 		}
 		if(enemyShots[i].animFrame == MAX_VIRUS_SHOT_FRAMES) enemyShots[i].animFrame = 0;
@@ -346,10 +341,6 @@ void resetEnemies() {
 	memset(enemyShots, 0, sizeof(enemyShots));
 	enemyCount = 0;
 	enemyShotCount = 0;
-	lastDifficultyTime = 0;
-
-//	ENEMY_SPEED = 0.9;
-//	formationInterval = 75;
 }
 
 void enemyGameFrame(void) {
@@ -381,40 +372,25 @@ void enemyGameFrame(void) {
 
 	if(gameState != STATE_GAME && gameState != STATE_GAME_OVER) return;
 
-	if(lastDifficultyTime == 0) {
-		lastDifficultyTime = clock();
-	}
-
-//	if(due(lastDifficultyTime, 100000)) {
-//		ENEMY_SPEED *= 1.05;
-//		formationInterval /= 1.2;
-////		HIT_KNOCKBACK /= 1.1;
-////		SHOT_DAMAGE *= 1.1;
-////		COLLIDE_DAMAGE *= 1.1;
-////		SHOT_SPEED *= 1.1;
-//
-//		lastDifficultyTime = clock();
-//	}
-
 	//Formation spawner.
 	if(gameTime % FORMATION_INTERVAL == 0) {
-		int xSpawnPos = random(0, (int)screenBounds.x + 33);			//HACK!
+		int xSpawnPos = randomMq(0, (int)screenBounds.x + 33);			//HACK!
 
-   		if(chance(5)) {
-			spawnFormation(xSpawnPos, FORMATION_RANDOM, (EnemyType)random(0, 5), random(3, 4), ENEMY_SPEED);
+		if(chance(33)) {
+			spawnFormation(xSpawnPos, FORMATION_RANDOM, (EnemyType)randomMq(0, 5), randomMq(4, 6), ENEMY_SPEED);
 		}else{
-			switch(random(1, 4)) {
+			switch(randomMq(1, 4)) {
 				case 1:
-					spawnFormation(xSpawnPos, FORMATION_LINE, (EnemyType)random(0, 5), 1, ENEMY_SPEED_FAST);
+					spawnFormation(xSpawnPos, FORMATION_LINE, (EnemyType)randomMq(0, 5), 1, ENEMY_SPEED_FAST);
 					break;
 				case 2:
-					spawnFormation(xSpawnPos, FORMATION_TRI, (EnemyType)random(0, 5), 3, ENEMY_SPEED_FAST);
+					spawnFormation(xSpawnPos, FORMATION_TRI, (EnemyType)randomMq(0, 5), 3, ENEMY_SPEED_FAST);
 					break;
 				case 3:
-					spawnFormation(xSpawnPos, FORMATION_CIRCLE, (EnemyType)random(0, 5), random(3, 4), ENEMY_SPEED);
+					spawnFormation(xSpawnPos, FORMATION_CIRCLE, (EnemyType)randomMq(0, 5), randomMq(3, 4), ENEMY_SPEED);
 					break;
 				default:
-					spawnFormation(xSpawnPos, FORMATION_SNAKE, (EnemyType)random(0, 5), random(3, 4), ENEMY_SPEED);
+					spawnFormation(xSpawnPos, FORMATION_SNAKE, (EnemyType)randomMq(0, 5), randomMq(3, 4), ENEMY_SPEED);
 					break;
 			}
 		}
@@ -432,14 +408,14 @@ void enemyGameFrame(void) {
 				//Spawn all circle members immediately.
 				case FORMATION_RANDOM:
 					spawnEnemy(
-						random(ENEMY_BOUND, screenBounds.x - ENEMY_BOUND),
-						spawnOffset - random(0, 300),             //circle needs a bit more room.
-						random(0, sizeof(EnemyType)),
+						randomMq(ENEMY_BOUND, screenBounds.x - ENEMY_BOUND),
+						spawnOffset - randomMq(0, 300),             //circle needs a bit more room.
+						randomMq(0, sizeof(EnemyType)),
 						chance(50) ? MOVEMENT_STRAIGHT : MOVEMENT_SNAKE,
 						COMBAT_IDLE,
 						spawns[i].speed,
 						4
-					);
+				);
 					break;
 				case FORMATION_CIRCLE:
 					spawnEnemy(
@@ -501,7 +477,7 @@ void enemyGameFrame(void) {
 						0
 					);
 					break; }
-				}
+			}
 		}
 	}
 
@@ -539,8 +515,7 @@ void enemyGameFrame(void) {
 		}
 
 		//Spawn shots.
-		if(
-			(enemies[i].type == ENEMY_VIRUS || enemies[i].type == ENEMY_BUG) &&
+		if((enemies[i].type == ENEMY_VIRUS || enemies[i].type == ENEMY_BUG) &&
 			timer(&enemies[i].lastShotTime, SHOT_HZ) &&
 			enemies[i].origin.y > 0
 		) {

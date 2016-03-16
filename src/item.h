@@ -7,8 +7,6 @@ typedef enum {
 	TYPE_HEALTH
 } ItemType;
 
-extern const int POWERUP_CHANCE;
-
 extern void shutdownInput(void);
 extern bool canSpawn(ItemType type);
 extern void spawnItem(Coord coord, ItemType type);

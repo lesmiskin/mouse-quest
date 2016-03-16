@@ -5,6 +5,7 @@
 #include "renderer.h"
 #include "input.h"
 #include "hud.h"
+#include "sound.h"
 
 //NB: There is a conceptual distinction between realtime and animated effects. e.g. movment is realtime, whereas the
 // animation frames are not. This is consistent with the presentation of Tyrian, and rotating powerups/weapons in
@@ -28,21 +29,10 @@ PlayerState playerState;
 const PlayerState PSTATE_CAN_ANIMATE = PSTATE_NOT_PLAYING | PSTATE_NORMAL | PSTATE_WON | PSTATE_DYING | PSTATE_SMILING;
 const PlayerState PSTATE_CAN_CONTROL = PSTATE_NORMAL;
 
-static bool canControl() {
-	return (playerState&PSTATE_CAN_CONTROL) > 0;
-}
-static bool canAnimate() {
-	return ( playerState&PSTATE_CAN_ANIMATE) > 0;
-}
-static bool isDying() {
-	return playerState == PSTATE_DYING;
-}
-
+//TODO: Group these for clarity.
 bool godMode = false;
 bool useMike;		//onscreen, responds to actions etc.
 bool hideMike;		//still there, but don't render this frame.
-double intervalFrames;
-double dieInc = 0;
 Coord playerOrigin;
 double playerStrength = 8.0;
 double playerHealth;
@@ -83,6 +73,16 @@ static bool dieDir;
 static double dieSide;
 static bool begunDyingGame;
 
+static bool canControl() {
+	return (playerState&PSTATE_CAN_CONTROL) > 0;
+}
+static bool canAnimate() {
+	return ( playerState&PSTATE_CAN_ANIMATE) > 0;
+}
+static bool isDying() {
+	return playerState == PSTATE_DYING;
+}
+
 extern void smile(void) {
 	lastState = playerState;
 	playerState = PSTATE_SMILING;
@@ -100,21 +100,22 @@ extern void restoreHealth(void) {
 
 void hitPlayer(double damage) {
 	//Don't take damage when in hit recovery mode.
-	if(pain && !isDying()) return;
+	if(pain && !isDying() || godMode) return;
 
 	if(begunDyingGame && dieBounce < 1) {
 		dieBounce = 4.0;
 		return;
 	}
 
-//	SDL_HapticRumblePlay(haptic, 5.00, 750);
+	//Take damage.
+	playerHealth -= damage;
 	play("Hit_Hurt18.wav");
+//	SDL_HapticRumblePlay(haptic, 5.00, 750);
 
-	//Only apply lasting effects if we don't have godmode on.
-	if(!godMode) {
-		playerHealth -= damage;
-		//Reset weapon to default when hit as *PUNISHMENT* (muahaha!)
-		weaponInc = 0;
+	//Remove any powerups / reset weapon to default.
+	if(weaponInc > 0) {
+		changeWeapon(0);
+		play("loss.wav");
 	}
 
 	lastHitTime = clock();
@@ -169,12 +170,11 @@ void playerAnimate(void) {
 			//Save score.
 			if(score > topScore) topScore = score;
 		}
-		//Flag once bounced completely offscreen (with a little padding)
+			//Flag once bounced completely offscreen (with a little padding)
 		else if(playerOrigin.y > screenBounds.y + 64){
 			playerState = PSTATE_DEAD;
 			deathTime = 0;
 			triggerState(STATE_GAME_OVER);
-//			triggerState(STATE_TITLE);
 			return;
 		}
 
@@ -194,14 +194,13 @@ void playerAnimate(void) {
 		//Pain: Flicker during recovery time.
 		if(pain) {
 			if(flickerPain) {
-//				frameVersion = ASSET_ALPHA;
 				hideMike = true;
 				flickerPain = false;
 			}else{
 				hideMike = false;
 				flickerPain = true;
 			}
-		//Ensure mike is always restored after being in pain.
+			//Ensure mike is always restored after being in pain.
 		}else if(hideMike) {
 			hideMike = false;
 		}
@@ -225,7 +224,7 @@ void playerAnimate(void) {
 				animGroupName = "mike-shoot-%02d.png";
 			}
 		}
-		//Regular idle.
+			//Regular idle.
 		else{
 			if(leanDirection == LEAN_LEFT) {
 				animGroupName = "mike-lean-left-%02d.png";
@@ -367,8 +366,8 @@ void playerGameFrame(void) {
 		if(!begunDyingGame) {
 			//Bounce towards opposite side of screen so we don't miss him.
 			dieDir = playerOrigin.x < (screenBounds.x / 2);
-			dieBounce = (double)random(30, 55) / 10;
-			dieSide = (double)random(65, 85) / 100;
+			dieBounce = (double)randomMq(30, 55) / 10;
+			dieSide = (double)randomMq(65, 85) / 100;
 			begunDyingGame = true;
 		}
 
@@ -401,8 +400,8 @@ void playerGameFrame(void) {
 	applyMomentum();
 	thrustState = zeroCoord();
 
-	//Firing.
-	if(checkCommand(CMD_PLAYER_FIRE)) {
+	//Firing / auto-fire
+	if(checkCommand(CMD_PLAYER_FIRE) || autoFire && gameState == STATE_GAME) {
 		pew();
 		playerShooting = true;
 	} else {
@@ -425,6 +424,7 @@ void resetPlayer() {
 	momentumState = zeroCoord();
 	pain = false;
 	bubbleFinished = false;
+	animationInc = 0;
 
 	playerOrigin = makeCoord(
 		(screenBounds.x / 2),

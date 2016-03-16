@@ -6,6 +6,8 @@
 #include "SDL2/SDL_mixer.h"
 #include "weapon.h"
 #include "input.h"
+#include "sound.h"
+#include "hud.h"
 
 #define MAX_SHOTS 50
 
@@ -28,13 +30,9 @@ typedef struct {
 	double angle;
 } Shot;
 
-typedef struct {
-	Coord coord;
-} Bomb;
-
 typedef enum {
-	SPEED_NORMAL = 1000 / 8,
-	SPEED_FAST = 1000 / 12,
+	SPEED_NORMAL = 1000 / 10,
+	SPEED_FAST = 1000 / 14,
 } WeaponSpeed;
 
 typedef enum {
@@ -51,6 +49,8 @@ typedef struct {
 	WeaponPattern pattern;
 } Weapon;
 
+bool autoFire = false;
+int lastWeapon = 0;
 int weaponInc = 0;
 static Weapon weapons[MAX_WEAPONS];
 //static const int SHOT_HZ = 1000 / 11 ;
@@ -61,7 +61,6 @@ static int shotInc = 0;
 static Sprite shotSprite;
 static long lastShotTime;
 static int maxFrames = 2;
-static bool bombing = false;
 static long postponeShotTime;
 int const POSTPONE_INITIAL_SHOT = 750;
 
@@ -70,8 +69,8 @@ static short minigunLastSide = 0;
 //Used for checking whether Shot is valid in array.
 static bool invalidShot(Shot *shot) {
 	return
-		shot->speed == 0 ||				//was never set (i.e. when all are NULL at start of game)
-		!inScreenBounds(shot->coord);	//if out of range in any screen boundary (important for diag and fan patterns).
+			shot->speed == 0 ||				//was never set (i.e. when all are NULL at start of game)
+			!inScreenBounds(shot->coord);	//if out of range in any screen boundary (important for diag and fan patterns).
 }
 
 static Shot nullShot(void) {
@@ -107,7 +106,7 @@ static void spawnPew(int xOffset, int yOffset, ShotDir direction) {
 	}
 
 	//Make the shot.
-  	Shot shot = {
+	Shot shot = {
 		SHOT_SPEED,
 		deriveCoord(playerOrigin, xOffset, yOffset),
 		1,
@@ -115,19 +114,31 @@ static void spawnPew(int xOffset, int yOffset, ShotDir direction) {
 		angle
 	};
 
-	//Add to the shot list.
-	shots[shotInc++] = shot;
+    //Ensure we stick within the bounds of our Shot array.
+    shotInc+1 > MAX_SHOTS ? shotInc = 0 : shotInc++;
+
+    //Add to the shot list.
+	shots[shotInc] = shot;
 }
 
 bool atMaxWeapon(void) {
 	return weaponInc + 1 == MAX_WEAPONS;
 }
 
-void upgradeWeapon(void) {
-	//Limit to available
-	if(atMaxWeapon()) return;
+void changeWeapon(int newWeapon) {
+	//This is the 'official' place to change the weapon, since we trigger things like the HUD sweep here.
 
-	weaponInc++;
+	//Don't change if the same.
+	if(newWeapon == weaponInc) return;
+
+	weaponChanging = true;		//set flag for HUD animation sweep.
+	lastWeapon = weaponInc;
+	weaponInc = newWeapon;
+}
+
+void upgradeWeapon(void) {
+	if(atMaxWeapon()) return;
+	changeWeapon(weaponInc+1);
 }
 
 static int fanPewInc = 0;
@@ -135,16 +146,13 @@ static int fanPewInc = 0;
 void pew(void) {
 	//Rate-limiter, and HACK for skipping initial shots post-menu.
 	if(	!timer(&lastShotTime, weapons[weaponInc].speed) ||
-		 ticsToMilliseconds(clock()) < postponeShotTime
-	) {
+		   ticsToMilliseconds(clock()) < postponeShotTime
+			) {
 		return;
 	}
 
 //	SDL_HapticRumblePlay(haptic, 0.4, 100);
 	play("Laser_Shoot18.wav");
-
-	//Ensure we stick within the bounds of our Shot array.
-	if(shotInc == sizeof(shots) / sizeof(Shot)) shotInc = 0;
 
 	//The different shot patterns, based on our current weapon.
 	switch(weapons[weaponInc].pattern) {
@@ -190,15 +198,14 @@ void pew(void) {
 			}
 			break;
 		case PATTERN_FAN:
-//			fanPewInc = fanPewInc == 7 ? 0 : fanPewInc + 1;
-			spawnPew(-1, -5, NORTH);
-			spawnPew(-1, -2, NORTH_EAST);
-			spawnPew(-1, 0, EAST);
-			spawnPew(-1, 2, SOUTH_EAST);
-			spawnPew(-1, 2, SOUTH);
-			spawnPew(1, 2, SOUTH_WEST);
-			spawnPew(5, 0, WEST);
-			spawnPew(1, -2, NORTH_WEST);
+            spawnPew(-1, -5, NORTH);
+            spawnPew(-1, -2, NORTH_EAST);
+            spawnPew(-1, 0, EAST);
+            spawnPew(-1, 2, SOUTH_EAST);
+            spawnPew(-1, 2, SOUTH);
+            spawnPew(1, 2, SOUTH_WEST);
+            spawnPew(5, 0, WEST);
+            spawnPew(1, -2, NORTH_WEST);
 			break;
 	}
 }
@@ -211,7 +218,7 @@ void pewGameFrame(void) {
 		//Toggle hit animation on enemies if within range.
 		for(int p=0; p < MAX_ENEMIES; p++) {
 			//Skip if the enemy is already dying.
-			if(invalidEnemy(&enemies[p]) || enemies[p].dying) continue;
+            if(invalidEnemy(&enemies[p]) || enemies[p].dying) continue;
 
 			//If he's within our projectile bounds.
 			Rect enemyBound = makeSquareBounds(enemies[p].parallax, ENEMY_BOUND);
@@ -225,7 +232,9 @@ void pewGameFrame(void) {
 		}
 
 		//If we left the above loop early (e.g. hit something) continue onto the next shot.
-		if(invalidShot(&shots[i])) continue;
+		if(invalidShot(&shots[i])) {
+			continue;
+		}
 
 		//If we haven't hit anything - adjust shot for velocity and heading.
 		switch(shots[i].direction) {
@@ -325,4 +334,5 @@ void pewInit(void) {
 void resetPew(void) {
 	postponeShotTime = ticsToMilliseconds(clock()) + POSTPONE_INITIAL_SHOT;
 	weaponInc = 0;
+	shotInc = 0;
 }

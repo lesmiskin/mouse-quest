@@ -14,6 +14,7 @@ extern bool FULLSCREEN;
 extern const bool ENABLE_PARALLAX;
 extern const bool ENABLE_SHADOWS;
 extern const bool ALPHA_SHADOWS;
+extern bool FULLSCREEN;
 
 //MISC
 extern const int ANIMATION_HZ;
@@ -21,7 +22,6 @@ extern const int RENDER_HZ;
 extern const int GAME_HZ;
 extern const double RADIAN_CIRCLE;	//2 * pi (or 2 * 3.14)
 
-typedef unsigned uint;
 typedef enum {
 	STATE_INTRO = 0,
 	STATE_TITLE = 1,
@@ -72,16 +72,12 @@ extern int getPixel(SDL_Surface *surface, int x, int y);
 extern void setPixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
 extern SDL_Surface *colouriseSprite(SDL_Surface *original, Colour colour, ColourisationMethod method);
 
-extern int random(int min, int max);
+extern int randomMq(int min, int max);
 extern bool chance(int probability);
 extern char *combineStrings(const char *a, const char *b);
 extern void quit(void);
 extern void fatalError(const char *title, const char *message);
 extern bool timer(long *lastTime, double hertz);
-extern bool timerFPS(long *lastTime, double hertz, double* fps);
-//extern bool timerFPS_SDL(long *lastTime, double hertz, double *fps);
-extern bool timerFPS_SDL(Uint32 *lastTime, double hertz, double *fps);
-extern bool timerSimple(long lastTime, double hertz);
 extern double getFPS(long now, long lastFrameTime);
 extern bool due(long compareTime, double milliseconds);
 
