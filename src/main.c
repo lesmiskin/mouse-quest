@@ -16,6 +16,11 @@
 #include "hud.h"
 #include "item.h"
 
+/* BUG: We use 'sizeof' way too often on things like Enums. This is *NOT* a good way to
+		check for sizes, in fact it may just be pure coincidence that it works at all.
+		If we're getting frequent attempts to render enemies without any textures, say,
+ 		then this is definitely the source of the problem. */
+
 static const char *GAME_TITLE = "Mouse Quest";
 
 #ifdef DEBUG_WINDOW_T500
@@ -98,7 +103,6 @@ int main()  {
 	pewInit();
 	itemInit();
 
-
 #ifdef DEBUG_SKIP_TO_GAME
 	triggerState(STATE_GAME);
 #else
@@ -142,7 +146,6 @@ int main()  {
 		}
 
 		//Renderer frame
-		double renderFPS;
 		if(timer(&lastRenderFrameTime, RENDER_HZ)) {
 			//V-sync requires us to clear on every frame.
 			if(vsync) clearBackground(makeBlack());

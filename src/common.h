@@ -20,7 +20,6 @@ extern const int RENDER_HZ;
 extern const int GAME_HZ;
 extern const double RADIAN_CIRCLE;	//2 * pi (or 2 * 3.14)
 
-typedef unsigned uint;
 typedef enum {
 	STATE_INTRO = 0,
 	STATE_TITLE = 1,
@@ -77,10 +76,6 @@ extern char *combineStrings(const char *a, const char *b);
 extern void quit(void);
 extern void fatalError(const char *title, const char *message);
 extern bool timer(long *lastTime, double hertz);
-extern bool timerFPS(long *lastTime, double hertz, double* fps);
-//extern bool timerFPS_SDL(long *lastTime, double hertz, double *fps);
-extern bool timerFPS_SDL(Uint32 *lastTime, double hertz, double *fps);
-extern bool timerSimple(long lastTime, double hertz);
 extern double getFPS(long now, long lastFrameTime);
 extern bool due(long compareTime, double milliseconds);
 

@@ -12,32 +12,14 @@
 #include "hud.h"
 #include "sound.h"
 
-//DONE: Fix frame blinking during super scene (cue-frames doing this - render skip, or immediate reprocess?)
-//DONE: On subsequent intro runs, we skip past the logo too soon.
-//DONE: Should transition to title screen.
-//DONE: Fade in/out of title screen during attract loop (make title part of attract mode?)
-//DONE: In intro script, time should mean the time between fades, not including fades.
-//DONE: Fix one-frame non-alpha gap when transitioning to titlescreen.
-//DONE: Fix crash on game loop.
-//DONE: Sound effect on super 'zoom'.
-
-//TODO: Opaque PCB edges *sometimes* (something to do with faders?)
-
+//BUG: Opaque PCB edges *sometimes* (something to do with faders?)
 //TODO: There's no fading when entering the game(?)
-//TODO: When playing, the game will crash after about 10 seconds (issue with game script?)
 //TODO: When pressing [FIRE], fade out the current scene first, don't jump to the next.
-//TODO: Fade out when dying, and transitioning to titlescreen.
-
-//TODO: Multi-layer starfield.
-//TODO: Starfield to have richer, blue sprites (Tyrian, Blazing Lasers).
-//TODO: Starfield to have parallax effect (Blazing Lasers).
-
 //TODO: Move Mike's Titlescreen speech bubble to this file.
 //TODO: Move Mike's level start 'here I go' speech bubble to this file.
 //TODO: Should we queue up the 'desired' state change, so we can fade out from GAME to TITLE?
 
 //Script-specific vars.
-static double intro_StrafeInc;
 static char intro_mikeStafeDir;
 
 static Sprite title_logoSprite;
@@ -46,7 +28,6 @@ static Coord title_logoLocation;
 static bool game_showLevelMessage;
 static const double GAME_MESSAGE_DURATION = 1.5;
 static long game_messageTime;
-static Coord titleCoord;
 
 typedef enum {
 	TITLE_CUE,
@@ -98,8 +79,7 @@ void scriptGameFrame(void) {
 					resetEnemies();
 					resetBackground();
 					useMike = false;
-					staticBackground = true;
-					intro_StrafeInc = 0;
+//					staticBackground = true;
 					intro_mikeStafeDir = -1;
 					play("intro-presents.wav");
 					break;
@@ -155,7 +135,7 @@ void scriptGameFrame(void) {
 					resetItems();
 					resetHud();
 					useMike = true;
-					staticBackground = true;
+//					staticBackground = true;
 					game_messageTime = clock();
 					title_logoLocation = makeCoord((screenBounds.x/2) - 3, screenBounds.y/4);
 					title_logoSprite = makeSprite(getTexture("title.png"), zeroCoord(), SDL_FLIP_NONE);

@@ -107,11 +107,11 @@ static void spawnPew(int xOffset, int yOffset, ShotDir direction) {
 
 	//Make the shot.
 	Shot shot = {
-			SHOT_SPEED,
-			deriveCoord(playerOrigin, xOffset, yOffset),
-			1,
-			direction,
-			angle
+		SHOT_SPEED,
+		deriveCoord(playerOrigin, xOffset, yOffset),
+		1,
+		direction,
+		angle
 	};
 
     //Ensure we stick within the bounds of our Shot array.

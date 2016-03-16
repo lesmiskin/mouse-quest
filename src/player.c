@@ -29,21 +29,10 @@ PlayerState playerState;
 const PlayerState PSTATE_CAN_ANIMATE = PSTATE_NOT_PLAYING | PSTATE_NORMAL | PSTATE_WON | PSTATE_DYING | PSTATE_SMILING;
 const PlayerState PSTATE_CAN_CONTROL = PSTATE_NORMAL;
 
-static bool canControl() {
-	return (playerState&PSTATE_CAN_CONTROL) > 0;
-}
-static bool canAnimate() {
-	return ( playerState&PSTATE_CAN_ANIMATE) > 0;
-}
-static bool isDying() {
-	return playerState == PSTATE_DYING;
-}
-
+//TODO: Group these for clarity.
 bool godMode = false;
 bool useMike;		//onscreen, responds to actions etc.
 bool hideMike;		//still there, but don't render this frame.
-double intervalFrames;
-double dieInc = 0;
 Coord playerOrigin;
 double playerStrength = 8.0;
 double playerHealth;
@@ -83,6 +72,16 @@ static double dieBounce;
 static bool dieDir;
 static double dieSide;
 static bool begunDyingGame;
+
+static bool canControl() {
+	return (playerState&PSTATE_CAN_CONTROL) > 0;
+}
+static bool canAnimate() {
+	return ( playerState&PSTATE_CAN_ANIMATE) > 0;
+}
+static bool isDying() {
+	return playerState == PSTATE_DYING;
+}
 
 extern void smile(void) {
 	lastState = playerState;
@@ -176,7 +175,6 @@ void playerAnimate(void) {
 			playerState = PSTATE_DEAD;
 			deathTime = 0;
 			triggerState(STATE_GAME_OVER);
-//			triggerState(STATE_TITLE);
 			return;
 		}
 
@@ -186,17 +184,16 @@ void playerAnimate(void) {
 			animGroupName = "mike-fright-left.png";
 		}
 	}
-		//Pain: In shock (change frame)
+	//Pain: In shock (change frame)
 	else if(pain && !painShocked) {
 		animGroupName = "mike-shock3.png";
 		painShocked = true;
 	}
-		//Idle frames.
+	//Idle frames.
 	else{
 		//Pain: Flicker during recovery time.
 		if(pain) {
 			if(flickerPain) {
-//				frameVersion = ASSET_ALPHA;
 				hideMike = true;
 				flickerPain = false;
 			}else{
@@ -264,8 +261,8 @@ void playerShadowFrame(void) {
 		shadowCoord.y += STATIC_SHADOW_OFFSET;
 
 		drawSpriteAbs(
-				shadow,
-				shadowCoord
+			shadow,
+			shadowCoord
 		);
 	}
 }
@@ -356,7 +353,7 @@ static void recogniseThrust(void) {
 		thrustState.x = 1;
 		leanDirection = LEAN_RIGHT;
 	}
-		//Reset lean direction when unpressed.
+	//Reset lean direction when unpressed.
 	else if(leanDirection != LEAN_NONE){
 		leanDirection = LEAN_NONE;
 	}
@@ -430,8 +427,8 @@ void resetPlayer() {
 	animationInc = 0;
 
 	playerOrigin = makeCoord(
-			(screenBounds.x / 2),
-			(int)(screenBounds.y * 0.9)
+		(screenBounds.x / 2),
+		(int)(screenBounds.y * 0.9)
 	);
 }
 
@@ -440,10 +437,10 @@ void playerInit(void) {
 
 	//Calculate (in advance) the map boundary limitations.
 	movementBounds = makeRect(
-			PLAYER_SIZE.x / 2,
-			PLAYER_SIZE.y / 2,
-			screenBounds.x - (PLAYER_SIZE.x / 2),
-			screenBounds.y - (PLAYER_SIZE.y / 2)
+		PLAYER_SIZE.x / 2,
+		PLAYER_SIZE.y / 2,
+		screenBounds.x - (PLAYER_SIZE.x / 2),
+		screenBounds.y - (PLAYER_SIZE.y / 2)
 	);
 
 	resetPlayer();

@@ -18,8 +18,6 @@ typedef struct {
 	long spawnTime;
 } ScorePlume;
 
-bool HUD_DEBUG = true;
-
 int score;
 int topScore;
 int coins = 0;
@@ -35,7 +33,6 @@ static long lastBlinkTime;
 static Sprite letters[10];
 static const int LETTER_WIDTH = 4;
 static double weapSweepInc = 0;
-static bool weapSweepDir = false;	//false=out, true=in
 
 void spawnScorePlume(PlumeType type, int score) {
 	if(plumeInc+1 == MAX_PLUMES) plumeInc = 0;
