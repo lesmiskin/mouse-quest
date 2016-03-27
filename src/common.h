@@ -23,17 +23,22 @@ extern const int GAME_HZ;
 extern const double RADIAN_CIRCLE;	//2 * pi (or 2 * 3.14)
 
 typedef enum {
-	STATE_INTRO = 0,
-	STATE_TITLE = 1,
-	STATE_GAME = 2,
-	STATE_GAME_OVER = 3
+	STATE_NONE = 0,
+	STATE_INTRO = 1,
+	STATE_TITLE = 2,
+	STATE_GAME = 3,
+	STATE_GAME_OVER = 4,
+	STATE_QUIT = 5
 } GameState;
 GameState gameState;
+GameState nextState;
 
+extern bool hasPendingState();
 extern const bool vsync;
 extern bool isScripted();
 extern bool stateInitialised;
 extern void triggerState(GameState newState);
+extern void fadeState(GameState newState);
 
 //COORDINATES
 typedef struct {

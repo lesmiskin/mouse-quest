@@ -222,6 +222,10 @@ static void initFader(void) {
 void faderRenderFrame(void) {
 	switch(currentFadeMode) {
 		case FADE_NONE:
+			//Trigger fading for queued state changes.
+			if(hasPendingState()) {
+				fadeOut();
+			}
 			return;
 		case FADE_IN:
 			//Halt the fader if we're <= the max value (otherwise we get a frame of opaqueness)
@@ -234,9 +238,16 @@ void faderRenderFrame(void) {
 			}
 			break;
 		case FADE_OUT:
+			//We've faded out completely.
 			if(currentFadeAlpha >= 255) {
 				currentFadeMode = FADE_NONE;
 				currentFadeAlpha = 255;
+
+				//Trigger the queued state, if waiting on one.
+				if(hasPendingState()) {
+					triggerState(nextState);
+					fadeIn();
+				}
 			}else{
 				currentFadeAlpha += 5;
 			}

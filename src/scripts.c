@@ -63,14 +63,14 @@ void scriptGameFrame(void) {
 		case STATE_GAME_OVER:
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
-				triggerState(STATE_TITLE);
+				fadeState(STATE_TITLE);
 			}
 			break;
 
 		case STATE_INTRO:
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
-				triggerState(STATE_TITLE);
+				fadeState(STATE_TITLE);
 			}
 
 			switch(scriptStatus.sceneNumber) {
@@ -153,7 +153,7 @@ void scriptGameFrame(void) {
 				case TITLE_LOOP:
 					//Begin game when fire button is pressed.
 					if(checkCommand(CMD_PLAYER_FIRE)) {
-						triggerState(STATE_GAME);
+						fadeState(STATE_GAME);
 					}
 					break;
 			}
@@ -170,7 +170,7 @@ void scriptGameFrame(void) {
 			}
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
-				triggerState(STATE_TITLE);
+				fadeState(STATE_TITLE);
 			}
 			break;
 
@@ -215,7 +215,7 @@ void scriptRenderFrame(void) {
 					break;
 				}
 				case 1:
-					triggerState(STATE_TITLE);
+					fadeState(STATE_TITLE);
 					break;
 			}
 			break;
