@@ -31,7 +31,7 @@ Coord screenBounds;
 
 const FadeMode FADE_BOTH = FADE_IN | FADE_OUT;
 static SDL_Texture* fadeOverlay;
-static const int FADE_DURATION = 500;
+static const int FADE_DURATION = 1000;
 static int fadeAlphaInc;
 static FadeMode currentFadeMode;
 static int currentFadeAlpha;
@@ -239,7 +239,7 @@ void faderRenderFrame(void) {
 			break;
 		case FADE_OUT:
 			//We've faded out completely.
-			if((currentFadeAlpha + fadeAlphaInc) >= 255) {
+			if(currentFadeAlpha >= 255) {
 				currentFadeMode = FADE_NONE;
 				currentFadeAlpha = 255;
 
@@ -249,7 +249,7 @@ void faderRenderFrame(void) {
 					fadeIn();
 				}
 			}else{
-				currentFadeAlpha += fadeAlphaInc;
+				currentFadeAlpha += 5;
 			}
 			break;
 	}
