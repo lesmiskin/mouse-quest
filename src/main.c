@@ -16,10 +16,6 @@
 #include "hud.h"
 #include "item.h"
 
-//TODO: Just have one long 'challenge' level, where you:
-//		Fight bosses along the way (parts of the infected computer).
-//		End boss allows you to break out the Nodtron Antivirus package and save the world :)
-
 /* BUG: We use 'sizeof' way too often on things like Enums. This is *NOT* a good way to
 		check for sizes, in fact it may just be pure coincidence that it works at all.
 		If we're getting frequent attempts to render enemies without any textures, say,

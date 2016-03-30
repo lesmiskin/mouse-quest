@@ -224,7 +224,5 @@ void pollInput(void) {
 }
 
 void processSystemCommands(void) {
-	if(checkCommand(CMD_QUIT)) {
-		fadeState(STATE_QUIT);
-	}
+	if(checkCommand(CMD_QUIT)) quit();
 }

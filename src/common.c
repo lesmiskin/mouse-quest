@@ -3,8 +3,7 @@
 #include <time.h>
 
 SDL_Window *window = NULL;
-GameState gameState = STATE_NONE;
-GameState nextState = STATE_NONE;
+GameState gameState;
 const bool vsync = false;
 
 const bool ENABLE_PARALLAX = true;
@@ -44,24 +43,9 @@ bool isScripted() {
 	return gameState != STATE_GAME;
 }
 
-void fadeState(GameState newState) {
-	nextState = newState;
-}
-
 void triggerState(GameState newState) {
-	nextState = STATE_NONE;
-
-	//If quitting - we can just do it now with no further processing.
-	if(newState == STATE_QUIT) {
-		quit();
-	}
-
 	gameState = newState;
 	stateInitialised = false;
-}
-
-bool hasPendingState() {
-	return nextState != STATE_NONE;
 }
 
 int randomMq(int min, int max) {
