@@ -119,7 +119,7 @@ void clearBackground(Colour colour) {
 	setDrawColour(colour);
 	SDL_RenderClear(renderer);
 }
-void updateCanvas(void) {
+void updateCanvas() {
 	//Change rendering target to window.
 	SDL_SetRenderTarget(renderer, NULL);
 
@@ -134,14 +134,14 @@ void updateCanvas(void) {
 	SDL_SetRenderTarget(renderer, renderBuffer);
 }
 
-void shutdownRenderer(void) {
+void shutdownRenderer() {
 	if(renderer == NULL) return;			//OK to call if not yet setup (thanks, encapsulation)
 
 	SDL_DestroyRenderer(renderer);
 	renderer = NULL;
 }
 
-Coord getSunPosition(void) {
+Coord getSunPosition() {
 	return makeCoord(
 			screenBounds.x / 2,
 //			screenBounds.x + (screenBounds.x / 2),
@@ -149,7 +149,7 @@ Coord getSunPosition(void) {
 	);
 }
 
-Coord getParallaxOffset(void) {
+Coord getParallaxOffset() {
 	//IMPORTANT: We only ever want the *X axis parallax*. Omitting the
 	// Y axis causes trig enemy shots to work correctly, when
 	// parallax is enabled.
@@ -176,21 +176,21 @@ Coord parallax(Coord subject, ParallaxReference reference, ParallaxLayer layer, 
 	);
 }
 
-bool isFading(void) {
+bool isFading() {
 	return currentFadeAlpha > 0 && currentFadeAlpha < 255;
 }
 
-void fadeIn(void) {
+void fadeIn() {
 	currentFadeMode = FADE_IN;
 	currentFadeAlpha = 255;
 }
 
-void fadeOut(void) {
+void fadeOut() {
 	currentFadeMode = FADE_OUT;
 	currentFadeAlpha = 0;
 }
 
-static void initFader(void) {
+static void initFader() {
 	fadeAlphaInc = (255 * RENDER_HZ) / (double)FADE_DURATION;
 
 //	Create tile map canvas texture.
@@ -219,7 +219,7 @@ static void initFader(void) {
 	SDL_SetRenderTarget(renderer, oldTarget);
 }
 
-void faderRenderFrame(void) {
+void faderRenderFrame() {
 	switch(currentFadeMode) {
 		case FADE_NONE:
 			return;
@@ -247,7 +247,7 @@ void faderRenderFrame(void) {
 	SDL_RenderCopy(renderer, fadeOverlay, NULL, NULL);
 }
 
-void toggleFullscreen(void) {
+void toggleFullscreen() {
 	//IMPORTANT: We need to set the size, *THEN* toggle fullscreen for a smooth transition.
 
 	//TODO: Fix bug: Won't position window in center of display(!)
@@ -266,7 +266,7 @@ void toggleFullscreen(void) {
 	FULLSCREEN = !FULLSCREEN;
 }
 
-void initRenderer(void) {
+void initRenderer() {
 	//Enable v-sync in SDL.
 	if(vsync) SDL_GL_SetSwapInterval(1);
 

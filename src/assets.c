@@ -124,7 +124,7 @@ Asset getAsset(char *path) {
 	fatalError("Could not find Asset in register", path);
 }
 
-void shutdownAssets(void) {
+void shutdownAssets() {
 	free(assetPath);
 	free(assets);
 
@@ -134,7 +134,7 @@ void shutdownAssets(void) {
 	free(sounds);
 }
 
-static void loadImages(void) {
+static void loadImages() {
 	//Define assets to be loaded.
 	AssetDef definitions[] = {
 		{ "text-laser-upgraded.png", false, true, false, false, false },
@@ -420,7 +420,7 @@ static void loadImages(void) {
 	}
 }
 
-static void loadSounds(void) {
+static void loadSounds() {
 	const int SOUND_VOLUME = 12;
 
 	SoundDef defs[] = {
@@ -472,7 +472,7 @@ static void loadSounds(void) {
 //TODO: Lots of duplication in music+sound loading.
 //TODO: Stop 'tic' static on end of sound loop.
 
-static void loadMusic(void) {
+static void loadMusic() {
 	char* defs[] = {
 		"intro-battle.ogg",
 		"intro-battle-3.ogg",
@@ -499,7 +499,7 @@ static void loadMusic(void) {
 	}
 }
 
-void initAssets(void) {
+void initAssets() {
 	loadImages();
 	loadSounds();
 	loadMusic();

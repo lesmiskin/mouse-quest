@@ -23,6 +23,7 @@ typedef enum {
 typedef enum {
 	MOVEMENT_STRAIGHT,
 	MOVEMENT_SNAKE,
+	MOVEMENT_SNAKE_VERT,
 	MOVEMENT_CIRCLE,
 	MOVEMENT_TITLE_BOB
 } EnemyMovement;
@@ -63,10 +64,10 @@ extern void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, Ene
 extern void hitEnemy(Enemy* enemy, double damage, bool collision);
 extern const int ENEMY_BOUND;
 extern Enemy enemies[MAX_ENEMIES];
-extern void enemyInit(void);
-extern void enemyShadowFrame(void);
-extern void enemyRenderFrame(void);
-extern void enemyGameFrame(void);
-extern void animateEnemy(void);
+extern void enemyInit();
+extern void enemyShadowFrame();
+extern void enemyRenderFrame();
+extern void enemyGameFrame();
+extern void animateEnemy();
 
 #endif

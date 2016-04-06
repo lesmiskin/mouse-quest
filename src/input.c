@@ -43,7 +43,7 @@ bool checkCommand(int commandFlag) {
 	return commands[commandFlag];
 }
 
-void shutdownInput(void) {
+void shutdownInput() {
 	if(usingJoystick) {
 		SDL_HapticClose(haptic);
 		SDL_JoystickClose(joystick);
@@ -51,7 +51,7 @@ void shutdownInput(void) {
 	}
 }
 
-void initInput(void) {
+void initInput() {
 	if(SDL_NumJoysticks() > 0) {
 		usingJoystick = true;
 		joystick = SDL_JoystickOpen(0);
@@ -64,7 +64,7 @@ void initInput(void) {
 	}
 }
 
-void pollInput(void) {
+void pollInput() {
 	//Tell SDL we want to examine events (otherwise getKeyboardState won't work).
 	SDL_PumpEvents();
 
@@ -223,6 +223,6 @@ void pollInput(void) {
 	memset(scriptCommands, 0, sizeof(scriptCommands));
 }
 
-void processSystemCommands(void) {
+void processSystemCommands() {
 	if(checkCommand(CMD_QUIT)) quit();
 }

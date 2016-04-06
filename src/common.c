@@ -9,7 +9,7 @@ const bool vsync = false;
 const bool ENABLE_PARALLAX = true;
 const bool ENABLE_SHADOWS = true;
 const bool ALPHA_SHADOWS = false;
-bool FULLSCREEN = true;
+bool FULLSCREEN = false;
 bool MUSIC = true;
 
 //Windowed resolutions
@@ -28,8 +28,8 @@ bool MUSIC = true;
 #ifdef DEBUG_WINDOW_T500
 	Coord windowSize = { 448, 512 };		//x3 (1px == 4px)
 #else
-	Coord windowSize = { 1680, 1050 };
-//	Coord windowSize = { 745, 1050 };
+//	Coord windowSize = { 1680, 1050 };
+	Coord windowSize = { 896, 1024 };		//4:1 scale
 #endif
 
 const int ANIMATION_HZ = 1000 / 12;		//12fps
@@ -76,7 +76,7 @@ Coord deriveCoord(Coord original, double xOffset, double yOffset) {
 	original.y += yOffset;
 	return original;
 }
-Coord zeroCoord(void) {
+Coord zeroCoord() {
 	Coord coord = { };
 	return coord;
 }
@@ -101,10 +101,10 @@ Colour makeOpaque(int red, int green, int blue) {
 	Colour colour = makeColour(red, green, blue, 255);
 	return colour;
 }
-Colour makeWhite(void) {
+Colour makeWhite() {
 	return makeOpaque(255, 255, 255);
 }
-Colour makeBlack(void) {
+Colour makeBlack() {
 	return makeOpaque(0, 0, 0);
 }
 
@@ -117,7 +117,7 @@ char *combineStrings(const char *a, const char *b) {
 
 	return result;
 }
-void quit(void) {
+void quit() {
 	running = false;
 }
 void fatalError(const char *title, const char *message) {
@@ -211,11 +211,6 @@ Rect makeSquareBounds(Coord origin, double size) {
 	return makeBounds(origin, size, size);
 }
 
-static bool isDue(long now, long lastTime, double hertz) {
-	long timeSinceLast = ticsToMilliseconds(now - lastTime);
-	return timeSinceLast >= hertz;
-}
-
 double getFPS(long now, long lastFrameTime) {
 	long timeSinceLast = ticsToMilliseconds(now - lastFrameTime);
 
@@ -229,7 +224,7 @@ double getFPS(long now, long lastFrameTime) {
 
 bool timer(long *lastTime, double hertz){
 	long now = clock();
-	if(isDue(now, *lastTime, hertz)) {
+	if(due(*lastTime, hertz)) {
 		*lastTime = now;
 		return true;
 	}else{
@@ -238,7 +233,7 @@ bool timer(long *lastTime, double hertz){
 }
 
 bool due(long compareTime, double milliseconds) {
-	return ticsToMilliseconds(clock() - compareTime) > milliseconds;
+	return ticsToMilliseconds(clock() - compareTime) >= milliseconds;
 }
 
 double sineInc(double offset, double *sineInc, double speed, double magnitude) {

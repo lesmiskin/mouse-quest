@@ -212,7 +212,7 @@ void spawnItem(Coord coord, ItemType type) {
 	items[itemCount++] = powerup;
 }
 
-void itemShadowFrame(void) {
+void itemShadowFrame() {
 	//Render powerup shadows
 	for(int i=0; i < MAX_ITEMS; i++) {
 		//NB: We deliberately skip shadows for traveling ones.
@@ -226,7 +226,7 @@ void itemShadowFrame(void) {
 	}
 }
 
-void itemRenderFrame(void) {
+void itemRenderFrame() {
 	//Render items
 	for(int i=0; i < MAX_ITEMS; i++) {
 		if(invalidPowerup(&items[i])) continue;
@@ -241,7 +241,7 @@ void itemRenderFrame(void) {
 	}
 }
 
-void itemAnimateFrame(void) {
+void itemAnimateFrame() {
 	//Powerups
 	for(int i=0; i < MAX_ITEMS; i++) {
 		if(invalidPowerup(&items[i])) continue;
@@ -256,7 +256,7 @@ void itemAnimateFrame(void) {
 	}
 }
 
-void itemGameFrame(void) {
+void itemGameFrame() {
 	//Powerups
 	for(int i=0; i < MAX_ITEMS; i++) {
 		if(invalidPowerup(&items[i])) continue;
@@ -331,12 +331,12 @@ void itemGameFrame(void) {
 	}
 }
 
-void resetItems(void) {
+void resetItems() {
 	memset(items, 0, sizeof(items));
 	itemCount = 0;
 }
 
-void itemInit(void) {
+void itemInit() {
 	lastBoolAnimTime = clock();
 	resetItems();
 	itemAnimateFrame();

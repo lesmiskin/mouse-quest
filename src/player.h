@@ -13,20 +13,20 @@ typedef enum {
 } PlayerState;
 
 extern bool godMode;
-extern void smile(void);
-extern bool atFullhealth(void);
-extern void restoreHealth(void);
+extern void smile();
+extern bool atFullhealth();
+extern void restoreHealth();
 extern PlayerState playerState;
 extern bool useMike;
 extern void hitPlayer(double damage);
 extern double playerStrength;
 extern double playerHealth;
 extern Coord playerOrigin;
-extern void playerInit(void);
-extern void playerAnimate(void);
-extern void playerShadowFrame(void);
-extern void playerRenderFrame(void);
-extern void playerGameFrame(void);
-extern void resetPlayer(void);
+extern void playerInit();
+extern void playerAnimate();
+extern void playerShadowFrame();
+extern void playerRenderFrame();
+extern void playerGameFrame();
+extern void resetPlayer();
 
 #endif

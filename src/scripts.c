@@ -11,6 +11,7 @@
 #include "item.h"
 #include "hud.h"
 #include "sound.h"
+#include "level.h"
 
 //BUG: Opaque PCB edges *sometimes* (something to do with faders?)
 //TODO: There's no fading when entering the game(?)
@@ -52,7 +53,7 @@ typedef enum {
 	INTRO_TITLE_CUE
 } IntroCues;
 
-void scriptGameFrame(void) {
+void scriptGameFrame() {
 
 	if(!stateInitialised) {
 		resetScriptStatus();
@@ -161,6 +162,7 @@ void scriptGameFrame(void) {
 
 		case STATE_GAME:
 			if(!sceneInitialised()) {
+				resetLevel();
 				resetPlayer();
 				resetEnemies();
 				resetBackground();
@@ -179,7 +181,7 @@ void scriptGameFrame(void) {
 	endOfFrameTransition();
 }
 
-void superRenderFrame(void) {
+void superRenderFrame() {
 	//Main blue background.
 //	Sprite streak = makeSprite(getTexture("super-streak.png"), zeroCoord(), SDL_FLIP_NONE);
 //	drawSpriteAbs(streak, makeCoord(screenBounds.x/2, screenBounds.y/2));
@@ -197,7 +199,7 @@ void superRenderFrame(void) {
 //	}
 }
 
-void scriptRenderFrame(void) {
+void scriptRenderFrame() {
 
 	//Only ever ensure we process a scripted render frame if the script itself has been initialised.
 	// e.g. If we got here from a user-initiated state change which has not yet been initialised, then skip
@@ -270,7 +272,7 @@ void scriptRenderFrame(void) {
 	}
 }
 
-void initScripts(void) {
+void initScripts() {
 	Script intro, title, game, gameOver;
 
 	//Introduction script.

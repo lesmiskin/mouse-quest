@@ -15,6 +15,7 @@
 #include "scripts.h"
 #include "hud.h"
 #include "item.h"
+#include "level.h"
 
 /* BUG: We use 'sizeof' way too often on things like Enums. This is *NOT* a good way to
 		check for sizes, in fact it may just be pure coincidence that it works at all.
@@ -30,7 +31,7 @@ static const char *GAME_TITLE = "Mouse Quest";
 
 bool running = true;
 
-static void initSDL(void) {
+static void initSDL() {
 	//Kick off the minor subsystems first, so they don't slow down the game before
 	// it's started.
 	SDL_Init(/*SDL_INIT_AUDIO | */SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC);
@@ -48,7 +49,7 @@ static void initSDL(void) {
 	//Now that everything's loaded - start the video.
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
 }
-static void initWindow(void) {
+static void initWindow() {
 	window = SDL_CreateWindow(
 		GAME_TITLE,
 #ifdef DEBUG_WINDOW_T500
@@ -68,13 +69,13 @@ static void initWindow(void) {
 
 	assert(window != NULL);
 }
-static void shutdownWindow(void) {
+static void shutdownWindow() {
 	if(window == NULL) return;			//OK to call if not yet setup (an established subsystem pattern elsewhere)
 
 	SDL_DestroyWindow(window);
 	window = NULL;
 }
-static void shutdownMain(void) {
+static void shutdownMain() {
 	shutdownAssets();
 	shutdownRenderer();
 	shutdownWindow();
@@ -102,6 +103,7 @@ int main()  {
 	hudInit();
 	pewInit();
 	itemInit();
+	levelInit();
 
 #ifdef DEBUG_SKIP_TO_GAME
 	triggerState(STATE_GAME);
@@ -126,6 +128,7 @@ int main()  {
 		//Game frame
 		if(timer(&lastGameFrameTime, GAME_HZ)) {
 			pollInput();
+			levelGameFrame();
 			processSystemCommands();
 			backgroundGameFrame();
 			scriptGameFrame();

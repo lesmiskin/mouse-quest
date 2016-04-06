@@ -23,15 +23,15 @@
 ScriptStatus scriptStatus;
 Script scripts[MAX_SCRIPTS];
 
-bool sceneInitialised(void) {
+bool sceneInitialised() {
 	return scriptStatus.sceneProgress > SCENE_UNINITIALISED;
 }
 
-Script getScript(void) {
+Script getScript() {
 	return scripts[gameState];
 }
 
-Scene getScene(void) {
+Scene getScene() {
 	return getScript().scenes[scriptStatus.sceneNumber];
 }
 
@@ -40,7 +40,7 @@ Scene newTimedStep(SceneType trigger, int milliseconds, FadeMode fadeMode) {
 	return event;
 }
 
-Scene newCueStep(void) {
+Scene newCueStep() {
 	return newTimedStep(SCENE_CUE, 0, FADE_NONE);
 }
 
@@ -49,7 +49,7 @@ Scene newStateStep(GameState toState) {
 	return event;
 }
 
-void goToNextScene(void) {
+void goToNextScene() {
 	//Increment, or reset back to zero if we've completed all scenes.
 	//NB: Resetting to zero also doubles as a script cycle, and kicking off a new state change.
 	if(scriptStatus.sceneNumber < getScript().totalScenes-1){
@@ -62,13 +62,13 @@ void goToNextScene(void) {
 	scriptStatus.sceneTimer = 0;
 }
 
-void resetScriptStatus(void) {
+void resetScriptStatus() {
 	scriptStatus.sceneNumber = 0;
 	scriptStatus.sceneProgress = SCENE_UNINITIALISED;
 	scriptStatus.sceneTimer = 0;
 }
 
-void endOfFrameTransition(void) {
+void endOfFrameTransition() {
 	//It's the end of frame. Leverage whether we're uninitialised to do certain things here (e.g. fade in),
 	// otherwise we ensure we flag ourselves as initialised before we move to the next scene / frame.
 	Scene scene = getScene();

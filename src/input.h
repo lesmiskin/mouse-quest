@@ -12,9 +12,9 @@ typedef enum {
 	CMD_MUSIC_TOGGLE = 7
 } Command;
 
-extern void initInput(void);
-extern void pollInput(void);
-extern void processSystemCommands(void);
+extern void initInput();
+extern void pollInput();
+extern void processSystemCommands();
 extern bool checkCommand(int commandFlag);
 extern void command(int commandFlag);
 extern void scriptCommand(int commandFlag);

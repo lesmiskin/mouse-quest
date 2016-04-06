@@ -1,3 +1,6 @@
+#ifndef ITEM_H
+#define ITEM_H
+
 #include "common.h"
 
 typedef enum {
@@ -7,12 +10,14 @@ typedef enum {
 	TYPE_HEALTH
 } ItemType;
 
-extern void shutdownInput(void);
+extern void shutdownInput();
 extern bool canSpawn(ItemType type);
 extern void spawnItem(Coord coord, ItemType type);
-extern void itemInit(void);
-extern void itemGameFrame(void);
-extern void itemShadowFrame(void);
-extern void itemRenderFrame(void);
-extern void itemAnimateFrame(void);
-extern void resetItems(void);
+extern void itemInit();
+extern void itemGameFrame();
+extern void itemShadowFrame();
+extern void itemRenderFrame();
+extern void itemAnimateFrame();
+extern void resetItems();
+
+#endif

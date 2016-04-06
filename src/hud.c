@@ -68,7 +68,7 @@ bool isNullPlume(ScorePlume *plume) {
 	return plume->spawnTime == 0;
 }
 
-void hudGameFrame(void) {
+void hudGameFrame() {
 	for(int i=0; i < MAX_PLUMES; i++) {
 		if(isNullPlume(&plumes[i])) continue;
 
@@ -81,12 +81,12 @@ void hudGameFrame(void) {
 	}
 }
 
-void resetHud(void) {
+void resetHud() {
 	score = 0;
 	coins = 0;
 }
 
-void hudAnimateFrame(void) {
+void hudAnimateFrame() {
 	if(!timer(&lastBlinkTime, BATTERY_BLINK_RATE)) {
 		return;
 	}
@@ -96,7 +96,7 @@ void hudAnimateFrame(void) {
 	noneAnimInc++;
 }
 
-void hudInit(void) {
+void hudInit() {
 	life = makeSprite(getTexture("battery.png"), zeroCoord(), SDL_FLIP_NONE);
 	lifeHalf = makeSprite(getTexture("battery-half.png"), zeroCoord(), SDL_FLIP_NONE);
 //	lifeNone = makeSprite(getTexture("battery-none.png"), zeroCoord(), SDL_FLIP_NONE);
@@ -129,7 +129,7 @@ void writeText(int amount, Coord pos) {
 	}
 }
 
-void showDebugStats(void) {
+void showDebugStats() {
 	Coord underLife = makeCoord(10, 27);
 
 	//Show player X coordinate:
@@ -147,7 +147,7 @@ Coord sweepPos = { 10, 27 };
 bool sweeping = false;
 bool sweepDir = false;
 
-void hudRenderFrame(void) {
+void hudRenderFrame() {
 	Coord underScore = makeCoord(pixelGrid.x - 7, 26);
 
 //	showDebugStats();

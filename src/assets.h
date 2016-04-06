@@ -29,11 +29,11 @@ typedef struct {
 	Mix_Music*music;
 } MusicAsset;
 
-extern void initAssets(void);
+extern void initAssets();
 extern SDL_Texture *getTexture(char *path);
 extern SDL_Texture *getTextureVersion(char *path, AssetVersion version);
 extern Asset getAsset(char *path);
-extern void shutdownAssets(void);
+extern void shutdownAssets();
 extern SoundAsset getSound(char *path);
 extern MusicAsset getMusic(char *path);
 

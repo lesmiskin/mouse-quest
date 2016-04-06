@@ -83,16 +83,16 @@ static bool isDying() {
 	return playerState == PSTATE_DYING;
 }
 
-extern void smile(void) {
+extern void smile() {
 	lastState = playerState;
 	playerState = PSTATE_SMILING;
 }
 
-extern bool atFullhealth(void) {
+extern bool atFullhealth() {
 	return playerHealth == playerStrength;
 }
 
-extern void restoreHealth(void) {
+extern void restoreHealth() {
 	if(godMode) return;
 
 	playerHealth = playerStrength;
@@ -130,7 +130,7 @@ void hitPlayer(double damage) {
 }
 
 //Perform an animation sceneNumber.
-void playerAnimate(void) {
+void playerAnimate() {
 	if(!canAnimate()) return;
 
 	//TODO: Fix hard-coded smiling state animation loop.
@@ -251,7 +251,7 @@ void playerAnimate(void) {
 	bodySprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
 }
 
-void playerShadowFrame(void) {
+void playerShadowFrame() {
 	if(!useMike || hideMike) return;
 
 	SDL_Texture* shadowTexture = getTextureVersion(frameName, ASSET_SHADOW);
@@ -268,7 +268,7 @@ void playerShadowFrame(void) {
 }
 
 //Render the player at a given frame, independent of animation.
-void playerRenderFrame(void) {
+void playerRenderFrame() {
 	if(!useMike || hideMike) return;
 	if((playerState&PSTATE_DEAD) > 0) return;
 
@@ -301,7 +301,7 @@ void playerRenderFrame(void) {
 	drawSpriteAbs(bodySprite, playerOrigin);
 }
 
-static void applyMomentum(void) {
+static void applyMomentum() {
 	//TODO: Clean up duplication.
 
 	//Increase momentum if we're thrusting towards that direction, but limit to max speed.
@@ -335,7 +335,7 @@ static void applyMomentum(void) {
 	}
 }
 
-static void recogniseThrust(void) {
+static void recogniseThrust() {
 	//Toggle thrust in a particular direction, based on key press.
 	if(checkCommand(CMD_PLAYER_UP)){
 		thrustState.y = -1;
@@ -359,7 +359,7 @@ static void recogniseThrust(void) {
 	}
 }
 
-void playerGameFrame(void) {
+void playerGameFrame() {
 	if(isDying()) {
 		//Set initial trajectory (we just do an incremental approach, no
 		// parabolic math here).
@@ -432,7 +432,7 @@ void resetPlayer() {
 	);
 }
 
-void playerInit(void) {
+void playerInit() {
 	momentumInc = PLAYER_MAX_SPEED / MOMENTUM_INC_DIVISOR;
 
 	//Calculate (in advance) the map boundary limitations.

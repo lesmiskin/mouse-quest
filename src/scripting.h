@@ -43,11 +43,11 @@ typedef struct {
 extern Script scripts[MAX_SCRIPTS];
 extern ScriptStatus scriptStatus;
 
-extern bool sceneInitialised(void);
+extern bool sceneInitialised();
 extern Scene newTimedStep(SceneType trigger, int milliseconds, FadeMode fadeMode);
-extern Scene newCueStep(void);
+extern Scene newCueStep();
 extern Scene newStateStep(GameState toState);
-extern void endOfFrameTransition(void);
-extern void resetScriptStatus(void);
+extern void endOfFrameTransition();
+extern void resetScriptStatus();
 
 #endif

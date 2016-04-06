@@ -82,7 +82,7 @@ static bool invalidPlatform(Platform* platform) {
 		platform->origin.y - (PLATFORM_SEED_Y * PLATFORM_SCALE * PLATFORM_TILE_SIZE) > screenBounds.y;
 }
 
-SDL_Texture* createPlatformTexture(void) {
+SDL_Texture* createPlatformTexture() {
 	return SDL_CreateTexture(
 		renderer,
 		SDL_PIXELFORMAT_UNKNOWN,
@@ -92,7 +92,7 @@ SDL_Texture* createPlatformTexture(void) {
 	);
 }
 
-void backgroundRenderFrame(void) {
+void backgroundRenderFrame() {
 
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_RenderClear(renderer);
@@ -281,7 +281,7 @@ Platform makePlatform(Coord origin) {
 	return p;
 }
 
-void backgroundGameFrame(void) {
+void backgroundGameFrame() {
 
 	if(!showBackground || staticBackground) return;
 
@@ -342,14 +342,14 @@ void backgroundGameFrame(void) {
 	}
 }
 
-void resetBackground(void) {
+void resetBackground() {
 	memset(planets, 0, sizeof(planets));
 	memset(platforms, 0, sizeof(platforms));
 	showBackground = true;
 	staticBackground = false;
 }
 
-void initBackground(void) {
+void initBackground() {
 	resetBackground();
 }
 

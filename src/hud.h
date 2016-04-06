@@ -13,10 +13,10 @@ extern int score;
 extern int topScore;
 extern int coins;
 extern void raiseScore(unsigned amount, bool plume);
-extern void hudGameFrame(void);
-extern void hudRenderFrame(void);
-extern void hudInit(void);
-extern void hudAnimateFrame(void);
-extern void resetHud(void);
+extern void hudGameFrame();
+extern void hudRenderFrame();
+extern void hudInit();
+extern void hudAnimateFrame();
+extern void resetHud();
 
 #endif

@@ -39,8 +39,8 @@ typedef enum {
 extern SDL_Texture *renderBuffer;
 extern const int STATIC_SHADOW_OFFSET;
 
-extern void toggleFullscreen(void);
-extern Coord getParallaxOffset(void);
+extern void toggleFullscreen();
+extern Coord getParallaxOffset();
 extern Coord parallax(Coord subject, ParallaxReference reference, ParallaxLayer layer, ParallaxDimensions dimensions, ParallaxMode mode);
 extern bool inScreenBounds(Coord subject);
 extern Coord screenBounds;
@@ -60,10 +60,10 @@ extern void initRenderer();
 extern void shutdownRenderer();
 
 //Fader
-extern void faderRenderFrame(void);
-extern bool isFading(void);
-extern void fadeIn(void);
-extern void fadeOut(void);
+extern void faderRenderFrame();
+extern bool isFading();
+extern void fadeIn();
+extern void fadeOut();
 
 typedef enum {
 	FADE_NONE = 0,

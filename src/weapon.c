@@ -73,7 +73,7 @@ static bool invalidShot(Shot *shot) {
 			!inScreenBounds(shot->coord);	//if out of range in any screen boundary (important for diag and fan patterns).
 }
 
-static Shot nullShot(void) {
+static Shot nullShot() {
 	Shot shot = { };
 	return shot;
 }
@@ -121,7 +121,7 @@ static void spawnPew(int xOffset, int yOffset, ShotDir direction) {
 	shots[shotInc] = shot;
 }
 
-bool atMaxWeapon(void) {
+bool atMaxWeapon() {
 	return weaponInc + 1 == MAX_WEAPONS;
 }
 
@@ -136,14 +136,14 @@ void changeWeapon(int newWeapon) {
 	weaponInc = newWeapon;
 }
 
-void upgradeWeapon(void) {
+void upgradeWeapon() {
 	if(atMaxWeapon()) return;
 	changeWeapon(weaponInc+1);
 }
 
 static int fanPewInc = 0;
 
-void pew(void) {
+void pew() {
 	//Rate-limiter, and HACK for skipping initial shots post-menu.
 	if(	!timer(&lastShotTime, weapons[weaponInc].speed) ||
 		   ticsToMilliseconds(clock()) < postponeShotTime
@@ -210,7 +210,7 @@ void pew(void) {
 	}
 }
 
-void pewGameFrame(void) {
+void pewGameFrame() {
 	for(int i=0; i < MAX_SHOTS; i++) {
 		//Skip zeroed shots.
 		if (invalidShot(&shots[i])) continue;
@@ -273,7 +273,7 @@ void pewGameFrame(void) {
 	}
 }
 
-void pewShadowFrame(void) {
+void pewShadowFrame() {
 	//Draw the shadows first (so we don't shadow on top of other shots)
 	for(int i=0; i < MAX_SHOTS; i++) {
 		//Skip zeroed.
@@ -292,7 +292,7 @@ void pewShadowFrame(void) {
 	}
 }
 
-void pewRenderFrame(void) {
+void pewRenderFrame() {
 	//We loop through the projectile array, drawing any shots that are still initialised.
 	for(int i=0; i < MAX_SHOTS; i++) {
 		//Skip zeroed.
@@ -317,7 +317,7 @@ void pewAnimateFrame(){
 	}
 }
 
-void pewInit(void) {
+void pewInit() {
 	Weapon w1 = { SPEED_NORMAL, PATTERN_SINGLE };
 	Weapon w2 = { SPEED_FAST, PATTERN_DUAL };
 	Weapon w3 = { SPEED_FAST, PATTERN_TRIAD };
@@ -331,7 +331,7 @@ void pewInit(void) {
 	resetPew();
 }
 
-void resetPew(void) {
+void resetPew() {
 	postponeShotTime = ticsToMilliseconds(clock()) + POSTPONE_INITIAL_SHOT;
 	weaponInc = 0;
 	shotInc = 0;

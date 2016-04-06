@@ -7,7 +7,7 @@
 extern bool FULLSCREEN;
 
 //#define DEBUG_WINDOW_T500
-//#define DEBUG_SKIP_TO_GAME
+#define DEBUG_SKIP_TO_GAME
 //#define DEBUG_GODMODE
 //#define DEBUG_FANWEAPONS
 
@@ -42,7 +42,7 @@ typedef struct {
 extern Coord scaleCoord(Coord subject, double scalar);
 extern Coord makeCoord(double x, double y);
 extern Coord deriveCoord(Coord original, double xOffset, double yOffset);
-extern Coord zeroCoord(void);
+extern Coord zeroCoord();
 extern Coord addCoords(Coord a, Coord b);
 
 //RECTANGLES
@@ -65,8 +65,8 @@ typedef enum {
 } ColourisationMethod;
 extern Colour makeColour(int red, int green, int blue, int alpha);
 extern Colour makeOpaque(int red, int green, int blue);
-extern Colour makeWhite(void);
-extern Colour makeBlack(void);
+extern Colour makeWhite();
+extern Colour makeBlack();
 
 extern int getPixel(SDL_Surface *surface, int x, int y);
 extern void setPixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
@@ -75,7 +75,7 @@ extern SDL_Surface *colouriseSprite(SDL_Surface *original, Colour colour, Colour
 extern int randomMq(int min, int max);
 extern bool chance(int probability);
 extern char *combineStrings(const char *a, const char *b);
-extern void quit(void);
+extern void quit();
 extern void fatalError(const char *title, const char *message);
 extern bool timer(long *lastTime, double hertz);
 extern double getFPS(long now, long lastFrameTime);

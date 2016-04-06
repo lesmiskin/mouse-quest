@@ -8,13 +8,13 @@ extern int lastWeapon;
 extern int weaponInc;
 extern void changeWeapon(int newWeapon);
 extern bool atMaxWeapon();
-extern void upgradeWeapon(void);
-extern void pewGameFrame(void);
-extern void pewShadowFrame(void);
-extern void pewRenderFrame(void);
-extern void pewAnimateFrame(void);
-extern void pew(void);
-extern void pewInit(void);
-extern void resetPew(void);
+extern void upgradeWeapon();
+extern void pewGameFrame();
+extern void pewShadowFrame();
+extern void pewRenderFrame();
+extern void pewAnimateFrame();
+extern void pew();
+extern void pewInit();
+extern void resetPew();
 
 #endif
