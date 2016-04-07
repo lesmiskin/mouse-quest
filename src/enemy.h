@@ -58,9 +58,10 @@ typedef struct {
 	bool collided;
 } Enemy;
 
+extern const double HEALTH_LIGHT, HEALTH_HEAVY;
 extern bool invalidEnemy(Enemy* enemy);
 extern void resetEnemies();
-extern void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyCombat combat, double speed, double swayInc);
+extern void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyCombat combat, double speed, double swayInc, double health);
 extern void hitEnemy(Enemy* enemy, double damage, bool collision);
 extern const int ENEMY_BOUND;
 extern Enemy enemies[MAX_ENEMIES];

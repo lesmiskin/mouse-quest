@@ -41,7 +41,7 @@ typedef struct {
 
 static int itemCount = 0;
 static Item items[MAX_ITEMS];
-static const double ITEM_SPEED = 1.0;
+static const double ITEM_SPEED = 0.6;
 const int POWERUP_BOUND = 24;
 static bool boolAnimFrame = false;
 static long lastBoolAnimTime;

@@ -44,6 +44,8 @@ typedef struct {
 EnemySpawn spawns[MAX_SPAWNS];
 Enemy enemies[MAX_ENEMIES];
 int spawnInc = 0;
+const double HEALTH_LIGHT = 2.0;
+const double HEALTH_HEAVY = 4.0;
 
 static int gameTime;
 static int enemyCount;
@@ -55,16 +57,15 @@ static double rollSine[5] = { 0.0, 1.25, 2.5, 3.75, 5.0 };
 //static int FORMATION_INTERVAL = 20;
 //static double ENEMY_SPEED = 0.4;
 //static double ENEMY_SPEED_FAST = 0.4;
-//static const double ENEMY_HEALTH = 1.0;
+//static const double HEALTH_LIGHT = 1.0;
 //static double SHOT_HZ = 500;
 
 static int FORMATION_INTERVAL = 75;
 static double ENEMY_SPEED = 0.9;
-static double ENEMY_SPEED_FAST = 1.8;
-static double SHOT_HZ = 1500;
-static double SHOT_SPEED = 2;
-static const double ENEMY_HEALTH = 2.0;
 
+static double ENEMY_SPEED_FAST = 1.8;
+static double SHOT_HZ = 750;
+static double SHOT_SPEED = 2;
 static double SHOT_DAMAGE = 1;
 
 const int ENEMY_BOUND = 26;
@@ -280,7 +281,7 @@ void spawnFormation(int x, EnemyFormation formation, EnemyType enemyType, int qt
 	spawns[spawnInc++] = s;
 }
 
-void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyCombat combat, double speed, double swayInc) {
+void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyCombat combat, double speed, double swayInc, double health) {
 	//Limit Enemy count to array size by looping over the top.
 	if(enemyCount == MAX_ENEMIES) enemyCount = 0;
 
@@ -295,8 +296,8 @@ void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyComba
 		makeCoord(x, y),
 		{ },
 		false,
-		ENEMY_HEALTH,
-		ENEMY_HEALTH,
+		health,
+		health,
 		1,
 		ENEMY_ANIMATION_IDLE,
 		false,
