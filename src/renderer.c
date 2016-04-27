@@ -277,7 +277,7 @@ void initRenderer() {
 	renderer = SDL_CreateRenderer(
 		window,
 		-1,							            //insert at default index position for renderer list.
-		SDL_RENDERER_TARGETTEXTURE          	//supports rendering to textures.
+		SDL_RENDERER_TARGETTEXTURE           	//supports rendering to textures.
 //		| SDL_RENDERER_PRESENTVSYNC
 	);
 	assert(renderer != NULL);

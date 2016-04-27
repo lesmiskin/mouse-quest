@@ -32,9 +32,14 @@ static const char *GAME_TITLE = "Mouse Quest";
 bool running = true;
 
 static void initSDL() {
-	//Kick off the minor subsystems first, so they don't slow down the game before
-	// it's started.
-	SDL_Init(/*SDL_INIT_AUDIO | */SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC);
+	// !!!IMPORTANT!!!
+	// Perceived slowness on startup is due to the CLion window!
+	// Run the game from the terminal (with nothing showing in the background)
+	// and the game will be perfectly smooth!
+	// Tip: Improve performance by toggling off UI scaling.
+	// !!!IMPORTANT!!!
+
+	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK /* | SDL_INIT_HAPTIC*/);
 
 	//Init SDL_Image for PNG support.
 	if(!IMG_Init(IMG_INIT_PNG)) {
@@ -45,9 +50,6 @@ static void initSDL() {
 	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
 		fatalError("Fatal error", "SDL_Mixer did not initialise.");
 	}
-
-	//Now that everything's loaded - start the video.
-	SDL_InitSubSystem(SDL_INIT_VIDEO);
 }
 static void initWindow() {
 	window = SDL_CreateWindow(
@@ -104,6 +106,9 @@ int main()  {
 	pewInit();
 	itemInit();
 	levelInit();
+
+	// This delay ensures the game starts up fast *as is*.
+//	SDL_Delay(2000);
 
 #ifdef DEBUG_SKIP_TO_GAME
 	triggerState(STATE_GAME);

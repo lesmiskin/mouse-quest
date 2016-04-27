@@ -80,6 +80,7 @@ extern void fatalError(const char *title, const char *message);
 extern bool timer(long *lastTime, double hertz);
 extern double getFPS(long now, long lastFrameTime);
 extern bool due(long compareTime, double milliseconds);
+extern bool dueBetween(long compareTime, double milliseconds, double milliseconds2);
 
 extern SDL_Window *window;
 extern SDL_PixelFormat *screenFormat;

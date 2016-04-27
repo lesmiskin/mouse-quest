@@ -45,7 +45,7 @@ EnemySpawn spawns[MAX_SPAWNS];
 Enemy enemies[MAX_ENEMIES];
 int spawnInc = 0;
 const double HEALTH_LIGHT = 2.0;
-const double HEALTH_HEAVY = 4.0;
+const double HEALTH_HEAVY = 5.0;
 
 static int gameTime;
 static int enemyCount;
@@ -281,7 +281,7 @@ void spawnFormation(int x, EnemyFormation formation, EnemyType enemyType, int qt
 	spawns[spawnInc++] = s;
 }
 
-void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyCombat combat, double speed, double swayInc, double health) {
+void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed, double swayInc, double health) {
 	//Limit Enemy count to array size by looping over the top.
 	if(enemyCount == MAX_ENEMIES) enemyCount = 0;
 
@@ -310,7 +310,10 @@ void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyComba
 		movement,
 		combat,
 		swayInc,
-		swayInc
+		swayInc,
+		zeroCoord(),
+		false,
+		clock()
 	};
 
 	//Add it to the list of renderables.
@@ -491,16 +494,24 @@ void enemyGameFrame() {
 		enemies[i].origin.y += enemies[i].speed;
 
 		switch(enemies[i].movement) {
-			case MOVEMENT_CIRCLE:
+			case PATTERN_PEEL_RIGHT:
+				if(dueBetween(enemies[i].spawnTime, 750, 1600)) enemies[i].origin.x += 1;
+				enemies[i].formationOrigin = enemies[i].origin;
+				break;
+			case PATTERN_PEEL_LEFT:
+				if(dueBetween(enemies[i].spawnTime, 750, 1600)) enemies[i].origin.x -= 1;
+				enemies[i].formationOrigin = enemies[i].origin;
+				break;
+			case PATTERN_CIRCLE:
 				//TODO: Find out why swayIncX and swayIncY need to be swapped :p
 				enemies[i].formationOrigin.y = sineInc(enemies[i].origin.y, &enemies[i].swayIncX, 0.04, 21);
 				enemies[i].formationOrigin.x = cosInc(enemies[i].origin.x, &enemies[i].swayIncY, 0.04, 21);
 				break;
-			case MOVEMENT_SNAKE:
+			case PATTERN_SNAKE:
 				enemies[i].formationOrigin.x = sineInc(enemies[i].origin.x, &enemies[i].swayIncX, 0.075, 12);
 				enemies[i].formationOrigin.y = enemies[i].origin.y;
 				break;
-			case MOVEMENT_SNAKE_VERT:
+			case PATTERN_BOB:
 				enemies[i].formationOrigin.x = enemies[i].origin.x;
 				enemies[i].formationOrigin.y = sineInc(enemies[i].origin.y, &enemies[i].swayIncY, 0.075, 12);;
 				break;

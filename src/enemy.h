@@ -21,12 +21,20 @@ typedef enum {
 } EnemyType;
 
 typedef enum {
-	MOVEMENT_STRAIGHT,
-	MOVEMENT_SNAKE,
-	MOVEMENT_SNAKE_VERT,
-	MOVEMENT_CIRCLE,
-	MOVEMENT_TITLE_BOB
-} EnemyMovement;
+	PATTERN_NONE,
+	PATTERN_SNAKE,
+	PATTERN_BOB,
+	PATTERN_CIRCLE,
+	PATTERN_PEEL_LEFT,
+	PATTERN_PEEL_RIGHT,
+//	PATTERN_ZIP,
+//	PATTERN_CROSS_OVER,
+//	PATTERN_FUNNEL,
+//	PATTERN_INVERT_FUNNEL,
+//	PATTERN_Z,
+//	PATTERN_Z_CROSS,
+//	PATTERN_Z_EASY,
+} EnemyPattern;
 
 typedef enum {
 	COMBAT_IDLE,
@@ -50,18 +58,19 @@ typedef struct {
 	char frameName[50];
 	bool wasHitLastFrame;
 	bool initialFrameChosen;
-	EnemyMovement movement;
+	EnemyPattern movement;
 	EnemyCombat combat;
 	double swayIncX;
 	double swayIncY;
 	Coord offset;
 	bool collided;
+	long spawnTime;
 } Enemy;
 
 extern const double HEALTH_LIGHT, HEALTH_HEAVY;
 extern bool invalidEnemy(Enemy* enemy);
 extern void resetEnemies();
-extern void spawnEnemy(int x, int y, EnemyType type, EnemyMovement movement, EnemyCombat combat, double speed, double swayInc, double health);
+extern void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed, double swayInc, double health);
 extern void hitEnemy(Enemy* enemy, double damage, bool collision);
 extern const int ENEMY_BOUND;
 extern Enemy enemies[MAX_ENEMIES];

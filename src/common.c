@@ -232,6 +232,11 @@ bool timer(long *lastTime, double hertz){
 	}
 }
 
+bool dueBetween(long compareTime, double milliseconds, double milliseconds2) {
+	long time = ticsToMilliseconds(clock() - compareTime);
+	return time >= milliseconds && time <= milliseconds2;
+}
+
 bool due(long compareTime, double milliseconds) {
 	return ticsToMilliseconds(clock() - compareTime) >= milliseconds;
 }

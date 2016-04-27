@@ -5,11 +5,12 @@
 
 typedef enum {
 	W_LINE,
-	W_COLUMN,
-	W_COLUMN_SMALL,
+	W_COL,
 	W_TRI,
 	W_ANGLE_LEFT,
-	W_ANGLE_RIGHT
+	W_ANGLE_RIGHT,
+	W_DELTA_DOWN,
+	W_DELTA_UP,
 } WaveType;
 
 typedef struct {
@@ -17,12 +18,13 @@ typedef struct {
 	WaveType WaveType;
 	int x;
 	int y;
-	EnemyMovement Movement;
+	EnemyPattern Movement;
 	EnemyType Type;
 	EnemyCombat Combat;
 	bool Async;
 	double Speed;
 	double Health;
+	int Qty;
 } WaveTrigger;
 
 #define MAX_WAVES 50
@@ -31,22 +33,21 @@ long gameTime = 0;
 int waveInc = 0;
 int waveAddInc = 0;
 const int NA = -1;
+const int ENEMY_SPACE = 35;
 
 bool invalidWave(WaveTrigger *wave) {
 	return wave->SpawnTime == 0;
 }
 
-void wave(int spawnTime, WaveType waveType, int x, int y, EnemyMovement movement, EnemyType type, EnemyCombat combat, bool async, double speed, double health) {
+void wave(int spawnTime, WaveType waveType, int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat combat, bool async, double speed, double health, int qty) {
 	WaveTrigger e = {
-		spawnTime, waveType, x, y, movement, type, combat, async, speed, health
+		spawnTime, waveType, x, y, movement, type, combat, async, speed, health, qty
 	};
 
 	triggers[waveAddInc++] = e;
 }
 
-const int ENEMY_SPACE = 35;
-
-void w_tri(int x, EnemyType type, EnemyMovement movement, EnemyCombat combat, double speed) {
+void w_tri(int x, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed) {
 	int y = -50;
 
 	spawnEnemy(x, y - 30, type, movement, combat, speed, 0, HEALTH_LIGHT);
@@ -54,7 +55,28 @@ void w_tri(int x, EnemyType type, EnemyMovement movement, EnemyCombat combat, do
 	spawnEnemy(x + 40, y - 30, type, movement, combat, speed, 0, HEALTH_LIGHT);
 }
 
-void w_line(EnemyMovement movement, EnemyType type, EnemyCombat combat, double speed) {
+void w_delta(EnemyPattern movement, EnemyType type, EnemyCombat combat, double speed, bool dir) {
+	int startY = dir ? 0 -50 : -100;
+	int startX = 45;
+
+	for(int i=0; i < 5; i++) {
+		if(startY == 2) {
+			startY = 0;
+			continue;
+		}
+
+		if(dir) {
+			startY = i <= 2 ? startY - 20 : startY + 20;
+		}else{
+			startY = i <= 2 ? startY + 20 : startY - 20;
+		}
+
+		spawnEnemy(startX, startY, type, movement, combat, speed, 0, HEALTH_LIGHT);
+		startX += 45;
+	}
+}
+
+void w_line(EnemyPattern movement, EnemyType type, EnemyCombat combat, double speed) {
 	int startY = -50;
 	int startX = 50;
 
@@ -64,7 +86,7 @@ void w_line(EnemyMovement movement, EnemyType type, EnemyCombat combat, double s
 	}
 }
 
-void w_angle(EnemyMovement movement, EnemyType type, EnemyCombat combat, double speed, bool angleDir) {
+void w_angle(EnemyPattern movement, EnemyType type, EnemyCombat combat, double speed, bool angleDir) {
 	int startY = angleDir ? -50 : -50 + (-40 * 3);
 	int startX = 70;
 
@@ -75,7 +97,7 @@ void w_angle(EnemyMovement movement, EnemyType type, EnemyCombat combat, double 
 	}
 }
 
-void w_column(int x, EnemyMovement movement, EnemyType type, EnemyCombat combat, bool async, double speed, int qty, double health) {
+void w_column(int x, EnemyPattern movement, EnemyType type, EnemyCombat combat, bool async, double speed, int qty, double health) {
 	int startY = -50;
 	int sineInc = 0;
 
@@ -97,6 +119,12 @@ void levelGameFrame() {
 
 	if(	waveInc < MAX_WAVES && !invalidWave(&trigger) && due(gameTime, trigger.SpawnTime) ) {
 		switch(trigger.WaveType) {
+			case W_DELTA_DOWN:
+				w_delta(trigger.Movement, trigger.Type, trigger.Combat, trigger.Speed, false);
+				break;
+			case W_DELTA_UP:
+				w_delta(trigger.Movement, trigger.Type, trigger.Combat, trigger.Speed, true);
+				break;
 			case W_ANGLE_LEFT:
 				w_angle(trigger.Movement, trigger.Type, trigger.Combat, trigger.Speed, false);
 				break;
@@ -106,11 +134,8 @@ void levelGameFrame() {
 			case W_LINE:
 				w_line(trigger.Movement, trigger.Type, trigger.Combat, trigger.Speed);
 				break;
-			case W_COLUMN_SMALL:
-				w_column(trigger.x, trigger.Movement, trigger.Type, trigger.Combat, trigger.Async, trigger.Speed, 2, trigger.Health);
-				break;
-			case W_COLUMN:
-				w_column(trigger.x, trigger.Movement, trigger.Type, trigger.Combat, trigger.Async, trigger.Speed, 4, trigger.Health);
+			case W_COL:
+				w_column(trigger.x, trigger.Movement, trigger.Type, trigger.Combat, trigger.Async, trigger.Speed, trigger.Qty, trigger.Health);
 				break;
 			case W_TRI:
 				w_tri(trigger.x, trigger.Type, trigger.Movement, trigger.Combat, trigger.Speed);
@@ -121,44 +146,74 @@ void levelGameFrame() {
 }
 
 void levelInit() {
+
+	const int LEFT = 20;
+	const int RIGHT = 250;
+	const int C_LEFT = 110;
+	const int C_RIGHT = 160;
+
+	wave(1000, W_COL, C_LEFT, NA, PATTERN_PEEL_LEFT, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT, 1);
+	wave(1000, W_COL, C_RIGHT, NA, PATTERN_PEEL_RIGHT, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT, 1);
+
+	wave(1300, W_COL, C_LEFT, NA, PATTERN_PEEL_LEFT, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT, 1);
+	wave(1300, W_COL, C_RIGHT, NA, PATTERN_PEEL_RIGHT, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT, 1);
+
+	wave(1600, W_COL, C_LEFT, NA, PATTERN_PEEL_LEFT, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT, 1);
+	wave(1600, W_COL, C_RIGHT, NA, PATTERN_PEEL_RIGHT, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT, 1);
+
+
+
 	//Start of level - 2 columns, and space invaders.
+//
+//	wave(1000, W_COL, 50, NA, PATTERN_SNAKE, ENEMY_DISK, COMBAT_IDLE, true, 1, HEALTH_LIGHT);
+//	wave(1000, W_COL, 200, NA, PATTERN_SNAKE, ENEMY_DISK_BLUE, COMBAT_IDLE, true, 1, HEALTH_LIGHT);
+//
+//	wave(6000, W_LINE, NA, NA, PATTERN_SNAKE, ENEMY_BUG, COMBAT_IDLE, false, 0.7, HEALTH_LIGHT);
+//	wave(7000, W_LINE, NA, NA, PATTERN_SNAKE, ENEMY_VIRUS, COMBAT_IDLE, false, 0.7, HEALTH_LIGHT);
+//
+//	//10 seconds in - triads.
+//
+//	wave(12000, W_TRI, 50, NA, PATTERN_NONE, ENEMY_DISK, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT);
+//	wave(14000, W_TRI, 200, NA, PATTERN_NONE, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT);
+//
+//	wave(17000, W_TRI, 50, NA, PATTERN_SNAKE, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT);
+//	wave(18000, W_TRI, 200, NA, PATTERN_SNAKE, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT);
+//
+//	//20 seconds in - Diagonal magnets.
+//
+//	wave(22000, W_ANGLE_LEFT, 50, NA, PATTERN_NONE, ENEMY_MAGNET, COMBAT_IDLE, false, 2, HEALTH_LIGHT);
+//	wave(25000, W_ANGLE_RIGHT, 50, NA, PATTERN_NONE, ENEMY_MAGNET, COMBAT_IDLE, false, 2, HEALTH_LIGHT);
+//
+//	//Introduce the shooters, first in simple columns, then waving.
+//
+//	wave(30000, W_COL, 50, NA, PATTERN_NONE, ENEMY_VIRUS, COMBAT_SHOOTER, true, 1, HEALTH_HEAVY);
+//	wave(33000, W_COL, 200, NA, PATTERN_NONE, ENEMY_BUG, COMBAT_SHOOTER, true, 1, HEALTH_HEAVY);
+//	wave(36000, W_COL, 50, NA, PATTERN_SNAKE, ENEMY_VIRUS, COMBAT_SHOOTER, true, 1, HEALTH_HEAVY);
+//	wave(39000, W_COL, 200, NA, PATTERN_SNAKE, ENEMY_BUG, COMBAT_SHOOTER, true, 1, HEALTH_HEAVY);
 
-	wave(1000, W_COLUMN, 50, NA, MOVEMENT_SNAKE, ENEMY_DISK, COMBAT_IDLE, true, 1, HEALTH_LIGHT);
-	wave(1000, W_COLUMN, 200, NA, MOVEMENT_SNAKE, ENEMY_DISK_BLUE, COMBAT_IDLE, true, 1, HEALTH_LIGHT);
+	// A few deltas...
 
-	wave(6000, W_LINE, NA, NA, MOVEMENT_SNAKE, ENEMY_BUG, COMBAT_IDLE, false, 0.7, HEALTH_LIGHT);
-	wave(7000, W_LINE, NA, NA, MOVEMENT_SNAKE, ENEMY_VIRUS, COMBAT_IDLE, false, 0.7, HEALTH_LIGHT);
+//	wave(44000, W_DELTA_DOWN, 30, NA, MOVEMENT_STRAIGHT, ENEMY_DISK, COMBAT_IDLE, true, 1.3, HEALTH_LIGHT);
+//	wave(46000, W_DELTA_DOWN, 30, NA, MOVEMENT_TITLE_BOB, ENEMY_DISK_BLUE, COMBAT_SHOOTER, true, 1, HEALTH_LIGHT);
 
-	//10 seconds in - triads.
 
-	wave(12000, W_TRI, 50, NA, MOVEMENT_STRAIGHT, ENEMY_DISK, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT);
-	wave(14000, W_TRI, 200, NA, MOVEMENT_STRAIGHT, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT);
-
-	wave(17000, W_TRI, 50, NA, MOVEMENT_SNAKE, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT);
-	wave(18000, W_TRI, 200, NA, MOVEMENT_SNAKE, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT);
-
-	//20 seconds in - Diagonal magnets.
-
-	wave(22000, W_ANGLE_LEFT, 50, NA, MOVEMENT_STRAIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 2, HEALTH_LIGHT);
-	wave(25000, W_ANGLE_RIGHT, 50, NA, MOVEMENT_STRAIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 2, HEALTH_LIGHT);
-
-	wave(30000, W_COLUMN, 50, NA, MOVEMENT_STRAIGHT, ENEMY_VIRUS, COMBAT_SHOOTER, true, 1, HEALTH_HEAVY);
-	wave(33000, W_COLUMN, 200, NA, MOVEMENT_STRAIGHT, ENEMY_BUG, COMBAT_SHOOTER, true, 1, HEALTH_HEAVY);
-	wave(36000, W_COLUMN, 50, NA, MOVEMENT_SNAKE, ENEMY_VIRUS, COMBAT_SHOOTER, true, 1, HEALTH_HEAVY);
-	wave(39000, W_COLUMN, 200, NA, MOVEMENT_SNAKE, ENEMY_BUG, COMBAT_SHOOTER, true, 1, HEALTH_HEAVY);
-
-	//Spirals...
-
-	//Tough (health) guys that come down, then peel offscreen.
-
-	//Guys that come in from the sides, then peel off to the other side.
-
+	//Column options which can peel off to the sides.
+	//Spirals.
+	//Carrier columns (floppy line flanked with bugs).
+	//Super carrier (blue floppy line flanked with viruses).
 	//Spirals with shooters inside them.
+	//Tough (health) guys that come down, then peel offscreen.
+	//Guys that come in from the sides, then peel off to the other side.
+	//?? Guys that plunge in from the sides.
+	//Delta lines, Up/down bobbing enemies in blocks.
+	//Guys that cruise in form the sides, and shoot while doing it.
 
-	//Guys that plunge in from the sides.
 
-	//Up/down bobbing enemies in blocks.
 
+
+
+
+	//Little darters down the screen *COMBINED* with side crusers.
 	//WARNING WARNING || SHOOT THE CORE || WARNING WARNING.
 }
 
