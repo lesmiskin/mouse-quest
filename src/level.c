@@ -23,6 +23,7 @@ typedef struct {
 	EnemyCombat Combat;
 	bool Async;
 	double Speed;
+	double SpeedX;
 	double Health;
 	int Qty;
 } WaveTrigger;
@@ -39,65 +40,66 @@ bool invalidWave(WaveTrigger *wave) {
 	return wave->SpawnTime == 0;
 }
 
-void wave(int spawnTime, WaveType waveType, int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat combat, bool async, double speed, double health, int qty) {
+void wave(int spawnTime, WaveType waveType, int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat combat, bool async, double speed, double speedX, double health, int qty) {
 	WaveTrigger e = {
-		spawnTime, waveType, x, y, movement, type, combat, async, speed, health, qty
+		spawnTime, waveType, x, y, movement, type, combat, async, speed, speedX, health, qty
 	};
 
 	triggers[waveAddInc++] = e;
 }
 
-void w_tri(int x, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed) {
-	int y = -50;
+//void w_tri(int x, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed) {
+//	int y = -50;
+//
+//	spawnEnemy(x, y - 30, type, movement, combat, speed, 0, HEALTH_LIGHT);
+//	spawnEnemy(x + 20, y, type, movement, combat, speed, 0, HEALTH_LIGHT);
+//	spawnEnemy(x + 40, y - 30, type, movement, combat, speed, 0, HEALTH_LIGHT);
+//}
+//
+//void w_delta(EnemyPattern movement, EnemyType type, EnemyCombat combat, double speed, bool dir) {
+//	int startY = dir ? 0 -50 : -100;
+//	int startX = 45;
+//
+//	for(int i=0; i < 5; i++) {
+//		if(startY == 2) {
+//			startY = 0;
+//			continue;
+//		}
+//
+//		if(dir) {
+//			startY = i <= 2 ? startY - 20 : startY + 20;
+//		}else{
+//			startY = i <= 2 ? startY + 20 : startY - 20;
+//		}
+//
+//		spawnEnemy(startX, startY, type, movement, combat, speed, 0, HEALTH_LIGHT);
+//		startX += 45;
+//	}
+//}
+//
+//void w_line(EnemyPattern movement, EnemyType type, EnemyCombat combat, double speed) {
+//	int startY = -50;
+//	int startX = 50;
+//
+//	for(int i=0; i < 4; i++) {
+//		spawnEnemy(startX, startY, type, movement, combat, speed, 0, HEALTH_LIGHT);
+//		startX += 50;
+//	}
+//}
+//
+//void w_angle(EnemyPattern movement, EnemyType type, EnemyCombat combat, double speed, bool angleDir) {
+//	int startY = angleDir ? -50 : -50 + (-40 * 3);
+//	int startX = 70;
+//
+//	for(int i=0; i < 4; i++) {
+//		spawnEnemy(startX, startY, type, movement, combat, speed, 0, HEALTH_LIGHT);
+//		startX += 40;
+//		startY = angleDir ? startY - 40 : startY + 40;
+//	}
+//}
+//
 
-	spawnEnemy(x, y - 30, type, movement, combat, speed, 0, HEALTH_LIGHT);
-	spawnEnemy(x + 20, y, type, movement, combat, speed, 0, HEALTH_LIGHT);
-	spawnEnemy(x + 40, y - 30, type, movement, combat, speed, 0, HEALTH_LIGHT);
-}
-
-void w_delta(EnemyPattern movement, EnemyType type, EnemyCombat combat, double speed, bool dir) {
-	int startY = dir ? 0 -50 : -100;
-	int startX = 45;
-
-	for(int i=0; i < 5; i++) {
-		if(startY == 2) {
-			startY = 0;
-			continue;
-		}
-
-		if(dir) {
-			startY = i <= 2 ? startY - 20 : startY + 20;
-		}else{
-			startY = i <= 2 ? startY + 20 : startY - 20;
-		}
-
-		spawnEnemy(startX, startY, type, movement, combat, speed, 0, HEALTH_LIGHT);
-		startX += 45;
-	}
-}
-
-void w_line(EnemyPattern movement, EnemyType type, EnemyCombat combat, double speed) {
-	int startY = -50;
-	int startX = 50;
-
-	for(int i=0; i < 4; i++) {
-		spawnEnemy(startX, startY, type, movement, combat, speed, 0, HEALTH_LIGHT);
-		startX += 50;
-	}
-}
-
-void w_angle(EnemyPattern movement, EnemyType type, EnemyCombat combat, double speed, bool angleDir) {
-	int startY = angleDir ? -50 : -50 + (-40 * 3);
-	int startX = 70;
-
-	for(int i=0; i < 4; i++) {
-		spawnEnemy(startX, startY, type, movement, combat, speed, 0, HEALTH_LIGHT);
-		startX += 40;
-		startY = angleDir ? startY - 40 : startY + 40;
-	}
-}
-
-void w_column(int x, EnemyPattern movement, EnemyType type, EnemyCombat combat, bool async, double speed, int qty, double health) {
+void w_column(int x, EnemyPattern movement, EnemyType type, EnemyCombat combat, bool async, double speed, double speedX, int qty, double health) {
 	int startY = -50;
 	int sineInc = 0;
 
@@ -105,7 +107,7 @@ void w_column(int x, EnemyPattern movement, EnemyType type, EnemyCombat combat, 
 	double sineIncInc = qty / 3.14;
 
 	for(int i=0; i < qty; i++) {
-		spawnEnemy(x, startY, type, movement, combat, speed, sineInc, health);
+		spawnEnemy(x, startY, type, movement, combat, speed, speedX, sineInc, health);
 		startY -= 35;
 		if(async) sineInc += sineIncInc;
 	}
@@ -118,29 +120,7 @@ void levelGameFrame() {
 	WaveTrigger trigger = triggers[waveInc];
 
 	if(	waveInc < MAX_WAVES && !invalidWave(&trigger) && due(gameTime, trigger.SpawnTime) ) {
-		switch(trigger.WaveType) {
-			case W_DELTA_DOWN:
-				w_delta(trigger.Movement, trigger.Type, trigger.Combat, trigger.Speed, false);
-				break;
-			case W_DELTA_UP:
-				w_delta(trigger.Movement, trigger.Type, trigger.Combat, trigger.Speed, true);
-				break;
-			case W_ANGLE_LEFT:
-				w_angle(trigger.Movement, trigger.Type, trigger.Combat, trigger.Speed, false);
-				break;
-			case W_ANGLE_RIGHT:
-				w_angle(trigger.Movement, trigger.Type, trigger.Combat, trigger.Speed, true);
-				break;
-			case W_LINE:
-				w_line(trigger.Movement, trigger.Type, trigger.Combat, trigger.Speed);
-				break;
-			case W_COL:
-				w_column(trigger.x, trigger.Movement, trigger.Type, trigger.Combat, trigger.Async, trigger.Speed, trigger.Qty, trigger.Health);
-				break;
-			case W_TRI:
-				w_tri(trigger.x, trigger.Type, trigger.Movement, trigger.Combat, trigger.Speed);
-				break;
-		}
+		w_column(trigger.x, trigger.Movement, trigger.Type, trigger.Combat, trigger.Async, trigger.Speed, trigger.SpeedX, trigger.Qty, trigger.Health);
 		waveInc++;
 	}
 }
@@ -152,35 +132,47 @@ void levelInit() {
 	const int C_LEFT = 110;
 	const int C_RIGHT = 160;
 
+
 	// Two columns that split, and marge.
 	for(int i=0; i < 6; i++) {
-		wave(1000 + (i * 350), W_COL, C_LEFT, NA, PATTERN_PEEL_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, HEALTH_LIGHT, 1);
-		wave(1000 + (i * 350), W_COL, C_RIGHT, NA, PATTERN_PEEL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, HEALTH_LIGHT, 1);
+		wave(1000 + (i * 350), W_COL, C_LEFT, NA, P_CURVE_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.2, 1, HEALTH_LIGHT, 1);
+		wave(1000 + (i * 350), W_COL, C_RIGHT, NA, P_CURVE_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.2, 1, HEALTH_LIGHT, 1);
 	}
 
 	// Two columns that cross over mid-way down.
 	for(int i=0; i < 6; i++) {
-		wave(6000 + (i * 350), W_COL, RIGHT, NA, PATTERN_PEEL_FAR_LEFT, ENEMY_DISK, COMBAT_IDLE, false, 1.4, HEALTH_LIGHT, 1);
-		wave(6000 + (i * 350), W_COL, LEFT, NA, PATTERN_PEEL_FAR_RIGHT, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1.4, HEALTH_LIGHT, 1);
+		wave(6000 + (i * 350), W_COL, RIGHT, NA, P_CROSSOVER_LEFT, ENEMY_DISK, COMBAT_IDLE, false, 1, 1.9, HEALTH_LIGHT, 1);
+		wave(6000 + (i * 350), W_COL, LEFT, NA, P_CROSSOVER_RIGHT, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1, 1.9, HEALTH_LIGHT, 1);
 	}
 
-	// Things get biffed in rapidly from either side.
-	for(int i=0; i < 4; i++) {
-		wave(11000 + (i * 500), W_COL, 250 + 48, NA, PATTERN_STRAFE_LEFT, ENEMY_CD, COMBAT_IDLE, false, 1.4, HEALTH_LIGHT, 1);
-		wave(11250 + (i * 500), W_COL, 0 - 48, NA, PATTERN_STRAFE_RIGHT, ENEMY_CD, COMBAT_IDLE, false, 1.4, HEALTH_LIGHT, 1);
-	}
+//	 Strafers coming from either side.
+	for(int i=0; i < 3; i++)
+		wave(11000 + (i * 800), W_COL, 250 + 48, NA, P_STRAFE_LEFT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.8, 1.8, HEALTH_LIGHT, 1);
+	for(int i=0; i < 3; i++)
+		wave(14500 + (i * 800), W_COL, 0 - 48, NA, P_STRAFE_RIGHT, ENEMY_BUG, COMBAT_SHOOTER, false, 0.8, 1.8, HEALTH_LIGHT, 1);
 
 
 
 
 
-//	wave(1000, W_COL, C_LEFT, NA, PATTERN_PEEL_LEFT, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT, 1);
+
+
+
+
+
+//	 Things get biffed in rapidly from either side.
+//	for(int i=0; i < 4; i++) {
+//		wave(11000 + (i * 500), W_COL, 250 + 48, NA, P_STRAFE_LEFT, ENEMY_CD, COMBAT_IDLE, false, 1.4, 1, HEALTH_LIGHT, 1);
+//		wave(11250 + (i * 500), W_COL, 0 - 48, NA, P_STRAFE_RIGHT, ENEMY_CD, COMBAT_IDLE, false, 1.4, 1, HEALTH_LIGHT, 1);
+//	}
+
+//	wave(1000, W_COL, C_LEFT, NA, P_CURVE_LEFT, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT, 1);
 //	wave(1000, W_COL, C_RIGHT, NA, PATTERN_PEEL_RIGHT, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT, 1);
 //
-//	wave(1300, W_COL, C_LEFT, NA, PATTERN_PEEL_LEFT, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT, 1);
+//	wave(1300, W_COL, C_LEFT, NA, P_CURVE_LEFT, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT, 1);
 //	wave(1300, W_COL, C_RIGHT, NA, PATTERN_PEEL_RIGHT, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT, 1);
 //
-//	wave(1600, W_COL, C_LEFT, NA, PATTERN_PEEL_LEFT, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT, 1);
+//	wave(1600, W_COL, C_LEFT, NA, P_CURVE_LEFT, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT, 1);
 //	wave(1600, W_COL, C_RIGHT, NA, PATTERN_PEEL_RIGHT, ENEMY_CD, COMBAT_IDLE, false, 1.7, HEALTH_LIGHT, 1);
 
 

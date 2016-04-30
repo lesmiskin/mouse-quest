@@ -25,14 +25,14 @@ typedef enum {
 	PATTERN_SNAKE,
 	PATTERN_BOB,
 	PATTERN_CIRCLE,
-	PATTERN_PEEL_LEFT,
-	PATTERN_PEEL_RIGHT,
+	P_CURVE_LEFT,
+	P_CURVE_RIGHT,
 
-	PATTERN_STRAFE_LEFT,
-	PATTERN_STRAFE_RIGHT,
+	P_STRAFE_LEFT,
+	P_STRAFE_RIGHT,
 
-	PATTERN_PEEL_FAR_LEFT,
-	PATTERN_PEEL_FAR_RIGHT,
+	P_CROSSOVER_LEFT,
+	P_CROSSOVER_RIGHT,
 
 
 //	PATTERN_ZIP,
@@ -46,7 +46,8 @@ typedef enum {
 
 typedef enum {
 	COMBAT_IDLE,
-	COMBAT_SHOOTER
+	COMBAT_SHOOTER,
+	COMBAT_SHOOTER_HOMING
 } EnemyCombat;
 
 typedef struct {
@@ -63,6 +64,7 @@ typedef struct {
 	EnemyType type;
 	long lastShotTime;
 	double speed;
+	double speedX;
 	char frameName[50];
 	bool wasHitLastFrame;
 	bool initialFrameChosen;
@@ -78,7 +80,7 @@ typedef struct {
 extern const double HEALTH_LIGHT, HEALTH_HEAVY;
 extern bool invalidEnemy(Enemy* enemy);
 extern void resetEnemies();
-extern void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed, double swayInc, double health);
+extern void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed, double speedX, double swayInc, double health);
 extern void hitEnemy(Enemy* enemy, double damage, bool collision);
 extern const int ENEMY_BOUND;
 extern Enemy enemies[MAX_ENEMIES];

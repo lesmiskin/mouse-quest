@@ -87,11 +87,11 @@ void scriptGameFrame() {
 
 				case INTRO_BATTLE_CUE:
 					//Spawn randomMq assortment of enemies.
-					spawnEnemy(80, randomMq(40, 65), randomMq(0, sizeof(EnemyType)), PATTERN_NONE, COMBAT_IDLE, 0, 0,
+					spawnEnemy(80, randomMq(40, 65), randomMq(0, sizeof(EnemyType)), PATTERN_NONE, COMBAT_IDLE, 0, 0, 0,
 							   HEALTH_LIGHT);
-					spawnEnemy(110, randomMq(40, 65), randomMq(0, sizeof(EnemyType)), PATTERN_NONE, COMBAT_IDLE, 0, 0,
+					spawnEnemy(110, randomMq(40, 65), randomMq(0, sizeof(EnemyType)), PATTERN_NONE, COMBAT_IDLE, 0, 0, 0,
 							   HEALTH_LIGHT);
-					spawnEnemy(140, randomMq(40, 65), randomMq(0, sizeof(EnemyType)), PATTERN_NONE, COMBAT_IDLE, 0, 0,
+					spawnEnemy(140, randomMq(40, 65), randomMq(0, sizeof(EnemyType)), PATTERN_NONE, COMBAT_IDLE, 0, 0, 0,
 							   HEALTH_LIGHT);
 					playerOrigin.y = screenBounds.y + 16;
 					useMike = true;
@@ -149,7 +149,7 @@ void scriptGameFrame() {
 					int spacer = -10;
 					EnemyType roll[] = { ENEMY_BUG, ENEMY_DISK, ENEMY_VIRUS, ENEMY_MAGNET, ENEMY_CD };
 					for(int i=0; i < sizeof(roll) / sizeof(EnemyType); i++) {
-						spawnEnemy(spacer += 40, 135, roll[i], PATTERN_CIRCLE, COMBAT_IDLE, 0, 0, HEALTH_LIGHT);
+						spawnEnemy(spacer += 40, 135, roll[i], PATTERN_CIRCLE, COMBAT_IDLE, 0, 0, 0, HEALTH_LIGHT);
 					}
 
 					playMusic("title.ogg", 1);

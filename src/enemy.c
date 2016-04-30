@@ -20,7 +20,8 @@ typedef struct {
 	Coord parallax;
 	int animFrame;
 	EnemyType enemyType;
-	Coord target;
+	Coord homeTarget;
+	bool homing;
 } EnemyShot;
 
 typedef struct {
@@ -55,7 +56,7 @@ static int FORMATION_INTERVAL = 75;
 static double ENEMY_SPEED = 0.9;
 
 static double ENEMY_SPEED_FAST = 1.8;
-static double SHOT_HZ = 750;
+static double SHOT_HZ = 1000;
 static double SHOT_SPEED = 2;
 static double SHOT_DAMAGE = 1;
 
@@ -272,7 +273,7 @@ void spawnFormation(int x, EnemyType enemyType, int qty, double speed) {
 	spawns[spawnInc++] = s;
 }
 
-void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed, double swayInc, double health) {
+void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed, double speedX, double swayInc, double health) {
 	//Limit Enemy count to array size by looping over the top.
 	if(enemyCount == MAX_ENEMIES) enemyCount = 0;
 
@@ -295,6 +296,7 @@ void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat
 			type,
 			0,
 			speed,
+			speedX,
 			"",
 			false,
 			false,
@@ -315,17 +317,18 @@ static void spawnShot(Enemy* enemy) {
 	play("Laser_Shoot34.wav");
 
 	Coord adjustedShotParallax = parallax(enemy->formationOrigin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_XY, PARALLAX_ADDITIVE);
-	Coord travelStep = getStep(playerOrigin, adjustedShotParallax, SHOT_SPEED, true);
+	Coord homingStep = getStep(playerOrigin, adjustedShotParallax, SHOT_SPEED, true);
 
 	//TODO: Remove initial texture (not needed - we animate)
 	SDL_Texture* texture = getTexture("virus-shot.png");
 	makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
 	EnemyShot shot = {
-			enemy->origin,
-			enemy->parallax,
-			1,
-			enemy->type,
-			travelStep
+		deriveCoord(enemy->origin, 0, 8),
+		enemy->parallax,
+		1,
+		enemy->type,
+		homingStep,
+		enemy->combat == COMBAT_SHOOTER_HOMING
 	};
 
 	enemyShots[enemyShotCount++] = shot;
@@ -377,32 +380,32 @@ void enemyGameFrame() {
 
 		switch(enemies[i].movement) {
 
-			case PATTERN_PEEL_RIGHT:
-				if(dueBetween(enemies[i].spawnTime, 750, 1600)) enemies[i].origin.x += 1;
-				if(dueBetween(enemies[i].spawnTime, 2250, 3250)) enemies[i].origin.x -= 1;
+			case P_CURVE_RIGHT:
+				if(dueBetween(enemies[i].spawnTime, 750, 1600)) enemies[i].origin.x += enemies[i].speedX;
+				if(dueBetween(enemies[i].spawnTime, 2250, 3250)) enemies[i].origin.x -= enemies[i].speedX;
 				enemies[i].formationOrigin = enemies[i].origin;
 				break;
-			case PATTERN_PEEL_LEFT:
-				if(dueBetween(enemies[i].spawnTime, 750, 1600)) enemies[i].origin.x -= 1;
-				if(dueBetween(enemies[i].spawnTime, 2250, 3250)) enemies[i].origin.x += 1;
-				enemies[i].formationOrigin = enemies[i].origin;
-				break;
-
-			case PATTERN_PEEL_FAR_RIGHT:
-				if(dueBetween(enemies[i].spawnTime, 750, 2500)) enemies[i].origin.x += 2;
-				enemies[i].formationOrigin = enemies[i].origin;
-				break;
-			case PATTERN_PEEL_FAR_LEFT:
-				if(dueBetween(enemies[i].spawnTime, 750, 2500)) enemies[i].origin.x -= 2;
+			case P_CURVE_LEFT:
+				if(dueBetween(enemies[i].spawnTime, 750, 1600)) enemies[i].origin.x -= enemies[i].speedX;
+				if(dueBetween(enemies[i].spawnTime, 2250, 3250)) enemies[i].origin.x += enemies[i].speedX;
 				enemies[i].formationOrigin = enemies[i].origin;
 				break;
 
-			case PATTERN_STRAFE_RIGHT:
-				if(due(enemies[i].spawnTime, 500)) enemies[i].origin.x += 5;
+			case P_CROSSOVER_RIGHT:
+				if(dueBetween(enemies[i].spawnTime, 750, 2500)) enemies[i].origin.x += enemies[i].speedX;
 				enemies[i].formationOrigin = enemies[i].origin;
 				break;
-			case PATTERN_STRAFE_LEFT:
-				if(due(enemies[i].spawnTime, 500)) enemies[i].origin.x -= 5;
+			case P_CROSSOVER_LEFT:
+				if(dueBetween(enemies[i].spawnTime, 750, 2500)) enemies[i].origin.x -= enemies[i].speedX;
+				enemies[i].formationOrigin = enemies[i].origin;
+				break;
+
+			case P_STRAFE_RIGHT:
+				if(due(enemies[i].spawnTime, 500)) enemies[i].origin.x += enemies[i].speedX;
+				enemies[i].formationOrigin = enemies[i].origin;
+				break;
+			case P_STRAFE_LEFT:
+				if(due(enemies[i].spawnTime, 500)) enemies[i].origin.x -= enemies[i].speedX;
 				enemies[i].formationOrigin = enemies[i].origin;
 				break;
 
@@ -436,10 +439,9 @@ void enemyGameFrame() {
 
 		//Spawn shots.
 		if(enemies[i].combat == COMBAT_SHOOTER &&
-		   //		if((enemies[i].type == ENEMY_VIRUS || enemies[i].type == ENEMY_BUG) &&
 		   timer(&enemies[i].lastShotTime, SHOT_HZ) &&
 		   enemies[i].origin.y > 0
-				) {
+		) {
 			if(enemyShotCount == MAX_SHOTS) enemyShotCount = 0;
 			spawnShot(&enemies[i]);
 		}
@@ -449,9 +451,14 @@ void enemyGameFrame() {
 	for(int i=0; i < MAX_SHOTS; i++) {
 		if(invalidEnemyShot(&enemyShots[i])) continue;
 
-		//Home in on original vector.
-		enemyShots[i].origin.x += enemyShots[i].target.x;
-		enemyShots[i].origin.y += enemyShots[i].target.y;
+		if(enemyShots->homing) {
+			//Home in on target vector.
+			enemyShots[i].origin.x += enemyShots[i].homeTarget.x;
+			enemyShots[i].origin.y += enemyShots[i].homeTarget.y;
+		}else{
+			//Otherwise fire straight down.
+			enemyShots[i].origin.y += SHOT_SPEED;
+		}
 
 		//Parallax it
 		enemyShots[i].parallax = parallax(enemyShots[i].origin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_XY, PARALLAX_ADDITIVE);

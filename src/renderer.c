@@ -80,7 +80,7 @@ void drawSpriteAbsRotated2(Sprite sprite, Coord origin, double angle, double sca
 	offsetX -= (sprite.size.x / 2) * renderScale;
 	offsetY -= (sprite.size.y / 2) * renderScale;
 
-	//Configure target location output sprite_t size, adjusting the latter for the constant sprite_t scaling factor.
+	//Configure homeTarget location output sprite_t size, adjusting the latter for the constant sprite_t scaling factor.
 	SDL_Rect destination  = {
 			(origin.x + offsetX),
 			(origin.y + offsetY),
@@ -120,7 +120,7 @@ void clearBackground(Colour colour) {
 	SDL_RenderClear(renderer);
 }
 void updateCanvas() {
-	//Change rendering target to window.
+	//Change rendering homeTarget to window.
 	SDL_SetRenderTarget(renderer, NULL);
 
 	//Activate scaler, and blit the buffer to the screen.
@@ -130,7 +130,7 @@ void updateCanvas() {
 	//Actually update the screen itself.
 	SDL_RenderPresent(renderer);
 
-	//Reset render target back to texture buffer
+	//Reset render homeTarget back to texture buffer
 	SDL_SetRenderTarget(renderer, renderBuffer);
 }
 
@@ -215,7 +215,7 @@ static void initFader() {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
 
-	//Restore render target to the buffer.
+	//Restore render homeTarget to the buffer.
 	SDL_SetRenderTarget(renderer, oldTarget);
 }
 
