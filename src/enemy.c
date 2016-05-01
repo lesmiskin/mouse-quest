@@ -406,16 +406,18 @@ void formationFrame(Enemy* e) {
 				{ e, 1750, 150, F_OVER, D_LEFT },
 			};
 			scriptFrame(script);
-
 			e->formationOrigin = e->origin;
 			break;
 		}
-		case P_CURVE_LEFT:
-//			if(		under(e, 1750, 120)) right(e);
-//			else if(over(e, 550, 70)) left(e);
-//			e->formationOrigin = e->origin;
+		case P_CURVE_LEFT: {
+			FormationScript script[SCRIPT_FRAMES] = {
+				{ e, 550, 70, F_OVER, D_LEFT},
+				{ e, 1750, 120, F_UNDER, D_RIGHT},
+			};
+			scriptFrame(script);
+			e->formationOrigin = e->origin;
 			break;
-
+		}
 		case P_CROSSOVER_RIGHT:
 			if(dueBetween(e->spawnTime, 750, 2500)) e->origin.x += e->speedX;
 			e->formationOrigin = e->origin;
