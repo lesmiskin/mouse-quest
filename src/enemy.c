@@ -341,6 +341,118 @@ void resetEnemies() {
 	enemyShotCount = 0;
 }
 
+typedef enum {
+	F_OVER,
+	F_UNDER,
+} FormationComp;
+typedef enum {
+	D_LEFT,
+	D_RIGHT
+} FormationDir;
+
+bool limit(Enemy *enemy, int time, int pos, FormationComp comp) {
+	return
+		due(enemy->spawnTime, time) &&
+		(comp == F_OVER ? enemy->origin.x > pos : enemy->origin.x < pos);
+}
+
+void move(Enemy *enemy, FormationDir dir) {
+	enemy->origin.x += dir == D_LEFT ?
+		-enemy->speedX :
+		enemy->speedX;
+}
+
+typedef struct {
+	Enemy* enemy;
+	int dueTime;
+	int xLimit;
+	FormationComp limitDir;
+	FormationDir moveDir;
+} FormationScript;
+
+#define SCRIPT_FRAMES 10
+
+void scriptFrame(FormationScript* script) {
+	for(int i=SCRIPT_FRAMES-1; i > -1; i--) {
+		if(script[i].enemy == NULL) continue;
+		if(limit(script[i].enemy, script[i].dueTime, script[i].xLimit, script[i].limitDir)) {
+			move(script[i].enemy, script[i].moveDir);
+			break;
+		}
+	}
+}
+
+void addFrame(FormationScript* script, FormationScript frame) {
+	for(int i=0; i < SCRIPT_FRAMES; i++) {
+		//Skip over occupied cells.
+		if(script[i].enemy != NULL) continue;
+
+		//Insert it when we find a free one.
+		script[i] = frame;
+		break;
+	}
+}
+
+FormationScript frame(Enemy* enemy, int dueTime, int xLimit, FormationComp limitDir, FormationDir moveDir) {
+	FormationScript frame = { enemy, dueTime, xLimit, limitDir, moveDir };
+	return frame;
+}
+
+void formationFrame(Enemy* e) {
+	switch(e->movement) {
+		case P_CURVE_RIGHT: {
+			FormationScript script[SCRIPT_FRAMES] = {
+				{ e, 550, 200, F_UNDER, D_RIGHT},
+				{ e, 1750, 150, F_OVER, D_LEFT },
+			};
+			scriptFrame(script);
+
+			e->formationOrigin = e->origin;
+			break;
+		}
+		case P_CURVE_LEFT:
+//			if(		under(e, 1750, 120)) right(e);
+//			else if(over(e, 550, 70)) left(e);
+//			e->formationOrigin = e->origin;
+			break;
+
+		case P_CROSSOVER_RIGHT:
+			if(dueBetween(e->spawnTime, 750, 2500)) e->origin.x += e->speedX;
+			e->formationOrigin = e->origin;
+			break;
+		case P_CROSSOVER_LEFT:
+			if(dueBetween(e->spawnTime, 750, 2500)) e->origin.x -= e->speedX;
+			e->formationOrigin = e->origin;
+			break;
+
+		case P_STRAFE_RIGHT:
+			if(due(e->spawnTime, 500)) e->origin.x += e->speedX;
+			e->formationOrigin = e->origin;
+			break;
+		case P_STRAFE_LEFT:
+			if(due(e->spawnTime, 500)) e->origin.x -= e->speedX;
+			e->formationOrigin = e->origin;
+			break;
+
+		case PATTERN_CIRCLE:
+			//TODO: Find out why swayIncX and swayIncY need to be swapped :p
+			e->formationOrigin.y = sineInc(e->origin.y, &e->swayIncX, 0.04, 21);
+			e->formationOrigin.x = cosInc(e->origin.x, &e->swayIncY, 0.04, 21);
+			break;
+		case PATTERN_SNAKE:
+			e->formationOrigin.x = sineInc(e->origin.x, &e->swayIncX, 0.075, 12);
+			e->formationOrigin.y = e->origin.y;
+			break;
+		case PATTERN_BOB:
+			e->formationOrigin.x = e->origin.x;
+			e->formationOrigin.y = sineInc(e->origin.y, &e->swayIncY, 0.075, 12);;
+			break;
+		default:
+			e->formationOrigin = e->origin;
+			break;
+	}
+}
+
 void enemyGameFrame() {
 	//Bob enemies in sine pattern.
 	switch(gameState) {
@@ -378,54 +490,8 @@ void enemyGameFrame() {
 		//Scroll them down the screen
 		enemies[i].origin.y += enemies[i].speed;
 
-		switch(enemies[i].movement) {
-
-			case P_CURVE_RIGHT:
-				if(dueBetween(enemies[i].spawnTime, 750, 1600)) enemies[i].origin.x += enemies[i].speedX;
-				if(dueBetween(enemies[i].spawnTime, 2250, 3250)) enemies[i].origin.x -= enemies[i].speedX;
-				enemies[i].formationOrigin = enemies[i].origin;
-				break;
-			case P_CURVE_LEFT:
-				if(dueBetween(enemies[i].spawnTime, 750, 1600)) enemies[i].origin.x -= enemies[i].speedX;
-				if(dueBetween(enemies[i].spawnTime, 2250, 3250)) enemies[i].origin.x += enemies[i].speedX;
-				enemies[i].formationOrigin = enemies[i].origin;
-				break;
-
-			case P_CROSSOVER_RIGHT:
-				if(dueBetween(enemies[i].spawnTime, 750, 2500)) enemies[i].origin.x += enemies[i].speedX;
-				enemies[i].formationOrigin = enemies[i].origin;
-				break;
-			case P_CROSSOVER_LEFT:
-				if(dueBetween(enemies[i].spawnTime, 750, 2500)) enemies[i].origin.x -= enemies[i].speedX;
-				enemies[i].formationOrigin = enemies[i].origin;
-				break;
-
-			case P_STRAFE_RIGHT:
-				if(due(enemies[i].spawnTime, 500)) enemies[i].origin.x += enemies[i].speedX;
-				enemies[i].formationOrigin = enemies[i].origin;
-				break;
-			case P_STRAFE_LEFT:
-				if(due(enemies[i].spawnTime, 500)) enemies[i].origin.x -= enemies[i].speedX;
-				enemies[i].formationOrigin = enemies[i].origin;
-				break;
-
-			case PATTERN_CIRCLE:
-				//TODO: Find out why swayIncX and swayIncY need to be swapped :p
-				enemies[i].formationOrigin.y = sineInc(enemies[i].origin.y, &enemies[i].swayIncX, 0.04, 21);
-				enemies[i].formationOrigin.x = cosInc(enemies[i].origin.x, &enemies[i].swayIncY, 0.04, 21);
-				break;
-			case PATTERN_SNAKE:
-				enemies[i].formationOrigin.x = sineInc(enemies[i].origin.x, &enemies[i].swayIncX, 0.075, 12);
-				enemies[i].formationOrigin.y = enemies[i].origin.y;
-				break;
-			case PATTERN_BOB:
-				enemies[i].formationOrigin.x = enemies[i].origin.x;
-				enemies[i].formationOrigin.y = sineInc(enemies[i].origin.y, &enemies[i].swayIncY, 0.075, 12);;
-				break;
-			default:
-				enemies[i].formationOrigin = enemies[i].origin;
-				break;
-		}
+		//IMPORTANT - the main formation frame.
+		formationFrame(&enemies[i]);
 
 		//Set parallax against the formation origin.
 		enemies[i].parallax = parallax(enemies[i].formationOrigin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_XY, PARALLAX_ADDITIVE);

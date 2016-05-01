@@ -129,27 +129,29 @@ void levelInit() {
 
 	const int LEFT = 20;
 	const int RIGHT = 250;
-	const int C_LEFT = 110;
-	const int C_RIGHT = 160;
+	const int C_LEFT = 120;
+	const int C_RIGHT = 150;
 
 
-	// Two columns that split, and marge.
+	// Two columns that split, and merge.
 	for(int i=0; i < 6; i++) {
-		wave(1000 + (i * 350), W_COL, C_LEFT, NA, P_CURVE_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.2, 1, HEALTH_LIGHT, 1);
-		wave(1000 + (i * 350), W_COL, C_RIGHT, NA, P_CURVE_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.2, 1, HEALTH_LIGHT, 1);
+		wave(1000 + (i * 350), W_COL, C_LEFT, NA, P_CURVE_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.5, 1, HEALTH_LIGHT, 1);
+		wave(1000 + (i * 350), W_COL, C_RIGHT, NA, P_CURVE_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.5, 1, HEALTH_LIGHT, 1);
 	}
 
-	// Two columns that cross over mid-way down.
-	for(int i=0; i < 6; i++) {
-		wave(6000 + (i * 350), W_COL, RIGHT, NA, P_CROSSOVER_LEFT, ENEMY_DISK, COMBAT_IDLE, false, 1, 1.9, HEALTH_LIGHT, 1);
-		wave(6000 + (i * 350), W_COL, LEFT, NA, P_CROSSOVER_RIGHT, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1, 1.9, HEALTH_LIGHT, 1);
-	}
 
-//	 Strafers coming from either side.
-	for(int i=0; i < 3; i++)
-		wave(11000 + (i * 800), W_COL, 250 + 48, NA, P_STRAFE_LEFT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.8, 1.8, HEALTH_LIGHT, 1);
-	for(int i=0; i < 3; i++)
-		wave(14500 + (i * 800), W_COL, 0 - 48, NA, P_STRAFE_RIGHT, ENEMY_BUG, COMBAT_SHOOTER, false, 0.8, 1.8, HEALTH_LIGHT, 1);
+
+//	// Two columns that cross over mid-way down.
+//	for(int i=0; i < 6; i++) {
+//		wave(6000 + (i * 350), W_COL, RIGHT, NA, P_CROSSOVER_LEFT, ENEMY_DISK, COMBAT_IDLE, false, 1, 1.9, HEALTH_LIGHT, 1);
+//		wave(6000 + (i * 350), W_COL, LEFT, NA, P_CROSSOVER_RIGHT, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1, 1.9, HEALTH_LIGHT, 1);
+//	}
+//
+//	// Strafers coming from either side.
+//	for(int i=0; i < 3; i++)
+//		wave(11000 + (i * 800), W_COL, 250 + 48, NA, P_STRAFE_LEFT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.8, 1.8, HEALTH_LIGHT, 1);
+//	for(int i=0; i < 3; i++)
+//		wave(14500 + (i * 800), W_COL, 0 - 48, NA, P_STRAFE_RIGHT, ENEMY_BUG, COMBAT_SHOOTER, false, 0.8, 1.8, HEALTH_LIGHT, 1);
 
 
 

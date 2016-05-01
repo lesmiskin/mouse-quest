@@ -17,6 +17,9 @@
 #include "item.h"
 #include "level.h"
 
+// Running slow from Clion, but fast from Console? Assign F7 to an "external tool" that
+// *points* directly to the executable.
+
 /* BUG: We use 'sizeof' way too often on things like Enums. This is *NOT* a good way to
 		check for sizes, in fact it may just be pure coincidence that it works at all.
 		If we're getting frequent attempts to render enemies without any textures, say,
