@@ -342,71 +342,121 @@ void resetEnemies() {
 	enemyShotCount = 0;
 }
 
-void incScript(Enemy *e, int toMove) {
-	if(e->scriptInc == toMove) e->scriptInc++;
+typedef enum {
+	F_OVER,
+	F_UNDER,
+} FormationComp;
+typedef enum {
+	D_LEFT,
+	D_RIGHT
+} FormationDir;
+
+bool limit(Enemy *enemy, int time, int pos, FormationComp comp) {
+	return
+		due(enemy->spawnTime, time) &&
+		(comp == F_OVER ? enemy->origin.x > pos : enemy->origin.x < pos);
 }
 
-bool onInc(Enemy *e, int thisInc) {
-	return e->scriptInc == thisInc;
+void move(Enemy *enemy, FormationDir dir) {
+	enemy->origin.x += dir == D_LEFT ?
+		-enemy->speedX :
+		enemy->speedX;
 }
 
-bool scriptDue(Enemy* e, int time) {
-	return due(e->spawnTime, time);
+typedef struct {
+	Enemy* enemy;
+	int dueTime;
+	int xLimit;
+	FormationComp limitDir;
+	FormationDir moveDir;
+} FormationScript;
+
+#define SCRIPT_FRAMES 10
+
+void scriptFrame(FormationScript* script) {
+	for(int i=SCRIPT_FRAMES-1; i > -1; i--) {
+		if(script[i].enemy == NULL) continue;
+		if(limit(script[i].enemy, script[i].dueTime, script[i].xLimit, script[i].limitDir)) {
+			move(script[i].enemy, script[i].moveDir);
+			break;
+		}
+	}
 }
 
-void applyFormation(Enemy *e) {
-	e->formationOrigin = e->origin;
+void addFrame(FormationScript* script, FormationScript frame) {
+	for(int i=0; i < SCRIPT_FRAMES; i++) {
+		//Skip over occupied cells.
+		if(script[i].enemy != NULL) continue;
+
+		//Insert it when we find a free one.
+		script[i] = frame;
+		break;
+	}
 }
 
-void left(Enemy* e) {
-	e->origin.x -= e->speedX;
-}
-
-void right(Enemy* e) {
-	e->origin.x += e->speedX;
+FormationScript frame(Enemy* enemy, int dueTime, int xLimit, FormationComp limitDir, FormationDir moveDir) {
+	FormationScript frame = { enemy, dueTime, xLimit, limitDir, moveDir };
+	return frame;
 }
 
 void formationFrame(Enemy* e) {
 	switch(e->movement) {
 
-		// CURVE -------------------------------------------------
-		case P_CURVE_RIGHT:
-			if(scriptDue(e, 550) && e->origin.x < 200 && onInc(e, 0)) {
-				right(e);
-			} else if(scriptDue(e, 1750) && e->origin.x > 150) {
-				left(e); incScript(e, 0);
+		case P_CURVE_RIGHT: {
+			if(due(e->spawnTime, 550) && e->origin.x < 200 && e->scriptInc == 0) {
+				e->origin.x += e->speedX;
+			} else if(due(e->spawnTime, 1750) && e->origin.x > 150) {
+				if(e->scriptInc == 0) e->scriptInc++;
+				e->origin.x -= e->speedX;
 			}
-			applyFormation(e);
-			break;
-		case P_CURVE_LEFT:
-			if(scriptDue(e, 550) && e->origin.x > 70 && onInc(e, 0)) {
-				left(e);
-			} else if(scriptDue(e, 1750) && e->origin.x < 120) {
-				right(e); incScript(e, 0);
-			}
-			applyFormation(e);
-			break;
 
-		// CROSSOVER -------------------------------------------------
-		case P_CROSSOVER_RIGHT:
-			if(scriptDue(e, 750) && e->origin.x > 40) left(e);
-			applyFormation(e);
-			break;
-		case P_CROSSOVER_LEFT:
-			if(scriptDue(e, 750) && e->origin.x < 230) right(e);
-			applyFormation(e);
-			break;
 
-		// STRAFER -------------------------------------------------
+//			FormationScript script[SCRIPT_FRAMES] = {
+//				{ e, 550, 200, F_UNDER, D_RIGHT},
+//				{ e, 1750, 150, F_OVER, D_LEFT },
+//			};
+//			scriptFrame(script);
+			e->formationOrigin = e->origin;
+			break;
+		}
+		case P_CURVE_LEFT: {
+			FormationScript script[SCRIPT_FRAMES] = {
+				{ e, 550, 70, F_OVER, D_LEFT},
+				{ e, 1750, 120, F_UNDER, D_RIGHT},
+			};
+			scriptFrame(script);
+			e->formationOrigin = e->origin;
+			break;
+		}
+
+		case P_CROSSOVER_RIGHT: {
+			FormationScript script[SCRIPT_FRAMES] = {
+				{ e, 750, 20, F_OVER, D_RIGHT},
+				{ e, 1750, 150, F_OVER, D_LEFT },
+			};
+//			if(dueBetween(e->spawnTime, 750, 2500)) e->origin.x += e->speedX;
+			e->formationOrigin = e->origin;
+			break;
+		}
+		case P_CROSSOVER_LEFT: {
+			FormationScript script[SCRIPT_FRAMES] = {
+				{ e, 550, 200, F_UNDER, D_RIGHT},
+				{ e, 1750, 150, F_OVER, D_LEFT },
+			};
+//			if(dueBetween(e->spawnTime, 750, 2500)) e->origin.x -= e->speedX;
+			e->formationOrigin = e->origin;
+			break;
+		}
+
+
 		case P_STRAFE_RIGHT:
-			if(scriptDue(e, 500)) right(e);
-			applyFormation(e);
+			if(due(e->spawnTime, 500)) e->origin.x += e->speedX;
+			e->formationOrigin = e->origin;
 			break;
 		case P_STRAFE_LEFT:
-			if(scriptDue(e, 500)) left(e);
-			applyFormation(e);
+			if(due(e->spawnTime, 500)) e->origin.x -= e->speedX;
+			e->formationOrigin = e->origin;
 			break;
-
 
 		case PATTERN_CIRCLE:
 			//TODO: Find out why swayIncX and swayIncY need to be swapped :p

@@ -75,6 +75,7 @@ typedef struct {
 	Coord offset;
 	bool collided;
 	long spawnTime;
+	int scriptInc;
 } Enemy;
 
 extern const double HEALTH_LIGHT, HEALTH_HEAVY;
