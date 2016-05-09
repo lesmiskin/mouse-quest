@@ -55,7 +55,7 @@ int weaponInc = 0;
 static Weapon weapons[MAX_WEAPONS];
 //static const int SHOT_HZ = 1000 / 11 ;
 static const double SHOT_SPEED = 7;
-static const double SHOT_DAMAGE = 1.0;
+static const double SHOT_DAMAGE = 0.5;
 static Shot shots[MAX_SHOTS];
 static int shotInc = 0;
 static Sprite shotSprite;
@@ -166,10 +166,10 @@ void pew() {
 			break;
 		case PATTERN_MINI:
 			if(minigunLastSide == 0) {
-				spawnPew(-5, -5, NORTH);
+				spawnPew(-2, -5, NORTH);
 				minigunLastSide = 1;
 			}else{
-				spawnPew(5, -5, NORTH);
+				spawnPew(2, -5, NORTH);
 				minigunLastSide = 0;
 			}
 			break;
@@ -315,6 +315,7 @@ void pewAnimateFrame(){
 
 void pewInit() {
 	Weapon w1 = { SPEED_NORMAL, PATTERN_DUAL };
+//	Weapon w1 = { SPEED_FAST, PATTERN_MINI };
 	Weapon w2 = { SPEED_FAST, PATTERN_DUAL };
 	Weapon w3 = { SPEED_FAST, PATTERN_TRIAD };
 	Weapon w4 = { SPEED_FAST, PATTERN_FAN };

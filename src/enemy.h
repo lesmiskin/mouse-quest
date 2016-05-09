@@ -53,7 +53,7 @@ typedef enum {
 typedef enum {
 	COMBAT_IDLE,
 	COMBAT_SHOOTER,
-	COMBAT_SHOOTER_HOMING
+	COMBAT_HOMING
 } EnemyCombat;
 
 typedef struct {

@@ -150,6 +150,21 @@ void levelInit() {
 	const int RIGHT_OFF = (int)screenBounds.x + 85;
 	const int LEFT_OFF = -40;
 
+	// X guys are boring. Cross over at different times.
+	// Need some sine-ed snakes.
+	// Fix it so you can't sit in one place and shoot ("U" enemies should collide).
+	// Introduce some homing shots.
+	// Hold a button for "rail" shot? / Powerup?
+
+	// Column of PCB on either side, with chips.
+	// "Castle" PCB in center of screen.
+	// Donut PCB with a single "thing" (enemy?) in the middle.
+	// When you blow up a chip: you get 4 coins.
+	// When you destroy a wave sequence, you get fruit.
+
+	// When a certain amout of time has elapsed, a powerup will spawn.
+	// Powerups won't spawn until X time has elapsed.
+
 	// Carrier columns (floppy line flanked with bugs).
 	// Space invader rows and sine left and right.
 	// Random spirals.
@@ -172,22 +187,22 @@ void levelInit() {
 	pause(6000);
 
 	// Strafers coming from either side.
-	for(int i=0; i < 3; i++) {
-		wave(i * 800, W_COL, RIGHT_OFF, 10, P_STRAFE_LEFT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.8, 1.8, HEALTH_LIGHT, 1);
+	for(int i=0; i < 5; i++) {
+		wave(i * 400, W_COL, RIGHT_OFF, 5, P_STRAFE_LEFT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.8, 2.5, HEALTH_LIGHT, 1);
 	}
 	pause(4000);
-	for(int i=0; i < 3; i++) {
-		wave(i * 800, W_COL, LEFT_OFF, 10, P_STRAFE_RIGHT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.8, 1.8, HEALTH_LIGHT, 1);
+	for(int i=0; i < 5; i++) {
+		wave(i * 400, W_COL, LEFT_OFF, 5, P_STRAFE_RIGHT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.8, 2.5, HEALTH_LIGHT, 1);
 	}
 	pause(7000);
 
 	// Peelers.
 	for(int i=0; i < 6; i++) {
-		wave(i * 300, W_COL, LEFT, NA, P_PEEL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 2, 0.02, HEALTH_LIGHT, 1);
+		wave(i * 300, W_COL, LEFT, NA, P_PEEL_RIGHT, ENEMY_BUG, COMBAT_IDLE, false, 2, 0.02, HEALTH_LIGHT, 1);
 	}
 	pause(3000);
 	for(int i=0; i < 6; i++) {
-		wave(i * 300, W_COL, RIGHT, NA, P_PEEL_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 2, 0.02, HEALTH_LIGHT, 1);
+		wave(i * 300, W_COL, RIGHT, NA, P_PEEL_LEFT, ENEMY_BUG, COMBAT_IDLE, false, 2, 0.02, HEALTH_LIGHT, 1);
 	}
 	pause(5000);
 

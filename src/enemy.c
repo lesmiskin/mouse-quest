@@ -332,7 +332,7 @@ static void spawnShot(Enemy* enemy) {
 		1,
 		enemy->type,
 		homingStep,
-		enemy->combat == COMBAT_SHOOTER_HOMING
+		enemy->combat == COMBAT_HOMING
 	};
 
 	enemyShots[enemyShotCount++] = shot;
