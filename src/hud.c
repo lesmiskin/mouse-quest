@@ -169,7 +169,7 @@ void hudRenderFrame() {
 	if(gameState != STATE_GAME) return;
 
 	//Animate the weapon change.
-	if(weaponChanging) {
+/*	if(weaponChanging) {
 		if(!sweeping || sweepPos.x < underLife.x) {
 			sweepPos.x = sineInc(sweepPos.x, &weapSweepInc, 0.2, 2.3);
 			if(!sweeping) sweeping = true;
@@ -204,7 +204,7 @@ void hudRenderFrame() {
 	//Draw the weapon sprite.
 	Sprite weapon = makeSprite(getTexture(weaponTexture), zeroCoord(), SDL_FLIP_NONE);
 	drawSpriteAbs(weapon, sweepPos);
-
+*/
 	//Loop through icons and draw them at the appropriate 'fullness' levels for each health bar.
 	// This algorithm will automatically scale according to whatever we choose to set the player's total health to.
 	float healthPerHeart = playerStrength / NUM_HEARTS;		//e.g. for 4 hearts, 1 heart = 25 hitpoints.

@@ -36,7 +36,7 @@ typedef struct {
 EnemySpawn spawns[MAX_SPAWNS];
 Enemy enemies[MAX_ENEMIES];
 int spawnInc = 0;
-const double HEALTH_LIGHT = 2.0;
+const double HEALTH_LIGHT = 3.0;
 const double HEALTH_HEAVY = 5.0;
 
 static int gameTime;
@@ -76,9 +76,12 @@ static const int MAX_VIRUS_SHOT_FRAMES = 4;
 static const int MAX_PLASMA_SHOT_FRAMES = 2;
 
 bool invalidEnemy(Enemy *enemy) {
+	// TODO: Use OnScreen/InBounds()?
 	return
-			enemy->animFrame == 0 ||
-			enemy->parallax.y > screenBounds.y + ENEMY_BOUND / 2;
+		enemy->animFrame == 0 ||
+		enemy->parallax.x < -ENEMY_BOUND*4 ||
+		enemy->parallax.x > screenBounds.x + ENEMY_BOUND*4 ||
+		enemy->parallax.y > screenBounds.y + ENEMY_BOUND;
 }
 
 static bool invalidEnemyShot(EnemyShot *enemyShot) {
@@ -178,15 +181,15 @@ void animateEnemy() {
 
 				//Spawn powerup (only in-game, and punish collisions)
 				if(gameState == STATE_GAME && !enemies[i].collided){
-					if(chance(5) && canSpawn(TYPE_WEAPON)) {
-						spawnItem(enemies[i].formationOrigin, TYPE_WEAPON);
-					}else if(chance(3) && canSpawn(TYPE_HEALTH)) {
-						spawnItem(enemies[i].formationOrigin, TYPE_HEALTH);
-					}else if(chance(15)){
-						spawnItem(enemies[i].formationOrigin, TYPE_FRUIT);
-					}else{
+//					if(chance(5) && canSpawn(TYPE_WEAPON)) {
+//						spawnItem(enemies[i].formationOrigin, TYPE_WEAPON);
+//					}else if(chance(3) && canSpawn(TYPE_HEALTH)) {
+//						spawnItem(enemies[i].formationOrigin, TYPE_HEALTH);
+//					}else if(chance(15)){
+//						spawnItem(enemies[i].formationOrigin, TYPE_FRUIT);
+//					}else{
 						spawnItem(enemies[i].formationOrigin, TYPE_COIN);
-					}
+//					}
 				}
 				//Zero if completely dead.
 			}else if(enemies[i].animFrame == DEATH_FRAMES){
@@ -369,9 +372,33 @@ void right(Enemy* e) {
 void formationFrame(Enemy* e) {
 	switch(e->movement) {
 
+		// SPIN -------------------------------------------------
+		case P_SWIRL_LEFT:
+			e->origin.x = sineInc(e->origin.x, &e->swayIncX, -e->speedX, 2);
+			applyFormation(e);
+			break;
+		case P_SWIRL_RIGHT:
+			e->origin.x = sineInc(e->origin.x, &e->swayIncX, e->speedX, 2);
+			applyFormation(e);
+			break;
+
+		// CURVE -------------------------------------------------
+		case P_PEEL_RIGHT:
+			if(scriptDue(e, 650)) {
+				e->origin.x = sineInc(e->origin.x, &e->swayIncX, -e->speedX, 7);
+			}
+			applyFormation(e);
+			break;
+		case P_PEEL_LEFT:
+			if(scriptDue(e, 650)) {
+				e->origin.x = sineInc(e->origin.x, &e->swayIncX, e->speedX, 7);
+			}
+			applyFormation(e);
+			break;
+
 		// CURVE -------------------------------------------------
 		case P_CURVE_RIGHT:
-			if(scriptDue(e, 550) && e->origin.x < 200 && onInc(e, 0)) {
+			if(scriptDue(e, 550) && e->origin.x < 190 && onInc(e, 0)) {
 				right(e);
 			} else if(scriptDue(e, 1750) && e->origin.x > 150) {
 				left(e); incScript(e, 0);
@@ -379,7 +406,7 @@ void formationFrame(Enemy* e) {
 			applyFormation(e);
 			break;
 		case P_CURVE_LEFT:
-			if(scriptDue(e, 550) && e->origin.x > 70 && onInc(e, 0)) {
+			if(scriptDue(e, 550) && e->origin.x > 80 && onInc(e, 0)) {
 				left(e);
 			} else if(scriptDue(e, 1750) && e->origin.x < 120) {
 				right(e); incScript(e, 0);

@@ -31,7 +31,7 @@ typedef struct {
 } Shot;
 
 typedef enum {
-	SPEED_NORMAL = 1000 / 10,
+	SPEED_NORMAL = 1000 / 12,
 	SPEED_FAST = 1000 / 14,
 } WeaponSpeed;
 
@@ -61,8 +61,6 @@ static int shotInc = 0;
 static Sprite shotSprite;
 static long lastShotTime;
 static int maxFrames = 2;
-static long postponeShotTime;
-int const POSTPONE_INITIAL_SHOT = 750;
 
 static short minigunLastSide = 0;
 
@@ -145,9 +143,7 @@ static int fanPewInc = 0;
 
 void pew() {
 	//Rate-limiter, and HACK for skipping initial shots post-menu.
-	if(	!timer(&lastShotTime, weapons[weaponInc].speed) ||
-		   ticsToMilliseconds(clock()) < postponeShotTime
-			) {
+	if(	!timer(&lastShotTime, weapons[weaponInc].speed)) {
 		return;
 	}
 
@@ -318,7 +314,7 @@ void pewAnimateFrame(){
 }
 
 void pewInit() {
-	Weapon w1 = { SPEED_NORMAL, PATTERN_SINGLE };
+	Weapon w1 = { SPEED_NORMAL, PATTERN_DUAL };
 	Weapon w2 = { SPEED_FAST, PATTERN_DUAL };
 	Weapon w3 = { SPEED_FAST, PATTERN_TRIAD };
 	Weapon w4 = { SPEED_FAST, PATTERN_FAN };
@@ -332,7 +328,6 @@ void pewInit() {
 }
 
 void resetPew() {
-	postponeShotTime = ticsToMilliseconds(clock()) + POSTPONE_INITIAL_SHOT;
 	weaponInc = 0;
 	shotInc = 0;
 }
