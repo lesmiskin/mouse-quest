@@ -22,6 +22,8 @@ typedef struct {
 	EnemyType enemyType;
 	Coord homeTarget;
 	bool homing;
+	bool isKey;
+	double spinInc;
 } EnemyShot;
 
 typedef struct {
@@ -56,6 +58,7 @@ static int FORMATION_INTERVAL = 75;
 static double ENEMY_SPEED = 0.9;
 
 static double ENEMY_SPEED_FAST = 1.8;
+static double SHOT_BOSS_HZ = 100;
 static double SHOT_HZ = 750;
 static double SHOT_SPEED = 2;
 static double SHOT_DAMAGE = 1;
@@ -66,7 +69,7 @@ static int ENEMY_DISTANCE = 22;
 static double HIT_KNOCKBACK = 0.0;
 static double COLLIDE_DAMAGE = 1;
 
-static const int BOSS_IDLE_FRAMES = 6;
+static const int BOSS_IDLE_FRAMES = 12;
 static const int MAGNET_IDLE_FRAMES = 8;
 static const int DISK_IDLE_FRAMES = 12;
 static const int VIRUS_IDLE_FRAMES = 6;
@@ -136,7 +139,12 @@ void enemyShadowFrame() {
 		if(invalidEnemyShot(&enemyShots[i])) continue;
 
 		//TODO: Fix duplication with enemyRenderFrame here (keep filename?)
-		SDL_Texture *shotTexture = getTextureVersion("virus-shot.png", ASSET_SHADOW);
+		SDL_Texture *shotTexture;
+		if(enemyShots[i].isKey) {
+			shotTexture = getTextureVersion("key-a.png", ASSET_SHADOW);
+		} else {
+			shotTexture = getTextureVersion("virus-shot.png", ASSET_SHADOW);
+		}
 		Sprite shotShadow = makeSprite(shotTexture, zeroCoord(), SDL_FLIP_VERTICAL);
 		Coord shadowCoord = parallax(enemyShots[i].parallax, PARALLAX_SUN, PARALLAX_LAYER_SHADOW, PARALLAX_X, PARALLAX_SUBTRACTIVE);
 		shadowCoord.y += STATIC_SHADOW_OFFSET;
@@ -156,9 +164,16 @@ void enemyRenderFrame() {
 	for(int i=0; i < MAX_SHOTS; i++) {
 		if(invalidEnemyShot(&enemyShots[i])) continue;
 
-		SDL_Texture *shotTexture = getTexture("virus-shot.png");
-		Sprite shotSprite = makeSprite(shotTexture, zeroCoord(), SDL_FLIP_VERTICAL);
-		drawSpriteAbs(shotSprite, enemyShots[i].parallax);
+		SDL_Texture *shotTexture;
+		if(enemyShots[i].isKey) {
+			Sprite shotSprite = makeSimpleSprite("key-a.png");
+			enemyShots[i].spinInc = enemyShots[i].spinInc > 360 ? 0 : enemyShots[i].spinInc + 5;
+			drawSpriteAbsRotated(shotSprite, enemyShots[i].parallax, enemyShots[i].spinInc);
+		} else {
+			shotTexture = getTexture("virus-shot.png");
+			Sprite shotSprite = makeSprite(shotTexture, zeroCoord(), SDL_FLIP_VERTICAL);
+			drawSpriteAbs(shotSprite, enemyShots[i].parallax);
+		}
 	}
 }
 
@@ -315,7 +330,9 @@ void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat
 		zeroCoord(),
 		false,
 		clock(),
-		0
+		clock(),
+		0,
+		false
 	};
 
 	//Add it to the list of renderables.
@@ -323,6 +340,8 @@ void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat
 };
 
 static void spawnShot(Enemy* enemy) {
+	if(enemyShotCount == MAX_SHOTS) enemyShotCount = 0;
+
 	play("Laser_Shoot34.wav");
 
 	Coord adjustedShotParallax = parallax(enemy->formationOrigin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_XY, PARALLAX_ADDITIVE);
@@ -331,16 +350,33 @@ static void spawnShot(Enemy* enemy) {
 	//TODO: Remove initial texture (not needed - we animate)
 	SDL_Texture* texture = getTexture("virus-shot.png");
 	makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
-	EnemyShot shot = {
-		deriveCoord(enemy->origin, 0, 8),
-		enemy->parallax,
-		1,
-		enemy->type,
-		homingStep,
-		enemy->combat == COMBAT_HOMING
-	};
 
-	enemyShots[enemyShotCount++] = shot;
+	//HACK!
+	if(enemy->type == ENEMY_BOSS) {
+		EnemyShot shot = {
+			deriveCoord(enemy->formationOrigin, 0, 16),
+			enemy->parallax,
+			1,
+			enemy->type,
+			homingStep,
+			enemy->combat == COMBAT_HOMING,
+			enemy->type == ENEMY_BOSS,	// HACK!
+			0
+		};
+		enemyShots[enemyShotCount++] = shot;
+	} else {
+		EnemyShot shot = {
+			deriveCoord(enemy->origin, 0, 8),
+			enemy->parallax,
+			1,
+			enemy->type,
+			homingStep,
+			enemy->combat == COMBAT_HOMING,
+			enemy->type == ENEMY_BOSS,	// HACK!
+			0
+		};
+		enemyShots[enemyShotCount++] = shot;
+	}
 }
 
 void resetEnemies() {
@@ -453,6 +489,28 @@ void formationFrame(Enemy* e) {
 			break;
 
 
+		case PATTERN_BOSS:
+			// Scroll down to the middle of the screen.
+			if(scriptDue(e, 4000) && e->scriptInc == 0) {
+				e->scrollDir = !e->scrollDir;
+				e->spawnTime = clock(); //HACK!
+				e->scriptInc++;
+			// Now scroll up and down.
+			} else if(scriptDue(e, 2250) && e->scriptInc == 1) {
+				e->scrollDir = !e->scrollDir;
+				e->spawnTime = clock(); //HACK!
+			}
+
+			// Blasts.
+			if(due(e->lastBlastTime, 1000)) {
+				e->blasting = !e->blasting;
+				e->lastBlastTime = clock();
+			}
+
+			e->formationOrigin.x = sineInc(e->origin.x, &e->swayIncX, 0.04, 30);
+			e->formationOrigin.y = e->origin.y;
+			break;
+
 		case PATTERN_CIRCLE:
 			//TODO: Find out why swayIncX and swayIncY need to be swapped :p
 			e->formationOrigin.y = sineInc(e->origin.y, &e->swayIncX, 0.04, 21);
@@ -507,7 +565,11 @@ void enemyGameFrame() {
 		if(invalidEnemy(&enemies[i]) || enemies[i].dying) continue;
 
 		//Scroll them down the screen
-		enemies[i].origin.y += enemies[i].speed;
+		if(enemies[i].scrollDir) {
+			enemies[i].origin.y -= enemies[i].speed;
+		}else{
+			enemies[i].origin.y += enemies[i].speed;
+		}
 
 		//IMPORTANT - the main formation frame.
 		formationFrame(&enemies[i]);
@@ -516,7 +578,13 @@ void enemyGameFrame() {
 		enemies[i].parallax = parallax(enemies[i].formationOrigin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_XY, PARALLAX_ADDITIVE);
 
 		//Have we hit the player? (pass through if dying)
-		Rect enemyBound = makeSquareBounds(enemies[i].parallax, ENEMY_BOUND);
+		Rect enemyBound;
+		if(enemies[i].type == ENEMY_BOSS) { //HACK!
+			enemyBound = makeBounds(enemies[i].parallax, 72, 32);
+		}else{
+			enemyBound = makeSquareBounds(enemies[i].parallax, ENEMY_BOUND);
+		}
+
 		if(inBounds(playerOrigin, enemyBound)) {
 			hitPlayer(COLLIDE_DAMAGE);
 			hitEnemy(&enemies[i], playerStrength, true);
@@ -525,10 +593,16 @@ void enemyGameFrame() {
 		//Spawn shots.
 		if((enemies[i].combat == COMBAT_SHOOTER ||
 			enemies[i].combat == COMBAT_HOMING) &&
-		   timer(&enemies[i].lastShotTime, SHOT_HZ) &&
-		   enemies[i].origin.y > 0
+		    enemies[i].type != ENEMY_BOSS &&	//HACK!
+		    timer(&enemies[i].lastShotTime, SHOT_HZ) &&
+		    enemies[i].origin.y > 0
 		) {
-			if(enemyShotCount == MAX_SHOTS) enemyShotCount = 0;
+			spawnShot(&enemies[i]);
+		}else if(
+			enemies[i].type == ENEMY_BOSS &&
+			enemies[i].blasting &&
+			timer(&enemies[i].lastShotTime, SHOT_BOSS_HZ)
+		) {
 			spawnShot(&enemies[i]);
 		}
 	}

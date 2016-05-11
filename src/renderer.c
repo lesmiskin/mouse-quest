@@ -45,7 +45,7 @@ Coord getTextureSize(SDL_Texture *texture) {
 
 Sprite makeSprite(SDL_Texture *texture, Coord offset, SDL_RendererFlip flip) {
 	Sprite sprite = {
-			texture, offset, getTextureSize(texture), flip
+		texture, offset, getTextureSize(texture), flip
 	};
 	return sprite;
 }
@@ -57,8 +57,8 @@ Sprite makeSimpleSprite(char *textureName) {
 
 bool inScreenBounds(Coord subject) {
 	return
-			subject.x > 0 && subject.x < screenBounds.x &&
-			subject.y > 0 && subject.y < screenBounds.y;
+		subject.x > 0 && subject.x < screenBounds.x &&
+		subject.y > 0 && subject.y < screenBounds.y;
 }
 
 //Default sprite_t drawing scales with pixel grid, for easy tiling.

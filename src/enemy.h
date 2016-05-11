@@ -23,6 +23,7 @@ typedef enum {
 
 typedef enum {
 	PATTERN_NONE,
+	PATTERN_BOSS,
 	PATTERN_SNAKE,
 	PATTERN_BOB,
 	PATTERN_CIRCLE,
@@ -85,7 +86,10 @@ typedef struct {
 	Coord offset;
 	bool collided;
 	long spawnTime;
+	long lastBlastTime;
+	bool blasting;
 	int scriptInc;
+	bool scrollDir;
 } Enemy;
 
 extern const double HEALTH_LIGHT, HEALTH_HEAVY;

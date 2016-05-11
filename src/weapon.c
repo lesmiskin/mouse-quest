@@ -217,7 +217,13 @@ void pewGameFrame() {
             if(invalidEnemy(&enemies[p]) || enemies[p].dying) continue;
 
 			//If he's within our projectile bounds.
-			Rect enemyBound = makeSquareBounds(enemies[p].parallax, ENEMY_BOUND);
+			Rect enemyBound;
+			if(enemies[i].type == ENEMY_BOSS) {  //HACK!
+				enemyBound = makeBounds(enemies[p].parallax, 72, 32);
+			}else{
+				enemyBound = makeSquareBounds(enemies[p].parallax, ENEMY_BOUND);
+			}
+
 			if(inBounds(shots[i].coord, enemyBound)) {
 				hitEnemy(&enemies[p], SHOT_DAMAGE, false);
 

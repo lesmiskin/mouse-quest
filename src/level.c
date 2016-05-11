@@ -177,9 +177,20 @@ void levelInit() {
 	// Random spirals.
 	// Random spirals with shooters inside.
 
-	wave(0, W_COL, CENTER, NA, PATTERN_SNAKE, ENEMY_BOSS, COMBAT_SHOOTER, false, 0.25, 1, 200, 1);
-	return;
+	// Keys look dumb.
+	// Any extra animation we can add to him?
 
+	// Bosses: CRT monitor (face flashes up), Joystick, Keyboard, Floppy drive, CD Drive.
+
+	// WARNING message.
+	// Music stops.
+	// Massive explosion.
+	// Bunch of keys fly out.
+	// Secondary attack animation (splits apart and reveals board).
+
+
+//	wave(0, W_COL, CENTER, NA, PATTERN_BOSS, ENEMY_BOSS, COMBAT_HOMING, false, 0.5, 1, 200, 1);
+//	return;
 
 	pause(2000);
 
@@ -240,7 +251,11 @@ void levelInit() {
 		wave(i * 325, W_COL, RIGHT, NA, P_SWIRL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
 		wave(150 + i * 325, W_COL, RIGHT - 50, NA, P_SWIRL_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
 	}
+	pause(10000);
 
+	wave(0, W_COL, CENTER, NA, PATTERN_BOSS, ENEMY_BOSS, COMBAT_HOMING, false, 0.5, 1, 200, 1);
+
+	return;
 	// Column goes down screen that peels offscreen to the right.
 	// Column streamers (fast, go down the screen, pop up in quasi-random locations).
 	// Delta (big wide delta of enemies, sines backwards so the triangle is inverted).
