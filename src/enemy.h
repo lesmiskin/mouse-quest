@@ -12,6 +12,7 @@ typedef enum {
 } EnemyAnimation;
 
 typedef enum {
+	ENEMY_BOSS,
 	ENEMY_MAGNET,
 	ENEMY_DISK,
 	ENEMY_DISK_BLUE,
@@ -31,8 +32,11 @@ typedef enum {
 	P_STRAFE_LEFT,
 	P_STRAFE_RIGHT,
 
-	P_CROSSOVER_LEFT,
-	P_CROSSOVER_RIGHT,
+	P_SNAKE_LEFT,
+	P_SNAKE_RIGHT,
+
+	P_CROSS_LEFT,
+	P_CROSS_RIGHT,
 
 	P_PEEL_RIGHT,
 	P_PEEL_LEFT,

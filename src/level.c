@@ -35,7 +35,7 @@ WaveTrigger triggers[MAX_WAVES];
 long gameTime = 0;
 int waveInc = 0;
 int waveAddInc = 0;
-const int NA = -1;
+const int NA = -50;
 const int ENEMY_SPACE = 35;
 
 bool invalidWave(WaveTrigger *wave) {
@@ -110,7 +110,7 @@ void wave(int spawnTime, WaveType waveType, int x, int y, EnemyPattern movement,
 //
 
 void w_column(int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat combat, bool async, double speed, double speedX, int qty, double health) {
-	int startY = y > 0 ? y : -50; //respect Y if given, otherwise normal offscreen pos.
+	int startY = y > NA ? y : NA; //respect Y if given, otherwise normal offscreen pos.
 	int sineInc = 0;
 
 	//Ensure "swayiness" is distributed throughout total quantity.
@@ -145,10 +145,17 @@ void levelGameFrame() {
 void levelInit() {
 	const int LEFT = 40;
 	const int RIGHT = 230;
+	const int CENTER = 135;
 	const int C_LEFT = 120;
 	const int C_RIGHT = 150;
 	const int RIGHT_OFF = (int)screenBounds.x + 85;
 	const int LEFT_OFF = -40;
+
+	// BUG: Homing doesn't work on peelers.
+	// Peelers are *WAY* too fast.
+
+
+
 
 	// X guys are boring. Cross over at different times.
 	// Need some sine-ed snakes.
@@ -170,6 +177,10 @@ void levelInit() {
 	// Random spirals.
 	// Random spirals with shooters inside.
 
+	wave(0, W_COL, CENTER, NA, PATTERN_SNAKE, ENEMY_BOSS, COMBAT_SHOOTER, false, 0.25, 1, 200, 1);
+	return;
+
+
 	pause(2000);
 
 	// Two columns that split, and merge (NEEDS SINE)
@@ -179,42 +190,55 @@ void levelInit() {
 	}
 	pause(6000);
 
-	// X crossover (NEEDS SINE)
-	for(int i=0; i < 6; i++) {
-		wave(i * 350, W_COL, RIGHT, NA, P_CROSSOVER_RIGHT, ENEMY_DISK, COMBAT_IDLE, false, 1.3, 1.6, HEALTH_LIGHT, 1);
-		wave(i * 350, W_COL, LEFT, NA, P_CROSSOVER_LEFT, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1.3, 1.6, HEALTH_LIGHT, 1);
+
+	// Snakes.
+	for(int i=0; i < 8; i++) {
+		wave(i * 350, W_COL, C_LEFT, NA, P_SNAKE_RIGHT, ENEMY_DISK, COMBAT_IDLE, false, 1.2, 0.05, HEALTH_LIGHT, 1);
+	}
+	pause(5000);
+	for(int i=0; i < 8; i++) {
+		wave(i * 350, W_COL, C_RIGHT, NA, P_SNAKE_LEFT, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1.2, 0.05, HEALTH_LIGHT, 1);
 	}
 	pause(6000);
 
+
+	// Crossover.
+	for(int i=0; i < 6; i++) {
+		wave(i * 350, W_COL, LEFT, NA, P_CROSS_LEFT, ENEMY_DISK, COMBAT_IDLE, false, 1.2, 0.03, HEALTH_LIGHT, 1);
+		wave(i * 350, W_COL, RIGHT, NA, P_CROSS_RIGHT, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1.2, 0.03, HEALTH_LIGHT, 1);
+	}
+	pause(6000);
+
+
 	// Strafers coming from either side.
-	for(int i=0; i < 5; i++) {
-		wave(i * 400, W_COL, RIGHT_OFF, 5, P_STRAFE_LEFT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.8, 2.5, HEALTH_LIGHT, 1);
+	for(int i=0; i < 3; i++) {
+		wave(i * 750, W_COL, RIGHT_OFF, -40, P_STRAFE_LEFT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.7, 0.004, HEALTH_LIGHT, 1);
 	}
 	pause(4000);
-	for(int i=0; i < 5; i++) {
-		wave(i * 400, W_COL, LEFT_OFF, 5, P_STRAFE_RIGHT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.8, 2.5, HEALTH_LIGHT, 1);
+	for(int i=0; i < 3; i++) {
+		wave(i * 750, W_COL, LEFT_OFF, -40, P_STRAFE_RIGHT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.7, 0.004, HEALTH_LIGHT, 1);
 	}
 	pause(7000);
 
 	// Peelers.
-	for(int i=0; i < 6; i++) {
-		wave(i * 300, W_COL, LEFT, NA, P_PEEL_RIGHT, ENEMY_BUG, COMBAT_IDLE, false, 2, 0.02, HEALTH_LIGHT, 1);
+	for(int i=0; i < 7; i++) {
+		wave(i * 300, W_COL, LEFT, NA, P_PEEL_RIGHT, ENEMY_BUG, COMBAT_HOMING, false, 2, 0.02, HEALTH_LIGHT, 1);
 	}
-	pause(3000);
-	for(int i=0; i < 6; i++) {
-		wave(i * 300, W_COL, RIGHT, NA, P_PEEL_LEFT, ENEMY_BUG, COMBAT_IDLE, false, 2, 0.02, HEALTH_LIGHT, 1);
+	pause(3500);
+	for(int i=0; i < 7; i++) {
+		wave(i * 300, W_COL, RIGHT, NA, P_PEEL_LEFT, ENEMY_BUG, COMBAT_HOMING, false, 2, 0.02, HEALTH_LIGHT, 1);
 	}
 	pause(5000);
 
 	// Swirlers.
 	for(int i=0; i < 5; i++) {
-		wave(i * 300, W_COL, LEFT + 50, NA, P_SWIRL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.5, 0.09, HEALTH_LIGHT, 1);
-		wave(150 + i * 300, W_COL, LEFT, NA, P_SWIRL_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.5, 0.09, HEALTH_LIGHT, 1);
+		wave(i * 325, W_COL, LEFT + 50, NA, P_SWIRL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
+		wave(150 + i * 325, W_COL, LEFT, NA, P_SWIRL_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
 	}
-	pause(3000);
+	pause(5000);
 	for(int i=0; i < 5; i++) {
-		wave(i * 300, W_COL, RIGHT, NA, P_SWIRL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.5, 0.09, HEALTH_LIGHT, 1);
-		wave(150 + i * 300, W_COL, RIGHT - 50, NA, P_SWIRL_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.5, 0.09, HEALTH_LIGHT, 1);
+		wave(i * 325, W_COL, RIGHT, NA, P_SWIRL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
+		wave(150 + i * 325, W_COL, RIGHT - 50, NA, P_SWIRL_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
 	}
 
 	// Column goes down screen that peels offscreen to the right.

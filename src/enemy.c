@@ -56,7 +56,7 @@ static int FORMATION_INTERVAL = 75;
 static double ENEMY_SPEED = 0.9;
 
 static double ENEMY_SPEED_FAST = 1.8;
-static double SHOT_HZ = 1000;
+static double SHOT_HZ = 750;
 static double SHOT_SPEED = 2;
 static double SHOT_DAMAGE = 1;
 
@@ -66,6 +66,7 @@ static int ENEMY_DISTANCE = 22;
 static double HIT_KNOCKBACK = 0.0;
 static double COLLIDE_DAMAGE = 1;
 
+static const int BOSS_IDLE_FRAMES = 6;
 static const int MAGNET_IDLE_FRAMES = 8;
 static const int DISK_IDLE_FRAMES = 12;
 static const int VIRUS_IDLE_FRAMES = 6;
@@ -236,6 +237,10 @@ void animateEnemy() {
 				case ENEMY_MAGNET:
 					animGroupName = "magnet-%02d.png";
 					maxFrames = MAGNET_IDLE_FRAMES;
+					break;
+				case ENEMY_BOSS:
+					animGroupName = "keyboss-%02d.png";
+					maxFrames = BOSS_IDLE_FRAMES;
 					break;
 				default:
 					fatalError("Error", "No frames specified for enemy type");
@@ -414,23 +419,36 @@ void formationFrame(Enemy* e) {
 			applyFormation(e);
 			break;
 
-		// CROSSOVER -------------------------------------------------
-		case P_CROSSOVER_RIGHT:
-			if(scriptDue(e, 750) && e->origin.x > 40) left(e);
+		// SNAKE -------------------------------------------------
+		case P_SNAKE_RIGHT:
+			e->origin.x = sineInc(e->origin.x, &e->swayIncX, e->speedX, 1.2);
 			applyFormation(e);
 			break;
-		case P_CROSSOVER_LEFT:
-			if(scriptDue(e, 750) && e->origin.x < 230) right(e);
+		case P_SNAKE_LEFT:
+			e->origin.x = sineInc(e->origin.x, &e->swayIncX, -e->speedX, 1.2);
+			applyFormation(e);
+			break;
+
+		// CROSSOVER -------------------------------------------------
+		case P_CROSS_RIGHT:
+			e->origin.x = sineInc(e->origin.x, &e->swayIncX, e->speedX, 2.9);
+			applyFormation(e);
+			break;
+		case P_CROSS_LEFT:
+			e->origin.x = sineInc(e->origin.x, &e->swayIncX, -e->speedX, 2.9);
 			applyFormation(e);
 			break;
 
 		// STRAFER -------------------------------------------------
 		case P_STRAFE_RIGHT:
-			if(scriptDue(e, 500)) right(e);
+			if(scriptDue(e, 500))
+				e->origin.x = sineInc(e->origin.x, &e->swayIncX, -e->speedX, 5);
+
 			applyFormation(e);
 			break;
 		case P_STRAFE_LEFT:
-			if(scriptDue(e, 500)) left(e);
+			if(scriptDue(e, 500))
+				e->origin.x = sineInc(e->origin.x, &e->swayIncX, e->speedX, 5);
 			applyFormation(e);
 			break;
 
@@ -505,7 +523,8 @@ void enemyGameFrame() {
 		}
 
 		//Spawn shots.
-		if(enemies[i].combat == COMBAT_SHOOTER &&
+		if((enemies[i].combat == COMBAT_SHOOTER ||
+			enemies[i].combat == COMBAT_HOMING) &&
 		   timer(&enemies[i].lastShotTime, SHOT_HZ) &&
 		   enemies[i].origin.y > 0
 		) {
