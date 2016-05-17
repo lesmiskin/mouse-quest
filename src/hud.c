@@ -6,6 +6,7 @@
 #include "hud.h"
 #include "weapon.h"
 #include "enemy.h"
+#include "sound.h"
 
 #define NUM_HEARTS 4
 #define MAX_PLUMES 10
@@ -33,6 +34,9 @@ static long lastBlinkTime;
 static Sprite letters[10];
 static const int LETTER_WIDTH = 4;
 static double weapSweepInc = 0;
+static long lastWarningFlash;
+static bool warningOn;
+static long gameTime;
 
 void spawnScorePlume(PlumeType type, int score) {
 	if(plumeInc+1 == MAX_PLUMES) plumeInc = 0;
@@ -100,6 +104,7 @@ void hudInit() {
 	life = makeSprite(getTexture("battery.png"), zeroCoord(), SDL_FLIP_NONE);
 	lifeHalf = makeSprite(getTexture("battery-half.png"), zeroCoord(), SDL_FLIP_NONE);
 //	lifeNone = makeSprite(getTexture("battery-none.png"), zeroCoord(), SDL_FLIP_NONE);
+	lastWarningFlash = clock();
 
 	//Set drawing coordinates for heart icons - each is spaced out in the upper-left.
 	for(int i=0; i < NUM_HEARTS; i++){
@@ -112,6 +117,12 @@ void hudInit() {
 		sprintf(textureName, "font-%02d.png", i);
 		letters[i] = makeSimpleSprite(textureName);
 	}
+
+	hudReset();
+}
+
+void hudReset() {
+	gameTime = clock();
 }
 
 void writeText(int amount, Coord pos) {
@@ -146,6 +157,20 @@ Coord underLife = { 10, 27 };
 Coord sweepPos = { 10, 27 };
 bool sweeping = false;
 bool sweepDir = false;
+
+void warning() {
+	if(due(gameTime, 3000)) return;
+
+	if(timer(&lastWarningFlash, 500)) {
+		warningOn = !warningOn;
+		if(warningOn) play("warning.wav");
+	}
+
+	if(warningOn) {
+		Sprite warning = makeSprite(getTexture("warning.png"), zeroCoord(), SDL_FLIP_NONE);
+		drawSpriteAbs(warning, makeCoord(pixelGrid.x/2, pixelGrid.y/3));
+	}
+}
 
 void hudRenderFrame() {
 	Coord underScore = makeCoord(pixelGrid.x - 7, 26);
@@ -256,4 +281,7 @@ void hudRenderFrame() {
 			}
 		}
 	}
+
+	warning();
 }
+

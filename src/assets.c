@@ -151,6 +151,7 @@ static void loadImages() {
 		{ "font-07.png", false, true, false, false, false },
 		{ "font-08.png", false, true, false, false, false },
 		{ "font-09.png", false, true, false, false, false },
+		{ "warning.png", false, false, false, false, false },
 		{ "mike-shades-01.png", false, true, false, false, false },
 		{ "mike-shades-02.png", false, true, false, false, false },
 		{ "mike-shades-03.png", false, true, false, false, false },
@@ -439,6 +440,7 @@ static void loadSounds() {
 	SoundDef defs[] = {
 		{ "mike-die.wav", SOUND_VOLUME * 4 },
 		{ "intro-presents.wav", SOUND_VOLUME * 2 },
+		{ "warning.wav", SOUND_VOLUME * 2 },
 		{ "Powerup8.wav", SOUND_VOLUME * 4 },
 		{ "loss.wav", SOUND_VOLUME * 5 },
 		{ "Pickup_Coin4.wav", (int)ceil(SOUND_VOLUME * 1.5) },

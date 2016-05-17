@@ -189,8 +189,10 @@ void levelInit() {
 	// Secondary attack animation (splits apart and reveals board).
 
 
-//	wave(0, W_COL, CENTER, NA, PATTERN_BOSS, ENEMY_BOSS, COMBAT_HOMING, false, 0.5, 1, 200, 1);
-//	return;
+	pause(2000);
+
+	wave(0, W_COL, CENTER, NA, PATTERN_BOSS, ENEMY_BOSS, COMBAT_HOMING, false, 0.5, 1, 200, 1);
+	return;
 
 	pause(2000);
 

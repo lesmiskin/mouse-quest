@@ -170,6 +170,7 @@ void scriptGameFrame() {
 				resetEnemies();
 				resetBackground();
 				resetItems();
+				hudReset();
 				useMike = true;
 				playMusic("level-01c.ogg", -1);
 			}
