@@ -14,6 +14,7 @@
 
 #define MAX_SHOTS 500
 #define MAX_SPAWNS 10
+#define MAX_BOOMS 20
 
 typedef struct {
 	Coord origin;
@@ -25,6 +26,11 @@ typedef struct {
 	bool isKey;
 	double spinInc;
 } EnemyShot;
+
+typedef struct {
+	Coord origin;
+	int animFrame;
+} Boom;
 
 typedef struct {
 	double lastSpawnTime;
@@ -41,6 +47,8 @@ int spawnInc = 0;
 const double HEALTH_LIGHT = 3.0;
 const double HEALTH_HEAVY = 5.0;
 
+static int boomCount;
+static Boom booms[MAX_BOOMS];
 static int gameTime;
 static int enemyCount;
 static int enemyShotCount;
@@ -120,6 +128,7 @@ void hitEnemy(Enemy* enemy, double damage, bool collision) {
 }
 
 void enemyShadowFrame() {
+
 	//Render enemy shadows first (so everything else is above them).
 	for(int i=0; i < MAX_ENEMIES; i++) {
 		if(invalidEnemy(&enemies[i]) || !enemies[i].initialFrameChosen) continue;
@@ -151,6 +160,19 @@ void enemyShadowFrame() {
 		shadowCoord.y += STATIC_SHADOW_OFFSET;
 		drawSpriteAbs(shotShadow, shadowCoord);
 	}
+
+	// Booms FIXME: Merge with RenderFrame, like Enemy.
+	for(int i=0; i < MAX_BOOMS; i++) {
+		if (booms[i].origin.x == 0 && booms[i].origin.y == 0) continue;
+		char frameFile[20];
+		char* frameTemplate = "exp-%02d.png";
+
+		sprintf(frameFile, frameTemplate, booms[i].animFrame);
+		Coord boomParallax = parallax(booms[i].origin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_XY, PARALLAX_ADDITIVE);
+		SDL_Texture* texture = getTextureVersion(frameFile, ASSET_SHADOW);
+		Sprite sprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
+		drawSpriteAbs(sprite, boomParallax);
+	}
 }
 
 void enemyRenderFrame() {
@@ -176,9 +198,41 @@ void enemyRenderFrame() {
 			drawSpriteAbs(shotSprite, enemyShots[i].parallax);
 		}
 	}
+
+	// Booms
+	for(int i=0; i < MAX_BOOMS; i++) {
+		if (booms[i].origin.x == 0 && booms[i].origin.y == 0) continue;
+		char frameFile[20];
+		char* frameTemplate = "exp-%02d.png";
+
+		sprintf(frameFile, frameTemplate, booms[i].animFrame);
+		Coord boomParallax = parallax(booms[i].origin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_XY, PARALLAX_ADDITIVE);
+		drawSpriteAbs(makeSimpleSprite(frameFile), boomParallax);
+	}
+}
+
+void spawnBoom(Coord origin) {
+	play(chance(50) ? "Explosion14.wav" : "Explosion3.wav");
+
+	boomCount = boomCount > MAX_BOOMS-1 ? 0 : boomCount + 1;
+
+	Boom boom = { origin, 1 };
+	booms[boomCount] = boom;
 }
 
 void animateEnemy() {
+
+	// Booms
+	for(int i=0; i < MAX_BOOMS; i++) {
+		if (booms[i].origin.x == 0 && booms[i].origin.y == 0) continue;
+		booms[i].animFrame++;
+
+		if(booms[i].animFrame == DEATH_FRAMES) {
+			booms[i].origin.x = 0;
+			booms[i].origin.y = 0;
+			continue;
+		}
+	}
 
 	//Render out not-null enemies wherever they may be.
 	for(int i=0; i < MAX_ENEMIES; i++) {
@@ -190,8 +244,8 @@ void animateEnemy() {
 		int maxFrames = 0;
 
 		//Death animation
-		if(enemies[i].dying) {
-			//Switch over from idle (check what sequence we're currently on).
+		if(enemies[i].dying && enemies[i].type != ENEMY_BOSS) {
+			//Change animation sequence to explosion (except for bosses)
 			if(enemies[i].animSequence != ENEMY_ANIMATION_DEATH){
 				enemies[i].animSequence = ENEMY_ANIMATION_DEATH;
 				enemies[i].animFrame = 1;
@@ -205,16 +259,15 @@ void animateEnemy() {
 //					}else if(chance(15)){
 //						spawnItem(enemies[i].formationOrigin, TYPE_FRUIT);
 //					}else{
-						spawnItem(enemies[i].formationOrigin, TYPE_COIN);
-//					}
+					spawnItem(enemies[i].formationOrigin, TYPE_COIN);
 				}
-				//Zero if completely dead.
-			}else if(enemies[i].animFrame == DEATH_FRAMES){
+			}
+			//Zero if completely dead.
+			else if(enemies[i].animFrame == DEATH_FRAMES){
 				enemies[i] = nullEnemy();
 				raiseScore(10, false);
 				continue;
 			}
-
 			animGroupName = "exp-%02d.png";
 		}
 		//Regular idle animation.
@@ -335,7 +388,9 @@ void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat
 		false,
 		0,
 		false,
-		type == ENEMY_BOSS ? BOSS_COLLIDE_DAMAGE : COLLIDE_DAMAGE
+		type == ENEMY_BOSS ? BOSS_COLLIDE_DAMAGE : COLLIDE_DAMAGE,
+		0,
+		0
 	};
 
 	//Add it to the list of renderables.
@@ -387,6 +442,7 @@ void resetEnemies() {
 	memset(enemyShots, 0, sizeof(enemyShots));
 	enemyCount = 0;
 	enemyShotCount = 0;
+	boomCount = 0;
 }
 
 void incScript(Enemy *e, int toMove) {
@@ -534,6 +590,7 @@ void formationFrame(Enemy* e) {
 }
 
 void enemyGameFrame() {
+
 	//Bob enemies in sine pattern.
 	switch(gameState) {
 		case STATE_INTRO:
@@ -554,8 +611,15 @@ void enemyGameFrame() {
 
 				//Flag for death sequence.
 				if (enemies[i].health <= 0) {
-					play(chance(50) ? "Explosion14.wav" : "Explosion3.wav");
+					if(enemies[i].type == ENEMY_BOSS) {
+						spawnBoom(enemies[i].origin);
+					}else{
+						play(chance(50) ? "Explosion14.wav" : "Explosion3.wav");
+					}
+
 					enemies[i].dying = true;
+					enemies[i].fatalTime = clock();
+					enemies[i].boomTime = clock();
 				}
 			}
 	}
@@ -564,8 +628,28 @@ void enemyGameFrame() {
 
 	//Scroll the enemies down the screen
 	for(int i=0; i < MAX_ENEMIES; i++) {
-		//Skip zeroed, or exploding (the explosion can stay where it is).
-		if(invalidEnemy(&enemies[i]) || enemies[i].dying) continue;
+		//Skip zeroed.
+		if(invalidEnemy(&enemies[i])) continue;
+
+		// Boss explosions.
+		if(enemies[i].dying && enemies[i].type == ENEMY_BOSS) {
+			// Final death.
+			if(due(enemies[i].fatalTime, 2500)) {
+				enemies[i] = nullEnemy();
+				continue;
+			}
+			// Explosion drama.
+			else if(enemies[i].dying && due(enemies[i].boomTime, 75)) {
+				spawnBoom(deriveCoord(enemies[i].origin, randomMq(-40, 40), randomMq(-15, 15)));
+				enemies[i].boomTime = clock();
+			}
+		}
+
+		//Set parallax against the formation origin.
+		enemies[i].parallax = parallax(enemies[i].formationOrigin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_XY, PARALLAX_ADDITIVE);
+
+		// If dying - nothing more to do here (explosions can stay where they are).
+		if(enemies[i].dying) continue;
 
 		//Scroll them down the screen
 		if(enemies[i].scrollDir) {
@@ -576,9 +660,6 @@ void enemyGameFrame() {
 
 		//IMPORTANT - the main formation frame.
 		formationFrame(&enemies[i]);
-
-		//Set parallax against the formation origin.
-		enemies[i].parallax = parallax(enemies[i].formationOrigin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_XY, PARALLAX_ADDITIVE);
 
 		//Have we hit the player? (pass through if dying)
 		Rect enemyBound;

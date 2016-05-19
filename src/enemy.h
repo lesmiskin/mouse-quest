@@ -91,8 +91,11 @@ typedef struct {
 	int scriptInc;
 	bool scrollDir;
 	double collisionDamage;
+	long boomTime;
+	long fatalTime;
 } Enemy;
 
+extern void spawnBoom(Coord origin);
 extern const double HEALTH_LIGHT, HEALTH_HEAVY;
 extern bool invalidEnemy(Enemy* enemy);
 extern void resetEnemies();

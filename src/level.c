@@ -206,66 +206,66 @@ void levelInit() {
 	// Big explosion on death.
 	// Screen shakes on death.
 
-//	pause(2000);
-//
-//	// Two columns that split, and merge (NEEDS SINE)
-//	for(int i=0; i < 6; i++) {
-//		wave(i * 350, W_COL, C_LEFT, NA, P_CURVE_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 1, HEALTH_LIGHT, 1);
-//		wave(i * 350, W_COL, C_RIGHT, NA, P_CURVE_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 1, HEALTH_LIGHT, 1);
-//	}
-//	pause(6000);
-//
-//
-//	// Snakes.
-//	for(int i=0; i < 8; i++) {
-//		wave(i * 350, W_COL, C_LEFT, NA, P_SNAKE_RIGHT, ENEMY_DISK, COMBAT_IDLE, false, 1.2, 0.05, HEALTH_LIGHT, 1);
-//	}
-//	pause(5000);
-//	for(int i=0; i < 8; i++) {
-//		wave(i * 350, W_COL, C_RIGHT, NA, P_SNAKE_LEFT, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1.2, 0.05, HEALTH_LIGHT, 1);
-//	}
-//	pause(6000);
-//
-//
-//	// Crossover.
-//	for(int i=0; i < 6; i++) {
-//		wave(i * 350, W_COL, LEFT, NA, P_CROSS_LEFT, ENEMY_DISK, COMBAT_IDLE, false, 1.2, 0.03, HEALTH_LIGHT, 1);
-//		wave(i * 350, W_COL, RIGHT, NA, P_CROSS_RIGHT, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1.2, 0.03, HEALTH_LIGHT, 1);
-//	}
-//	pause(6000);
-//
-//
-//	// Strafers coming from either side.
-//	for(int i=0; i < 3; i++) {
-//		wave(i * 750, W_COL, RIGHT_OFF, -40, P_STRAFE_LEFT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.7, 0.004, HEALTH_LIGHT, 1);
-//	}
-//	pause(4000);
-//	for(int i=0; i < 3; i++) {
-//		wave(i * 750, W_COL, LEFT_OFF, -40, P_STRAFE_RIGHT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.7, 0.004, HEALTH_LIGHT, 1);
-//	}
-//	pause(7000);
-//
-//	// Peelers.
-//	for(int i=0; i < 7; i++) {
-//		wave(i * 300, W_COL, LEFT, NA, P_PEEL_RIGHT, ENEMY_BUG, COMBAT_HOMING, false, 2, 0.02, HEALTH_LIGHT, 1);
-//	}
-//	pause(3500);
-//	for(int i=0; i < 7; i++) {
-//		wave(i * 300, W_COL, RIGHT, NA, P_PEEL_LEFT, ENEMY_BUG, COMBAT_HOMING, false, 2, 0.02, HEALTH_LIGHT, 1);
-//	}
-//	pause(5000);
-//
-//	// Swirlers.
-//	for(int i=0; i < 5; i++) {
-//		wave(i * 325, W_COL, LEFT + 50, NA, P_SWIRL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
-//		wave(150 + i * 325, W_COL, LEFT, NA, P_SWIRL_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
-//	}
-//	pause(5000);
-//	for(int i=0; i < 5; i++) {
-//		wave(i * 325, W_COL, RIGHT, NA, P_SWIRL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
-//		wave(150 + i * 325, W_COL, RIGHT - 50, NA, P_SWIRL_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
-//	}
-//	pause(5000);
+	pause(2000);
+
+	// Two columns that split, and merge (NEEDS SINE)
+	for(int i=0; i < 6; i++) {
+		wave(i * 350, W_COL, C_LEFT, NA, P_CURVE_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 1, HEALTH_LIGHT, 1);
+		wave(i * 350, W_COL, C_RIGHT, NA, P_CURVE_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 1, HEALTH_LIGHT, 1);
+	}
+	pause(6000);
+
+
+	// Snakes.
+	for(int i=0; i < 8; i++) {
+		wave(i * 350, W_COL, C_LEFT, NA, P_SNAKE_RIGHT, ENEMY_DISK, COMBAT_IDLE, false, 1.2, 0.05, HEALTH_LIGHT, 1);
+	}
+	pause(5000);
+	for(int i=0; i < 8; i++) {
+		wave(i * 350, W_COL, C_RIGHT, NA, P_SNAKE_LEFT, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1.2, 0.05, HEALTH_LIGHT, 1);
+	}
+	pause(6000);
+
+
+	// Crossover.
+	for(int i=0; i < 6; i++) {
+		wave(i * 350, W_COL, LEFT, NA, P_CROSS_LEFT, ENEMY_DISK, COMBAT_IDLE, false, 1.2, 0.03, HEALTH_LIGHT, 1);
+		wave(i * 350, W_COL, RIGHT, NA, P_CROSS_RIGHT, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1.2, 0.03, HEALTH_LIGHT, 1);
+	}
+	pause(6000);
+
+
+	// Strafers coming from either side.
+	for(int i=0; i < 3; i++) {
+		wave(i * 750, W_COL, RIGHT_OFF, -40, P_STRAFE_LEFT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.7, 0.004, HEALTH_LIGHT, 1);
+	}
+	pause(4000);
+	for(int i=0; i < 3; i++) {
+		wave(i * 750, W_COL, LEFT_OFF, -40, P_STRAFE_RIGHT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.7, 0.004, HEALTH_LIGHT, 1);
+	}
+	pause(7000);
+
+	// Peelers.
+	for(int i=0; i < 7; i++) {
+		wave(i * 300, W_COL, LEFT, NA, P_PEEL_RIGHT, ENEMY_BUG, COMBAT_HOMING, false, 2, 0.02, HEALTH_LIGHT, 1);
+	}
+	pause(3500);
+	for(int i=0; i < 7; i++) {
+		wave(i * 300, W_COL, RIGHT, NA, P_PEEL_LEFT, ENEMY_BUG, COMBAT_HOMING, false, 2, 0.02, HEALTH_LIGHT, 1);
+	}
+	pause(5000);
+
+	// Swirlers.
+	for(int i=0; i < 5; i++) {
+		wave(i * 325, W_COL, LEFT + 50, NA, P_SWIRL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
+		wave(150 + i * 325, W_COL, LEFT, NA, P_SWIRL_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
+	}
+	pause(5000);
+	for(int i=0; i < 5; i++) {
+		wave(i * 325, W_COL, RIGHT, NA, P_SWIRL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
+		wave(150 + i * 325, W_COL, RIGHT - 50, NA, P_SWIRL_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
+	}
+	pause(5000);
 
 	warning();
 	pause(3000);
