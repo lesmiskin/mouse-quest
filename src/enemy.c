@@ -68,6 +68,7 @@ static const int ENEMY_SHOT_BOUND = 8;
 static int ENEMY_DISTANCE = 22;
 static double HIT_KNOCKBACK = 0.0;
 static double COLLIDE_DAMAGE = 1;
+static double BOSS_COLLIDE_DAMAGE = 1000;
 
 static const int BOSS_IDLE_FRAMES = 12;
 static const int MAGNET_IDLE_FRAMES = 8;
@@ -216,7 +217,7 @@ void animateEnemy() {
 
 			animGroupName = "exp-%02d.png";
 		}
-			//Regular idle animation.
+		//Regular idle animation.
 		else{
 			//Being hit - change frame variant.
 			if(enemies[i].hitAnimate && !enemies[i].wasHitLastFrame){
@@ -331,8 +332,10 @@ void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat
 		false,
 		clock(),
 		clock(),
+		false,
 		0,
-		false
+		false,
+		type == ENEMY_BOSS ? BOSS_COLLIDE_DAMAGE : COLLIDE_DAMAGE
 	};
 
 	//Add it to the list of renderables.
@@ -586,7 +589,7 @@ void enemyGameFrame() {
 		}
 
 		if(inBounds(playerOrigin, enemyBound)) {
-			hitPlayer(COLLIDE_DAMAGE);
+			hitPlayer(enemies[i].collisionDamage);
 			hitEnemy(&enemies[i], playerStrength, true);
 		}
 

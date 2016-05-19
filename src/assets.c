@@ -25,6 +25,7 @@ static SoundAsset *sounds;
 static int soundCount;
 static MusicAsset *music;
 static int musicCount;
+static const int MUSIC_VOLUME = 100;
 
 MusicAsset getMusic(char *path) {
 	//Loop through register until key is found, or we've exhausted the array's iteration.
@@ -440,7 +441,7 @@ static void loadSounds() {
 	SoundDef defs[] = {
 		{ "mike-die.wav", SOUND_VOLUME * 4 },
 		{ "intro-presents.wav", SOUND_VOLUME * 2 },
-		{ "warning.wav", SOUND_VOLUME * 2 },
+		{ "warning.wav", SOUND_VOLUME * 1.5 },
 		{ "Powerup8.wav", SOUND_VOLUME * 4 },
 		{ "loss.wav", SOUND_VOLUME * 5 },
 		{ "Pickup_Coin4.wav", (int)ceil(SOUND_VOLUME * 1.5) },
@@ -451,12 +452,12 @@ static void loadSounds() {
 		{ "ping2.wav", (int)ceil(SOUND_VOLUME * 2) },
 		{ "warp.wav", SOUND_VOLUME },
 		{ "start.wav", SOUND_VOLUME },
-		{ "Hit_Hurt10.wav", (int)ceil(SOUND_VOLUME * 3) },		//When we get hit.
-		{ "Hit_Hurt18.wav", (int)ceil(SOUND_VOLUME * 3) },		//When we get hit.
+		{ "Hit_Hurt10.wav", (int)ceil(SOUND_VOLUME * 3) },		// When we get hit.
+		{ "Hit_Hurt18.wav", (int)ceil(SOUND_VOLUME * 3) },		// When we get hit.
 		{ "Hit_Hurt9.wav", SOUND_VOLUME },
-		{ "Laser_Shoot34.wav", SOUND_VOLUME / 2 },
-		{ "Laser_Shoot18.wav", SOUND_VOLUME / 1.5 },
-		{ "Laser_Shoot5.wav", SOUND_VOLUME / 2 },
+		{ "Laser_Shoot34.wav", SOUND_VOLUME },					// Enemy shot
+		{ "Laser_Shoot18.wav", SOUND_VOLUME / 1.5 },			// Player shot.
+		{ "Laser_Shoot5.wav", SOUND_VOLUME / 4 },
 		{ "Explosion14.wav", SOUND_VOLUME },
 		{ "Explosion3.wav", SOUND_VOLUME },
 		{ "Explosion2.wav", SOUND_VOLUME },
@@ -504,6 +505,8 @@ static void loadMusic() {
 		char* path = combineStrings(assetPath, defs[i]);
 		Mix_Music* chunk = Mix_LoadMUS(path);
 		if(!chunk) fatalError("Could not find Asset on disk", path);
+
+		Mix_VolumeMusic(MUSIC_VOLUME);
 
 		//Add to register
 		MusicAsset snd = {

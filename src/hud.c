@@ -35,8 +35,12 @@ static Sprite letters[10];
 static const int LETTER_WIDTH = 4;
 static double weapSweepInc = 0;
 static long lastWarningFlash;
+
 static bool warningOn;
-static long gameTime;
+static bool warningShowing;
+static long warningStartTime;
+static const int WARNING_TIME = 3000;
+static const int WARNING_FLASH_TIME = 500;
 
 void spawnScorePlume(PlumeType type, int score) {
 	if(plumeInc+1 == MAX_PLUMES) plumeInc = 0;
@@ -104,7 +108,6 @@ void hudInit() {
 	life = makeSprite(getTexture("battery.png"), zeroCoord(), SDL_FLIP_NONE);
 	lifeHalf = makeSprite(getTexture("battery-half.png"), zeroCoord(), SDL_FLIP_NONE);
 //	lifeNone = makeSprite(getTexture("battery-none.png"), zeroCoord(), SDL_FLIP_NONE);
-	lastWarningFlash = clock();
 
 	//Set drawing coordinates for heart icons - each is spaced out in the upper-left.
 	for(int i=0; i < NUM_HEARTS; i++){
@@ -122,7 +125,6 @@ void hudInit() {
 }
 
 void hudReset() {
-	gameTime = clock();
 }
 
 void writeText(int amount, Coord pos) {
@@ -152,25 +154,37 @@ void showDebugStats() {
 	}
 }
 
+void toggleWarning() {
+	warningOn = true;
+	warningStartTime = clock();
+	lastWarningFlash = clock();
+}
+
+void renderWarning() {
+	// Halting.
+	if(!warningOn || due(warningStartTime, WARNING_TIME)) {
+		warningOn = false;
+		return;
+	}
+
+	// Toggle message on/off, and play sound.
+	if(timer(&lastWarningFlash, WARNING_FLASH_TIME)) {
+		warningShowing = !warningShowing;
+		if(warningShowing) play("warning.wav");
+	}
+
+	// Render the message
+	if(warningShowing) {
+		Sprite warning = makeSprite(getTexture("warning.png"), zeroCoord(), SDL_FLIP_NONE);
+		drawSpriteAbs(warning, makeCoord(pixelGrid.x/2, pixelGrid.y/3));
+	}
+}
+
 //FIXME: Hack... :p
 Coord underLife = { 10, 27 };
 Coord sweepPos = { 10, 27 };
 bool sweeping = false;
 bool sweepDir = false;
-
-void warning() {
-	if(due(gameTime, 3000)) return;
-
-	if(timer(&lastWarningFlash, 500)) {
-		warningOn = !warningOn;
-		if(warningOn) play("warning.wav");
-	}
-
-	if(warningOn) {
-		Sprite warning = makeSprite(getTexture("warning.png"), zeroCoord(), SDL_FLIP_NONE);
-		drawSpriteAbs(warning, makeCoord(pixelGrid.x/2, pixelGrid.y/3));
-	}
-}
 
 void hudRenderFrame() {
 	Coord underScore = makeCoord(pixelGrid.x - 7, 26);
@@ -282,6 +296,5 @@ void hudRenderFrame() {
 		}
 	}
 
-	warning();
+	renderWarning();
 }
-

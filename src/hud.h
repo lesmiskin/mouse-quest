@@ -7,6 +7,7 @@ typedef enum {
 	PLUME_POWER
 } PlumeType;
 
+extern void toggleWarning();
 extern void hudReset();
 extern bool weaponChanging;
 extern void spawnPlume(PlumeType type);

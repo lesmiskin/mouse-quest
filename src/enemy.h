@@ -90,6 +90,7 @@ typedef struct {
 	bool blasting;
 	int scriptInc;
 	bool scrollDir;
+	double collisionDamage;
 } Enemy;
 
 extern const double HEALTH_LIGHT, HEALTH_HEAVY;
