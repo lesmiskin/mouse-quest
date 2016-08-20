@@ -29,7 +29,7 @@ bool FULLSCREEN = false;
 	Coord windowSize = { 448, 512 };		//x3 (1px == 4px)
 #else
 //	Coord windowSize = { 1680, 1050 };
-	Coord windowSize = { 896, 1024 };		//4:1 scale
+	Coord windowSize = { 672, 768 };		//4:1 scale
 #endif
 
 const int ANIMATION_HZ = 1000 / 12;		//12fps

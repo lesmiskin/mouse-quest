@@ -16,8 +16,11 @@
 #include "level.h"
 #include "myc.h"
 
-// Running slow from Clion, but fast from Console? CLOSE or MINIMISE the Clion IDE.
-// The Java GUI crapness is slowing the drawing down in the background :p
+// !!!IMPORTANT!!!
+// Perceived slowness on startup is due to the CLion window!
+// Run the game from the terminal (with nothing showing in the background)
+// and the game will be perfectly smooth!
+// !!!IMPORTANT!!!
 
 /* BUG: We use 'sizeof' way too often on things like Enums. This is *NOT* a good way to
 		check for sizes, in fact it may just be pure coincidence that it works at all.
@@ -34,13 +37,6 @@ static const char *GAME_TITLE = "Mouse Quest";
 bool running = true;
 
 static void initSDL() {
-	// !!!IMPORTANT!!!
-	// Perceived slowness on startup is due to the CLion window!
-	// Run the game from the terminal (with nothing showing in the background)
-	// and the game will be perfectly smooth!
-	// Tip: Improve performance by toggling off UI scaling.
-	// !!!IMPORTANT!!!
-
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK /* | SDL_INIT_HAPTIC*/);
 
 	//Init SDL_Image for PNG support.
