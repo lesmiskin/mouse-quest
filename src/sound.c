@@ -1,7 +1,7 @@
 #include "sound.h"
 #include "assets.h"
 #include "stdbool.h"
-#include "SDL2/SDL_mixer.h"
+#include "mysdl.h"
 
 static bool musicPlaying = true;
 

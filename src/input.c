@@ -1,11 +1,12 @@
 #include <stdbool.h>
-#include "SDL.h"
+#include "mysdl.h"
 #include "input.h"
 #include "common.h"
 #include "sound.h"
 #include "weapon.h"
 #include "player.h"
 #include "renderer.h"
+#include "myc.h"
 
 //NB: We bind our SDL key codes to game-meaningful actions, so we can bind our logic against those rather than hard-
 // coding keys throughout our code.

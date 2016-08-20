@@ -1,3 +1,4 @@
+#include "myc.h"
 #include <time.h>
 #include "renderer.h"
 #include "common.h"

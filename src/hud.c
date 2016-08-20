@@ -7,6 +7,7 @@
 #include "weapon.h"
 #include "enemy.h"
 #include "sound.h"
+#include "myc.h"
 
 #define NUM_HEARTS 4
 #define MAX_PLUMES 10

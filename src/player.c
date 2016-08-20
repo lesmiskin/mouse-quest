@@ -6,6 +6,7 @@
 #include "input.h"
 #include "hud.h"
 #include "sound.h"
+#include "myc.h"
 
 //NB: There is a conceptual distinction between realtime and animated effects. e.g. movment is realtime, whereas the
 // animation frames are not. This is consistent with the presentation of Tyrian, and rotating powerups/weapons in

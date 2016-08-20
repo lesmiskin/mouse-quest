@@ -1,7 +1,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "SDL.h"
+#include "mysdl.h"
 #include "common.h"
 
 typedef struct {

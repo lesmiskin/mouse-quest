@@ -1,5 +1,5 @@
+#include "myc.h"
 #include <assert.h>
-#include "SDL2/SDL_mixer.h"
 #include "assets.h"
 #include "common.h"
 #include "renderer.h"
@@ -104,7 +104,9 @@ static Asset makeAsset(AssetDef definition) {
 	}
 
 	//Free up RAM used for original surface object.
+#if !defined(_WIN32)
 	free(original);
+#endif
 
 	return asset;
 }

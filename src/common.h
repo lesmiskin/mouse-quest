@@ -1,7 +1,7 @@
 #ifndef _COMMON_H
 #define _COMMON_H
 
-#include "SDL.h"
+#include "mysdl.h"
 #include <stdbool.h>
 
 extern bool FULLSCREEN;

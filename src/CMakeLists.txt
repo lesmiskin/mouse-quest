@@ -1,3 +1,5 @@
+# NOTE: See 'readme.md' for build troubleshooting
+
 project(mouse-quest)
 cmake_minimum_required(VERSION 2.8)
 

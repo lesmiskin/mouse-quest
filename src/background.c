@@ -1,5 +1,6 @@
+#include "myc.h"
 #include <time.h>
-#include "SDL.h"
+#include "mysdl.h"
 #include "renderer.h"
 #include "assets.h"
 #include "common.h"

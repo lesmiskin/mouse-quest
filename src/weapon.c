@@ -3,11 +3,12 @@
 #include "player.h"
 #include "assets.h"
 #include "enemy.h"
-#include "SDL2/SDL_mixer.h"
+#include "mysdl.h"
 #include "weapon.h"
 #include "input.h"
 #include "sound.h"
 #include "hud.h"
+#include "myc.h"
 
 #define MAX_SHOTS 50
 

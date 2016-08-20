@@ -1,8 +1,6 @@
 #include <time.h>
 #include <assert.h>
-#include "SDL.h"
-#include "SDL2/SDL_image.h"
-#include "SDL2/SDL_mixer.h"
+#include "mysdl.h"
 #include "common.h"
 #include "assets.h"
 #include "renderer.h"
@@ -16,9 +14,10 @@
 #include "hud.h"
 #include "item.h"
 #include "level.h"
+#include "myc.h"
 
-// Running slow from Clion, but fast from Console? Assign F7 to an "external tool" that
-// *points* directly to the executable.
+// Running slow from Clion, but fast from Console? CLOSE or MINIMISE the Clion IDE.
+// The Java GUI crapness is slowing the drawing down in the background :p
 
 /* BUG: We use 'sizeof' way too often on things like Enums. This is *NOT* a good way to
 		check for sizes, in fact it may just be pure coincidence that it works at all.
@@ -89,7 +88,11 @@ static void shutdownMain() {
 	SDL_Quit();
 }
 
-int main()  {
+#if defined(_WIN32)
+	int main(int argc, char *argv[])  {
+#else
+	int main()  {
+#endif
 	//Seed randomMq number generator
 	srand(time(NULL));
 

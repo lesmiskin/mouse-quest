@@ -8,6 +8,7 @@
 #include "hud.h"
 #include "input.h"
 #include "sound.h"
+#include "myc.h"
 
 //TODO: Proper error message when asset version can't be found.
 //TODO: Add Mario-style starry animation on coin pickup.

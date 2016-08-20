@@ -4,6 +4,7 @@
 #include "common.h"
 #include "renderer.h"
 #include "player.h"
+#include "myc.h"
 
 //TODO: Stop sharing the renderScale, and do it properly! (Present an already-scaled data structure).
 //TODO: Better way of returning/zeroing structures?
