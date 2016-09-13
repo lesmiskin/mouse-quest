@@ -1,12 +1,17 @@
 Building on Windows with MiniGW
 -------------------------------
-1. Download the *development libraries* for *MiniGW* for each SDL package:
+1. Install MinGW, either through the official GUI installer, or via the Haskell platform
+   installer.
+1. Download the *development libraries* for *MinGW* for each SDL package:
    https://www.libsdl.org/download-2.0.php
    https://www.libsdl.org/projects/SDL_image/
    https://www.libsdl.org/projects/SDL_mixer/
 2. Extract each archive into the *same folder* (e.g. C:\mingw_dev_lib)
-3. Create the environment variable "SDL2DIR", pointing to the location of the
-   32-bit SDL.h file, e.g. C:\mingw_dev_lib\i686-w64-mingw32\include\SDL2
+3. Do one or both of the following:
+    a) Create the environment variable "SDL2DIR", pointing to the location of the
+       32-bit SDL.h file, e.g. C:\mingw_dev_lib\i686-w64-mingw32\include\SDL2
+    b) Add these two locations to your system's PATH environment variable:
+       C:\mingw_dev_lib\i686-w64-mingw32\include\SDL2;C:\mingw_dev_lib\i686-w64-mingw32\lib;
 4. Completely restart CLion.
 5. Rebuild the CMake configuration from the File menu.
 
