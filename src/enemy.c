@@ -527,7 +527,7 @@ void formationFrame(Enemy* e) {
 
 		// CROSSOVER -------------------------------------------------
 		case P_CROSS_RIGHT:
-			e->origin.x = sineInc(e->origin.x, &e->swayIncX, e->speedX, 2.9);
+			e->origin.x += sineInc(e->origin.x, &e->swayIncX, e->speedX, 2.9);
 			applyFormation(e);
 			break;
 		case P_CROSS_LEFT:

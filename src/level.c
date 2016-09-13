@@ -5,13 +5,7 @@
 #include "hud.h"
 
 typedef enum {
-	W_LINE,
 	W_COL,
-	W_TRI,
-	W_ANGLE_LEFT,
-	W_ANGLE_RIGHT,
-	W_DELTA_DOWN,
-	W_DELTA_UP,
 	W_WARNING
 } WaveType;
 
@@ -69,57 +63,6 @@ void wave(int spawnTime, WaveType waveType, int x, int y, EnemyPattern movement,
 	triggers[waveAddInc++] = e;
 }
 
-//void w_tri(int x, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed) {
-//	int y = -50;
-//
-//	spawnEnemy(x, y - 30, type, movement, combat, speed, 0, HEALTH_LIGHT);
-//	spawnEnemy(x + 20, y, type, movement, combat, speed, 0, HEALTH_LIGHT);
-//	spawnEnemy(x + 40, y - 30, type, movement, combat, speed, 0, HEALTH_LIGHT);
-//}
-//
-//void w_delta(EnemyPattern movement, EnemyType type, EnemyCombat combat, double speed, bool dir) {
-//	int startY = dir ? 0 -50 : -100;
-//	int startX = 45;
-//
-//	for(int i=0; i < 5; i++) {
-//		if(startY == 2) {
-//			startY = 0;
-//			continue;
-//		}
-//
-//		if(dir) {
-//			startY = i <= 2 ? startY - 20 : startY + 20;
-//		}else{
-//			startY = i <= 2 ? startY + 20 : startY - 20;
-//		}
-//
-//		spawnEnemy(startX, startY, type, movement, combat, speed, 0, HEALTH_LIGHT);
-//		startX += 45;
-//	}
-//}
-//
-//void w_line(EnemyPattern movement, EnemyType type, EnemyCombat combat, double speed) {
-//	int startY = -50;
-//	int startX = 50;
-//
-//	for(int i=0; i < 4; i++) {
-//		spawnEnemy(startX, startY, type, movement, combat, speed, 0, HEALTH_LIGHT);
-//		startX += 50;
-//	}
-//}
-//
-//void w_angle(EnemyPattern movement, EnemyType type, EnemyCombat combat, double speed, bool angleDir) {
-//	int startY = angleDir ? -50 : -50 + (-40 * 3);
-//	int startX = 70;
-//
-//	for(int i=0; i < 4; i++) {
-//		spawnEnemy(startX, startY, type, movement, combat, speed, 0, HEALTH_LIGHT);
-//		startX += 40;
-//		startY = angleDir ? startY - 40 : startY + 40;
-//	}
-//}
-//
-
 void w_column(int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat combat, bool async, double speed, double speedX, int qty, double health) {
 	int startY = y > NA ? y : NA; //respect Y if given, otherwise normal offscreen pos.
 	int sineInc = 0;
@@ -164,47 +107,6 @@ void levelInit() {
 	const int C_RIGHT = 150;
 	const int RIGHT_OFF = (int)screenBounds.x + 85;
 	const int LEFT_OFF = -40;
-
-	// BUG: Homing doesn't work on peelers.
-	// Peelers are *WAY* too fast.
-
-
-
-
-	// X guys are boring. Cross over at different times.
-	// Need some sine-ed snakes.
-	// Fix it so you can't sit in one place and shoot ("U" enemies should collide).
-	// Introduce some homing shots.
-	// Hold a button for "rail" shot? / Powerup?
-
-	// Column of PCB on either side, with chips.
-	// "Castle" PCB in center of screen.
-	// Donut PCB with a single "thing" (enemy?) in the middle.
-	// When you blow up a chip: you get 4 coins.
-	// When you destroy a wave sequence, you get fruit.
-
-	// When a certain amout of time has elapsed, a powerup will spawn.
-	// Powerups won't spawn until X time has elapsed.
-
-	// Carrier columns (floppy line flanked with bugs).
-	// Space invader rows and sine left and right.
-	// Random spirals.
-	// Random spirals with shooters inside.
-
-	// Keys look dumb.
-	// Any extra animation we can add to him?
-
-	// Bosses: CRT monitor (face flashes up), Joystick, Keyboard, Floppy drive, CD Drive.
-
-	// WARNING message.
-	// Music stops.
-	// Massive explosion.
-	// Bunch of keys fly out.
-	// Secondary attack animation (splits apart and reveals board).
-
-
-	// Big explosion on death.
-	// Screen shakes on death.
 
 	pause(2000);
 
@@ -272,12 +174,7 @@ void levelInit() {
 
 	wave(0, W_COL, CENTER, NA, PATTERN_BOSS, ENEMY_BOSS, COMBAT_HOMING, false, 0.5, 1, 200, 1);
 
-
 	return;
-	// Column goes down screen that peels offscreen to the right.
-	// Column streamers (fast, go down the screen, pop up in quasi-random locations).
-	// Delta (big wide delta of enemies, sines backwards so the triangle is inverted).
-	// Wide 45' angles across the screen.
 }
 
 void resetLevel() {

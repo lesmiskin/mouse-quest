@@ -162,7 +162,7 @@ Coord getParallaxOffset() {
 }
 
 Coord parallax(Coord subject, ParallaxReference reference, ParallaxLayer layer, ParallaxDimensions dimensions, ParallaxMode mode) {
-	if(!ENABLE_PARALLAX) return subject;
+	if(!ENABLE_PARALLAX || layer == 0) return subject;
 
 	//Use a different frame of reference depending on parameter.
 	Coord relativeOrigin = reference == PARALLAX_SUN ?
