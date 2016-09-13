@@ -3,8 +3,6 @@
 
 #define MAX_WEAPONS 4
 
-extern bool autoFire;
-extern int lastWeapon;
 extern int weaponInc;
 extern void changeWeapon(int newWeapon);
 extern bool atMaxWeapon();

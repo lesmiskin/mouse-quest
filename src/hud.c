@@ -4,12 +4,10 @@
 #include "assets.h"
 #include "player.h"
 #include "hud.h"
-#include "weapon.h"
 #include "enemy.h"
 #include "sound.h"
-#include "myc.h"
 
-#define NUM_HEARTS 4
+#define NUM_HEARTS 3
 #define MAX_PLUMES 10
 
 typedef struct {
@@ -23,7 +21,6 @@ typedef struct {
 int score;
 int topScore;
 int coins = 0;
-bool weaponChanging = false;
 static ScorePlume plumes[MAX_PLUMES];
 static int plumeInc = 0;
 static Sprite life, lifeHalf/*, lifeNone*/;
@@ -34,7 +31,6 @@ static const int BATTERY_BLINK_RATE = 500;
 static long lastBlinkTime;
 static Sprite letters[10];
 static const int LETTER_WIDTH = 4;
-static double weapSweepInc = 0;
 static long lastWarningFlash;
 
 static bool warningOn;
@@ -181,12 +177,6 @@ void renderWarning() {
 	}
 }
 
-//FIXME: Hack... :p
-Coord underLife = { 10, 27 };
-Coord sweepPos = { 10, 27 };
-bool sweeping = false;
-bool sweepDir = false;
-
 void hudRenderFrame() {
 	Coord underScore = makeCoord(pixelGrid.x - 7, 26);
 
@@ -208,43 +198,6 @@ void hudRenderFrame() {
 	//Only show if playing, and *hide* if dying.
 	if(gameState != STATE_GAME) return;
 
-	//Animate the weapon change.
-/*	if(weaponChanging) {
-		if(!sweeping || sweepPos.x < underLife.x) {
-			sweepPos.x = sineInc(sweepPos.x, &weapSweepInc, 0.2, 2.3);
-			if(!sweeping) sweeping = true;
-			if(sweepPos.x < -10) sweepDir = true;		//toggle direction when offscreen
-		} else {
-			sweepPos.x = underLife.x;
-			weaponChanging = false;
-			sweeping = false;
-			weapSweepInc = 0;
-			sweepDir = false;
-		}
-	}
-
-	//Draw sprite of current/changing weapon.
-	char* weaponTexture = NULL;
-	int weaponToDraw = weaponChanging && !sweepDir ? lastWeapon : weaponInc;
-	switch(weaponToDraw) {
-		case 0:
-			weaponTexture = "hud-powerup.png";
-			break;
-		case 1:
-			weaponTexture = "hud-powerup-double.png";
-			break;
-		case 2:
-			weaponTexture = "hud-powerup-triple.png";
-			break;
-		case 3:
-			weaponTexture = "hud-powerup-fan.png";
-			break;
-	}
-
-	//Draw the weapon sprite.
-	Sprite weapon = makeSprite(getTexture(weaponTexture), zeroCoord(), SDL_FLIP_NONE);
-	drawSpriteAbs(weapon, sweepPos);
-*/
 	//Loop through icons and draw them at the appropriate 'fullness' levels for each health bar.
 	// This algorithm will automatically scale according to whatever we choose to set the player's total health to.
 	float healthPerHeart = playerStrength / NUM_HEARTS;		//e.g. for 4 hearts, 1 heart = 25 hitpoints.

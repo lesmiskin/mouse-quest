@@ -6,9 +6,6 @@
 #include "player.h"
 #include "myc.h"
 
-//TODO: Stop sharing the renderScale, and do it properly! (Present an already-scaled data structure).
-//TODO: Better way of returning/zeroing structures?
-
 SDL_Texture *renderBuffer;
 const int STATIC_SHADOW_OFFSET = 8;
 SDL_Renderer *renderer = NULL;

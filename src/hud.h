@@ -9,7 +9,6 @@ typedef enum {
 
 extern void toggleWarning();
 extern void hudReset();
-extern bool weaponChanging;
 extern void spawnPlume(PlumeType type);
 extern int score;
 extern int topScore;

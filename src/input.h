@@ -16,8 +16,6 @@ extern void initInput();
 extern void pollInput();
 extern void processSystemCommands();
 extern bool checkCommand(int commandFlag);
-extern void command(int commandFlag);
 extern void scriptCommand(int commandFlag);
-extern SDL_Haptic* haptic;
 
 #endif

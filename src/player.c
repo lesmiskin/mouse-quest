@@ -35,7 +35,7 @@ bool godMode = false;
 bool useMike;		//onscreen, responds to actions etc.
 bool hideMike;		//still there, but don't render this frame.
 Coord playerOrigin;
-double playerStrength = 8.0;
+double playerStrength = 3.0;
 double playerHealth;
 static long deathTime = 0;
 static const double PLAYER_MAX_SPEED = 4.0;
@@ -111,7 +111,6 @@ void hitPlayer(double damage) {
 	//Take damage.
 	playerHealth -= damage;
 	play("Hit_Hurt18.wav");
-//	SDL_HapticRumblePlay(haptic, 5.00, 750);
 
 	//Remove any powerups / reset weapon to default.
 	if(weaponInc > 0) {
@@ -402,7 +401,7 @@ void playerGameFrame() {
 	thrustState = zeroCoord();
 
 	//Firing / auto-fire
-	if(checkCommand(CMD_PLAYER_FIRE) || autoFire && gameState == STATE_GAME) {
+	if(checkCommand(CMD_PLAYER_FIRE)) {
 		pew();
 		playerShooting = true;
 	} else {

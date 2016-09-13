@@ -7,9 +7,8 @@
 extern bool FULLSCREEN;
 
 //#define DEBUG_WINDOW_T500
-#define DEBUG_SKIP_TO_GAME
-//#define DEBUG_GODMODE
-//#define DEBUG_FANWEAPONS
+//#define DEBUG_SKIP_TO_GAME
+//#define DEBUG_CHEATS
 
 extern const bool ENABLE_PARALLAX;
 extern const bool ENABLE_SHADOWS;
@@ -83,7 +82,6 @@ extern bool due(long compareTime, double milliseconds);
 extern bool dueBetween(long compareTime, double milliseconds, double milliseconds2);
 
 extern SDL_Window *window;
-extern SDL_PixelFormat *screenFormat;
 extern bool running;
 extern bool fileExists(const char *path);
 extern long ticsToMilliseconds(long tics);

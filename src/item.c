@@ -10,10 +10,6 @@
 #include "sound.h"
 #include "myc.h"
 
-//TODO: Proper error message when asset version can't be found.
-//TODO: Add Mario-style starry animation on coin pickup.
-//TODO: Add battery 'pop' animation when hurt.
-
 typedef enum {
 	SPAWN_ALWAYS,
 	SPAWN_ONE_ONSCREEN
@@ -320,8 +316,6 @@ void itemGameFrame() {
 					spawnPlume(PLUME_POWER);
 					break;
 			}
-
-//			SDL_HapticRumblePlay(haptic, 0.25, 100);
 
 			//Null any non-traveling items immediately.
 			if(!items[i].traveling) {

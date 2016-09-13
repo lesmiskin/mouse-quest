@@ -44,15 +44,6 @@ typedef enum {
 
 	P_SWIRL_RIGHT,
 	P_SWIRL_LEFT,
-
-
-//	PATTERN_ZIP,
-//	PATTERN_CROSS_OVER,
-//	PATTERN_FUNNEL,
-//	PATTERN_INVERT_FUNNEL,
-//	PATTERN_Z,
-//	PATTERN_Z_CROSS,
-//	PATTERN_Z_EASY,
 } EnemyPattern;
 
 typedef enum {
@@ -96,7 +87,7 @@ typedef struct {
 } Enemy;
 
 extern void spawnBoom(Coord origin);
-extern const double HEALTH_LIGHT, HEALTH_HEAVY;
+extern const double HEALTH_LIGHT;
 extern bool invalidEnemy(Enemy* enemy);
 extern void resetEnemies();
 extern void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed, double speedX, double swayInc, double health);

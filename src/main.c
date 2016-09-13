@@ -37,7 +37,7 @@ static const char *GAME_TITLE = "Mouse Quest";
 bool running = true;
 
 static void initSDL() {
-	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK /* | SDL_INIT_HAPTIC*/);
+	SDL_Init(SDL_INIT_VIDEO);
 
 	//Init SDL_Image for PNG support.
 	if(!IMG_Init(IMG_INIT_PNG)) {
@@ -109,21 +109,10 @@ static void shutdownMain() {
 	itemInit();
 	levelInit();
 
-	// This delay ensures the game starts up fast *as is*.
-//	SDL_Delay(2000);
-
 #ifdef DEBUG_SKIP_TO_GAME
 	triggerState(STATE_GAME);
 #else
-	triggerState(STATE_INTRO);
-#endif
-
-#ifdef DEBUG_GODMODE
-	godMode = true;
-#endif
-
-#ifdef DEBUG_FANWEAPONS
-	weaponInc = 3;
+	triggerState(STATE_TITLE);
 #endif
 
 	long lastRenderFrameTime = clock();

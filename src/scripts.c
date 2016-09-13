@@ -13,13 +13,6 @@
 #include "sound.h"
 #include "level.h"
 
-//BUG: Opaque PCB edges *sometimes* (something to do with faders?)
-//TODO: There's no fading when entering the game(?)
-//TODO: When pressing [FIRE], fade out the current scene first, don't jump to the next.
-//TODO: Move Mike's Titlescreen speech bubble to this file.
-//TODO: Move Mike's level start 'here I go' speech bubble to this file.
-//TODO: Should we queue up the 'desired' state change, so we can fade out from GAME to TITLE?
-
 //Script-specific vars.
 static char intro_mikeStafeDir;
 
@@ -185,24 +178,6 @@ void scriptGameFrame() {
 	endOfFrameTransition();
 }
 
-void superRenderFrame() {
-	//Main blue background.
-//	Sprite streak = makeSprite(getTexture("super-streak.png"), zeroCoord(), SDL_FLIP_NONE);
-//	drawSpriteAbs(streak, makeCoord(screenBounds.x/2, screenBounds.y/2));
-//
-//	//Spawn a bunch of randomMq white streaks to give the impression of fast motion.
-//	Sprite fleck = makeSprite(getTexture("super-fleck.png"), zeroCoord(), SDL_FLIP_NONE);
-//	for(int i=0; i < 16; i++) {
-//		drawSpriteAbs(
-//			fleck,
-//			makeCoord(
-//				randomMq((screenBounds.x/2) - 55, (screenBounds.x/2) + 56),
-//				randomMq(0, screenBounds.y)
-//			)
-//		);
-//	}
-}
-
 void scriptRenderFrame() {
 
 	//Only ever ensure we process a scripted render frame if the script itself has been initialised.
@@ -227,11 +202,6 @@ void scriptRenderFrame() {
 			break;
 		}
 		case STATE_INTRO:
-			//Use super background for the battle scenes only.
-			if(scriptStatus.sceneNumber > INTRO_BATTLE_CUE && scriptStatus.sceneNumber < INTRO_TITLE_CUE) {
-				superRenderFrame();
-			}
-
 			switch(scriptStatus.sceneNumber) {
 				//Show "Les Miskin presents"
 				case INTRO_LOGO: {

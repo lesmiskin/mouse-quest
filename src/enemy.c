@@ -10,9 +10,6 @@
 #include "hud.h"
 #include "sound.h"
 
-//TODO: Plume flicker
-//TODO: Coin pickup sparkle (see: Super Mario World)
-
 #define MAX_SHOTS 500
 #define MAX_SPAWNS 10
 #define MAX_BOOMS 20
@@ -56,17 +53,6 @@ static int enemyShotCount;
 static EnemyShot enemyShots[MAX_SHOTS];
 static double rollSine[5] = { 0.0, 1.25, 2.5, 3.75, 5.0 };
 
-//Debugging settings...
-//static int FORMATION_INTERVAL = 20;
-//static double ENEMY_SPEED = 0.4;
-//static double ENEMY_SPEED_FAST = 0.4;
-//static const double HEALTH_LIGHT = 1.0;
-//static double SHOT_HZ = 500;
-
-static int FORMATION_INTERVAL = 75;
-static double ENEMY_SPEED = 0.9;
-
-static double ENEMY_SPEED_FAST = 1.8;
 static double SHOT_BOSS_HZ = 100;
 static double SHOT_HZ = 750;
 static double SHOT_SPEED = 2;
@@ -74,7 +60,6 @@ static double SHOT_DAMAGE = 1;
 
 const int ENEMY_BOUND = 26;
 static const int ENEMY_SHOT_BOUND = 8;
-static int ENEMY_DISTANCE = 22;
 static double HIT_KNOCKBACK = 0.0;
 static double COLLIDE_DAMAGE = 1;
 static double BOSS_COLLIDE_DAMAGE = 1000;

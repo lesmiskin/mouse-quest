@@ -50,8 +50,6 @@ typedef struct {
 	WeaponPattern pattern;
 } Weapon;
 
-bool autoFire = false;
-int lastWeapon = 0;
 int weaponInc = 0;
 static Weapon weapons[MAX_WEAPONS];
 //static const int SHOT_HZ = 1000 / 11 ;
@@ -130,8 +128,6 @@ void changeWeapon(int newWeapon) {
 	//Don't change if the same.
 	if(newWeapon == weaponInc) return;
 
-	weaponChanging = true;		//set flag for HUD animation sweep.
-	lastWeapon = weaponInc;
 	weaponInc = newWeapon;
 }
 
@@ -139,8 +135,6 @@ void upgradeWeapon() {
 	if(atMaxWeapon()) return;
 	changeWeapon(weaponInc+1);
 }
-
-static int fanPewInc = 0;
 
 void pew() {
 	//Rate-limiter, and HACK for skipping initial shots post-menu.
