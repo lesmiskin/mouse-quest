@@ -4,8 +4,6 @@
 #include "mysdl.h"
 #include <stdbool.h>
 
-extern bool FULLSCREEN;
-
 //#define DEBUG_WINDOW_T500
 //#define DEBUG_SKIP_TO_GAME
 //#define DEBUG_CHEATS
@@ -16,6 +14,7 @@ extern const bool ALPHA_SHADOWS;
 extern bool FULLSCREEN;
 
 //MISC
+extern const double ASPECT;
 extern const int ANIMATION_HZ;
 extern const int RENDER_HZ;
 extern const int GAME_HZ;

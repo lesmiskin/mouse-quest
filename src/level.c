@@ -139,11 +139,11 @@ void levelInit() {
 
 	// Strafers coming from either side.
 	for(int i=0; i < 3; i++) {
-		wave(i * 750, W_COL, RIGHT_OFF, -40, P_STRAFE_LEFT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.7, 0.004, HEALTH_LIGHT, 1);
+		wave(i * 750, W_COL, RIGHT_OFF, -40, P_STRAFE_LEFT, ENEMY_VIRUS, COMBAT_HOMING, false, 0.7, 0.004, HEALTH_LIGHT, 1);
 	}
 	pause(4000);
 	for(int i=0; i < 3; i++) {
-		wave(i * 750, W_COL, LEFT_OFF, -40, P_STRAFE_RIGHT, ENEMY_VIRUS, COMBAT_SHOOTER, false, 0.7, 0.004, HEALTH_LIGHT, 1);
+		wave(i * 750, W_COL, LEFT_OFF, -40, P_STRAFE_RIGHT, ENEMY_VIRUS, COMBAT_HOMING, false, 0.7, 0.004, HEALTH_LIGHT, 1);
 	}
 	pause(7000);
 
@@ -160,12 +160,12 @@ void levelInit() {
 	// Swirlers.
 	for(int i=0; i < 5; i++) {
 		wave(i * 325, W_COL, LEFT + 50, NA, P_SWIRL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
-		wave(150 + i * 325, W_COL, LEFT, NA, P_SWIRL_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
+		wave(150 + i * 325, W_COL, LEFT, NA, P_SWIRL_LEFT, ENEMY_MAGNET, i == 4 ? COMBAT_SHOOTER : COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
 	}
 	pause(5000);
 	for(int i=0; i < 5; i++) {
 		wave(i * 325, W_COL, RIGHT, NA, P_SWIRL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
-		wave(150 + i * 325, W_COL, RIGHT - 50, NA, P_SWIRL_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
+		wave(150 + i * 325, W_COL, RIGHT - 50, NA, P_SWIRL_LEFT, ENEMY_MAGNET, i == 4 ? COMBAT_SHOOTER : COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
 	}
 	pause(5000);
 

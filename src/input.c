@@ -58,13 +58,6 @@ void pollInput() {
 					case SDL_SCANCODE_F10:
 						toggleMusic();
 						break;
-					case SDL_SCANCODE_F11:
-						toggleFullscreen();
-						break;
-				}
-
-				if(keypress == SDL_SCANCODE_F11) {
-					toggleFullscreen();
 				}
 
 				//Bind SDL keycodes to our custom actions, so we don't have to duplicate/remember keybindings everywhere in our code.

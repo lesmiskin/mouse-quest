@@ -10,7 +10,7 @@ const bool vsync = false;
 const bool ENABLE_PARALLAX = true;
 const bool ENABLE_SHADOWS = true;
 const bool ALPHA_SHADOWS = false;
-bool FULLSCREEN = false;
+bool FULLSCREEN = true;
 
 //Windowed resolutions
 //Coord windowSize = { 224, 256 };		//1:1 scale
@@ -25,13 +25,10 @@ bool FULLSCREEN = false;
 
 //Native resolution
 
-#ifdef DEBUG_WINDOW_T500
-	Coord windowSize = { 448, 512 };		//x3 (1px == 4px)
-#else
 //	Coord windowSize = { 1680, 1050 };
 	Coord windowSize = { 672, 768 };		//4:1 scale
-#endif
 
+const double ASPECT = 1.142;
 const int ANIMATION_HZ = 1000 / 12;		//12fps
 const int RENDER_HZ = 1000 / 60;		//60fps
 const int GAME_HZ = 1000 / 60;			//60fps

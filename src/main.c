@@ -29,11 +29,6 @@
 
 static const char *GAME_TITLE = "Mouse Quest";
 
-#ifdef DEBUG_WINDOW_T500
-	static const bool FULLSCREEN = false;
-#else
-#endif
-
 bool running = true;
 
 static void initSDL() {
@@ -50,17 +45,17 @@ static void initSDL() {
 	}
 }
 static void initWindow() {
+	SDL_DisplayMode currentRes;
+	SDL_GetDesktopDisplayMode(0, &currentRes);
+
 	window = SDL_CreateWindow(
 		GAME_TITLE,
-#ifdef DEBUG_WINDOW_T500
-		1250,		//Off to the window side.
-		0,
-#else
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
-#endif
-		(int)windowSize.x,					//dimensions
-		(int)windowSize.y,
+//		(int)windowSize.x,					//dimensions
+//		(int)windowSize.y,
+		currentRes.w,
+		currentRes.h,
 		SDL_WINDOW_OPENGL | (FULLSCREEN ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_MAXIMIZED)
 	);
 
