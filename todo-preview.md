@@ -11,10 +11,12 @@
 * Fix initial shot on game start.
 * Randomised PCB configurations.
 
-* Disable G and H cheat keys.
+* Disable G and H cheat keys. [done]
+* Take boss out of intro roster rotation [done]
 * Default to titlescreen on load.
 * Loop back to title after boss death.
 * Fullscreen by default.
 * Detect computer resolution.
-* Take boss out of intro roster rotation.
+
+
 
