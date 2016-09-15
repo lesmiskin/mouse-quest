@@ -3,6 +3,7 @@
 
 #define MAX_WEAPONS 4
 
+extern bool canFireInLevel;
 extern int weaponInc;
 extern void changeWeapon(int newWeapon);
 extern bool atMaxWeapon();
