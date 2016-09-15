@@ -6,6 +6,7 @@
 #include "hud.h"
 #include "enemy.h"
 #include "sound.h"
+#include "myc.h"
 
 #define NUM_HEARTS 3
 #define MAX_PLUMES 10
