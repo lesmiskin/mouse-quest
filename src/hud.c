@@ -195,10 +195,10 @@ void persistentHudRenderFrame() {
 	// Render the message
 	if(insertCoinFlash) {
 		Sprite warning = makeSprite(getTexture("insert-coin-0.png"), zeroCoord(), SDL_FLIP_NONE);
-		drawSpriteAbs(warning, makeCoord(screenBounds.x - 20, 20));
+		drawSpriteAbs(warning, makeCoord(screenBounds.x - 15, screenBounds.y - 20));
 	}else{
 		Sprite warning = makeSprite(getTexture("insert-coin-1.png"), zeroCoord(), SDL_FLIP_NONE);
-		drawSpriteAbs(warning, makeCoord(screenBounds.x - 20, 20));
+		drawSpriteAbs(warning, makeCoord(screenBounds.x - 15, screenBounds.y - 20));
 	}
 }
 
