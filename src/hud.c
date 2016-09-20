@@ -32,13 +32,17 @@ static const int BATTERY_BLINK_RATE = 500;
 static long lastBlinkTime;
 static Sprite letters[10];
 static const int LETTER_WIDTH = 4;
-static long lastWarningFlash;
 
 static bool warningOn;
 static bool warningShowing;
 static long warningStartTime;
+static long lastWarningFlash;
 static const int WARNING_TIME = 3000;
 static const int WARNING_FLASH_TIME = 500;
+
+static bool insertCoinFlash;
+static long lastInsertCoinFlash;
+static const int INSERT_COIN_FLASH_TIME = 250;
 
 void spawnScorePlume(PlumeType type, int score) {
 	if(plumeInc+1 == MAX_PLUMES) plumeInc = 0;
@@ -93,16 +97,23 @@ void resetHud() {
 }
 
 void hudAnimateFrame() {
+	// Insert coin flash
+	if(	(gameState == STATE_TITLE || gameState == STATE_INTRO) &&
+		timer(&lastInsertCoinFlash, INSERT_COIN_FLASH_TIME)
+	) {
+		insertCoinFlash = !insertCoinFlash;
+	}
+
 	if(!timer(&lastBlinkTime, BATTERY_BLINK_RATE)) {
 		return;
 	}
 
 	if(noneAnimInc == noneMaxAnims) noneAnimInc = 0;
-
 	noneAnimInc++;
 }
 
 void hudInit() {
+	lastInsertCoinFlash = clock();
 	life = makeSprite(getTexture("battery.png"), zeroCoord(), SDL_FLIP_NONE);
 	lifeHalf = makeSprite(getTexture("battery-half.png"), zeroCoord(), SDL_FLIP_NONE);
 //	lifeNone = makeSprite(getTexture("battery-none.png"), zeroCoord(), SDL_FLIP_NONE);
@@ -175,6 +186,19 @@ void renderWarning() {
 	if(warningShowing) {
 		Sprite warning = makeSprite(getTexture("warning.png"), zeroCoord(), SDL_FLIP_NONE);
 		drawSpriteAbs(warning, makeCoord(pixelGrid.x/2, pixelGrid.y/3));
+	}
+}
+
+void persistentHudRenderFrame() {
+	if(!(gameState == STATE_TITLE || gameState == STATE_INTRO)) return;
+
+	// Render the message
+	if(insertCoinFlash) {
+		Sprite warning = makeSprite(getTexture("insert-coin-0.png"), zeroCoord(), SDL_FLIP_NONE);
+		drawSpriteAbs(warning, makeCoord(screenBounds.x - 20, 20));
+	}else{
+		Sprite warning = makeSprite(getTexture("insert-coin-1.png"), zeroCoord(), SDL_FLIP_NONE);
+		drawSpriteAbs(warning, makeCoord(screenBounds.x - 20, 20));
 	}
 }
 

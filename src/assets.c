@@ -143,6 +143,8 @@ static void loadImages() {
 		{ "text-laser-upgraded.png", false, true, false, false, false },
 		{ "text-full-power.png", false, true, false, false, false },
 		{ "top-score.png", false, false, false, false, false },
+		{ "insert-coin-0.png", false, false, false, false, false },
+		{ "insert-coin-1.png", false, false, false, false, false },
 		{ "font-x.png", false, true, false, false, false },
 		{ "font-00.png", false, true, false, false, false },
 		{ "font-01.png", false, true, false, false, false },
@@ -267,7 +269,7 @@ static void loadImages() {
 		{ "base-large-chip-e.png", false, false, false, false, true },
 		{ "base-large-chip-s.png", false, false, false, false, true },
 		{ "base-large-chip-w.png", false, false, false, false, true },
-		
+
 		{ "base-large-double.png", false, false, false, false, true },
 		{ "base-large-double-chip.png", false, false, false, false, true },
 		{ "base-large-double-n.png", false, false, false, false, true },

@@ -47,6 +47,7 @@ void pollInput() {
 			case SDL_QUIT:
 				commands[CMD_QUIT] = true;
 				break;
+
 			//Presses
 			case SDL_KEYDOWN: {
 				//Ignore held keys.
@@ -57,6 +58,14 @@ void pollInput() {
 				switch(keypress) {
 					case SDL_SCANCODE_F10:
 						toggleMusic();
+						break;
+
+					// Activate fire-on-space only after we've switched modes, to prevent too-soon firing on game start.
+					case SDL_SCANCODE_SPACE:
+					case SDL_SCANCODE_LCTRL:
+						if(gameState == STATE_GAME) {
+							canFireInLevel = true;
+						}
 						break;
 				}
 

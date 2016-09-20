@@ -5,6 +5,7 @@
 #include "renderer.h"
 #include "player.h"
 #include "myc.h"
+#include "hud.h"
 
 SDL_Texture *renderBuffer;
 const int STATIC_SHADOW_OFFSET = 8;
@@ -247,9 +248,7 @@ void faderRenderFrame() {
 
 void toggleFullscreen() {
 	//IMPORTANT: We need to set the size, *THEN* toggle fullscreen for a smooth transition.
-
 	//TODO: Fix bug: Won't position window in center of display(!)
-	//TODO: Fix bug: Needs to calculate best scaling constant for current resolution.
 
 	//Change window size in anticipation of next mode change.
 	if(FULLSCREEN) {

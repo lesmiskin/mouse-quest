@@ -50,6 +50,7 @@ typedef struct {
 	WeaponPattern pattern;
 } Weapon;
 
+bool canFireInLevel = false;
 int weaponInc = 0;
 static Weapon weapons[MAX_WEAPONS];
 //static const int SHOT_HZ = 1000 / 11 ;
@@ -138,7 +139,7 @@ void upgradeWeapon() {
 
 void pew() {
 	//Rate-limiter, and HACK for skipping initial shots post-menu.
-	if(	!timer(&lastShotTime, weapons[weaponInc].speed)) {
+	if(!canFireInLevel || !timer(&lastShotTime, weapons[weaponInc].speed)) {
 		return;
 	}
 
@@ -332,4 +333,5 @@ void pewInit() {
 void resetPew() {
 	weaponInc = 0;
 	shotInc = 0;
+	canFireInLevel = false;
 }

@@ -7,6 +7,7 @@ typedef enum {
 	PLUME_POWER
 } PlumeType;
 
+extern void persistentHudRenderFrame();
 extern void toggleWarning();
 extern void hudReset();
 extern void spawnPlume(PlumeType type);

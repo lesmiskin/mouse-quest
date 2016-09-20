@@ -401,7 +401,7 @@ void playerGameFrame() {
 	thrustState = zeroCoord();
 
 	//Firing / auto-fire
-	if(checkCommand(CMD_PLAYER_FIRE)) {
+	if(checkCommand(CMD_PLAYER_FIRE) && canFireInLevel) {
 		pew();
 		playerShooting = true;
 	} else {

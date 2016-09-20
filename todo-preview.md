@@ -14,11 +14,12 @@
 
 * Fix boss bounding box.
 * Fix boss kamikaze bug.
-* Fix first-shot bug on game start.
 * Fix fade-in/fade-out on game entry.
 * Loop back to title after boss death.
 
+* Fix first-shot bug on game start. [done]
 * Scrollers to use homing bullets. [done]
+* Fix first-shot bug on game start.
 * Fix background vanishing on game over trigger [done]
 * Disable G and H cheat keys. [done]
 * Take boss out of intro roster rotation [done]

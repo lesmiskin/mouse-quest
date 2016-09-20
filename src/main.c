@@ -158,6 +158,7 @@ static void shutdownMain() {
 			playerRenderFrame();
 			hudRenderFrame();
 			faderRenderFrame();
+			persistentHudRenderFrame();
 			updateCanvas();
 		}
 	}
