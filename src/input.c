@@ -59,7 +59,6 @@ void pollInput() {
 					case SDL_SCANCODE_F10:
 						toggleMusic();
 						break;
-
 					// Activate fire-on-space only after we've switched modes, to prevent too-soon firing on game start.
 					case SDL_SCANCODE_SPACE:
 					case SDL_SCANCODE_LCTRL:

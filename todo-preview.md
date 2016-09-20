@@ -16,6 +16,8 @@
 * Fix boss kamikaze bug.
 * Fix fade-in/fade-out on game entry.
 * Loop back to title after boss death.
+* Add shadow to Game Over screen.
+* Don't bounce more than once when dying.
 
 * Fix first-shot bug on game start. [done]
 * Scrollers to use homing bullets. [done]
