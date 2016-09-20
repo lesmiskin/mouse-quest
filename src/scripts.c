@@ -57,14 +57,16 @@ void scriptGameFrame() {
 		case STATE_GAME_OVER:
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
-				triggerState(STATE_TITLE);
+				insertCoin();
+//				triggerState(STATE_TITLE);
 			}
 			break;
 
 		case STATE_INTRO:
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
-				triggerState(STATE_TITLE);
+				insertCoin();
+//				triggerState(STATE_TITLE);
 			}
 
 			switch(scriptStatus.sceneNumber) {
@@ -148,7 +150,8 @@ void scriptGameFrame() {
 				case TITLE_LOOP:
 					//Begin game when fire button is pressed.
 					if(checkCommand(CMD_PLAYER_FIRE)) {
-						triggerState(STATE_GAME);
+						insertCoin();
+//						triggerState(STATE_GAME);
 					}
 					break;
 			}

@@ -7,6 +7,7 @@ typedef enum {
 	PLUME_POWER
 } PlumeType;
 
+extern void insertCoin();
 extern void persistentHudRenderFrame();
 extern void toggleWarning();
 extern void hudReset();

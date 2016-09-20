@@ -91,11 +91,6 @@ void hudGameFrame() {
 	}
 }
 
-void resetHud() {
-	score = 0;
-	coins = 0;
-}
-
 void hudAnimateFrame() {
 	// Insert coin flash
 	if(	(gameState == STATE_TITLE || gameState == STATE_INTRO) &&
@@ -189,6 +184,15 @@ void renderWarning() {
 	}
 }
 
+bool coinInserting = false;
+static int coinProgress = 0;
+
+void insertCoin() {
+	coinInserting = true;
+	Mix_PauseMusic();
+	play("Pickup_Coin34b.wav");
+}
+
 void persistentHudRenderFrame() {
 	if(!(gameState == STATE_TITLE || gameState == STATE_INTRO)) return;
 
@@ -199,6 +203,17 @@ void persistentHudRenderFrame() {
 	}else{
 		Sprite warning = makeSprite(getTexture("insert-coin-1.png"), zeroCoord(), SDL_FLIP_NONE);
 		drawSpriteAbs(warning, makeCoord(screenBounds.x - 15, screenBounds.y - 20));
+	}
+
+	// Show coin insertion.
+	if(coinInserting) {
+		if(coinProgress < 20) {
+			Sprite warning = makeSprite(getTexture("coin-05.png"), zeroCoord(), SDL_FLIP_NONE);
+			drawSpriteAbs(warning, makeCoord(screenBounds.x - 50 + coinProgress++, screenBounds.y - 18));
+		}else {
+			coinProgress = 0;
+			triggerState(STATE_GAME);
+		}
 	}
 }
 
@@ -276,4 +291,10 @@ void hudRenderFrame() {
 	}
 
 	renderWarning();
+}
+
+void resetHud() {
+	score = 0;
+	coins = 0;
+	coinInserting = false;
 }
