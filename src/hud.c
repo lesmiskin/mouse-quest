@@ -44,9 +44,11 @@ static bool insertCoinFlash;
 static long lastInsertCoinFlash;
 static const int INSERT_COIN_FLASH_TIME = 250;
 bool coinInserting = false;
-static int coinX = 0;
+static float coinX = 0;
 static int coinFrame = 1;
 static const int COIN_FRAMES = 12;
+static float coinY = 0;
+static float coinThrowPower = 5.0;
 
 void spawnScorePlume(PlumeType type, int score) {
 	if(plumeInc+1 == MAX_PLUMES) plumeInc = 0;
@@ -196,11 +198,9 @@ void renderWarning() {
 void insertCoin() {
 	coinInserting = true;
 	Mix_PauseMusic();
-	play("Pickup_Coin34b.wav");
+	play("Powerup9.wav");
+//	play("Pickup_Coin34b.wav");
 }
-
-static double coinY = 0;
-static double coinThrowPower = 4.0;
 
 void persistentHudRenderFrame() {
 	if(!(gameState == STATE_TITLE || gameState == STATE_INTRO)) return;
@@ -216,7 +216,7 @@ void persistentHudRenderFrame() {
 
 	// Show coin insertion.
 	if(coinInserting) {
-		if(coinX < 90) {
+		if(coinX < 50) {
             // Throw the coin
             coinThrowPower -= 0.15;
             coinY -= coinThrowPower;
@@ -226,13 +226,14 @@ void persistentHudRenderFrame() {
 			Sprite coin = makeSprite(getTexture(coinFile), zeroCoord(), SDL_FLIP_NONE);
 
             drawSpriteAbs(coin, makeCoord(
-				screenBounds.x - 50 + (coinX += 1),
-                (screenBounds.y - 18) + coinY)
+				screenBounds.x - 77 + (coinX += 0.85),
+                (screenBounds.y + 8) + coinY)
             );
 		}else {
 			coinX = 0;
 			coinInserting = false;
 			triggerState(STATE_GAME);
+		play("Pickup_Coin34b.wav");
 		}
 	}
 }
@@ -317,4 +318,7 @@ void resetHud() {
 	score = 0;
 	coins = 0;
 	coinInserting = false;
+	coinX = 0;
+	coinY = 0;
+	coinThrowPower = 5.0;
 }

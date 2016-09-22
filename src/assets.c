@@ -446,6 +446,7 @@ static void loadSounds() {
 		{ "mike-die.wav", SOUND_VOLUME * 4 },
 		{ "intro-presents.wav", SOUND_VOLUME * 2 },
 		{ "warning.wav", SOUND_VOLUME * 1.5 },
+		{ "Powerup9.wav", SOUND_VOLUME * 4 },
 		{ "Powerup8.wav", SOUND_VOLUME * 4 },
 		{ "loss.wav", SOUND_VOLUME * 5 },
 		{ "Pickup_Coin4.wav", (int)ceil(SOUND_VOLUME * 1.5) },
