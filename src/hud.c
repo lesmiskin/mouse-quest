@@ -44,7 +44,7 @@ static bool insertCoinFlash;
 static long lastInsertCoinFlash;
 static const int INSERT_COIN_FLASH_TIME = 250;
 bool coinInserting = false;
-static int coinProgress = 0;
+static int coinX = 0;
 static int coinFrame = 1;
 static const int COIN_FRAMES = 12;
 
@@ -199,6 +199,9 @@ void insertCoin() {
 	play("Pickup_Coin34b.wav");
 }
 
+static double coinY = 0;
+static double coinThrowPower = 4.0;
+
 void persistentHudRenderFrame() {
 	if(!(gameState == STATE_TITLE || gameState == STATE_INTRO)) return;
 
@@ -213,13 +216,21 @@ void persistentHudRenderFrame() {
 
 	// Show coin insertion.
 	if(coinInserting) {
-		if(coinProgress < 20) {
+		if(coinX < 90) {
+            // Throw the coin
+            coinThrowPower -= 0.15;
+            coinY -= coinThrowPower;
+
 			char coinFile[50];
 			sprintf(coinFile, "coin-%02d.png", coinFrame);
 			Sprite coin = makeSprite(getTexture(coinFile), zeroCoord(), SDL_FLIP_NONE);
-			drawSpriteAbs(coin, makeCoord(screenBounds.x - 50 + coinProgress++, screenBounds.y - 18));
+
+            drawSpriteAbs(coin, makeCoord(
+				screenBounds.x - 50 + (coinX += 1),
+                (screenBounds.y - 18) + coinY)
+            );
 		}else {
-			coinProgress = 0;
+			coinX = 0;
 			coinInserting = false;
 			triggerState(STATE_GAME);
 		}
