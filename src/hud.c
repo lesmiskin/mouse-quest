@@ -43,6 +43,10 @@ static const int WARNING_FLASH_TIME = 500;
 static bool insertCoinFlash;
 static long lastInsertCoinFlash;
 static const int INSERT_COIN_FLASH_TIME = 250;
+bool coinInserting = false;
+static int coinProgress = 0;
+static int coinFrame = 1;
+static const int COIN_FRAMES = 12;
 
 void spawnScorePlume(PlumeType type, int score) {
 	if(plumeInc+1 == MAX_PLUMES) plumeInc = 0;
@@ -97,6 +101,11 @@ void hudAnimateFrame() {
 		timer(&lastInsertCoinFlash, INSERT_COIN_FLASH_TIME)
 	) {
 		insertCoinFlash = !insertCoinFlash;
+	}
+
+	// coin rotation animation.
+	if(coinInserting) {
+		coinFrame = coinFrame < COIN_FRAMES-1 ? coinFrame + 1 : 1;
 	}
 
 	if(!timer(&lastBlinkTime, BATTERY_BLINK_RATE)) {
@@ -184,9 +193,6 @@ void renderWarning() {
 	}
 }
 
-bool coinInserting = false;
-static int coinProgress = 0;
-
 void insertCoin() {
 	coinInserting = true;
 	Mix_PauseMusic();
@@ -208,10 +214,13 @@ void persistentHudRenderFrame() {
 	// Show coin insertion.
 	if(coinInserting) {
 		if(coinProgress < 20) {
-			Sprite warning = makeSprite(getTexture("coin-05.png"), zeroCoord(), SDL_FLIP_NONE);
-			drawSpriteAbs(warning, makeCoord(screenBounds.x - 50 + coinProgress++, screenBounds.y - 18));
+			char coinFile[50];
+			sprintf(coinFile, "coin-%02d.png", coinFrame);
+			Sprite coin = makeSprite(getTexture(coinFile), zeroCoord(), SDL_FLIP_NONE);
+			drawSpriteAbs(coin, makeCoord(screenBounds.x - 50 + coinProgress++, screenBounds.y - 18));
 		}else {
 			coinProgress = 0;
+			coinInserting = false;
 			triggerState(STATE_GAME);
 		}
 	}
