@@ -304,7 +304,7 @@ void initScripts() {
 	scripts[STATE_GAME_OVER] = gameOver;
 
 	coin.scenes[COIN_CUE] = 						newCueStep();
-	coin.scenes[COIN_PLAY] = 						newTimedStep(SCENE_LOOP, 5000, FADE_OUT);
+	coin.scenes[COIN_PLAY] = 						newTimedStep(SCENE_LOOP, 2250, FADE_NONE);
 	coin.scenes[COIN_END_CUE] = 					newCueStep();
 	coin.totalScenes = 3;
 	scripts[STATE_COIN] = coin;

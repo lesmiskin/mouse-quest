@@ -70,11 +70,16 @@ void pollInput() {
 
 				//Bind SDL keycodes to our custom actions, so we don't have to duplicate/remember keybindings everywhere in our code.
 				switch(gameState) {
+					case STATE_COIN:
+						if(keypress == SDL_SCANCODE_ESCAPE)
+							triggerState(STATE_TITLE);
+						break;
 					case STATE_TITLE:
 						if(	keypress == SDL_SCANCODE_LCTRL ||
 							keypress == SDL_SCANCODE_SPACE
 						)
 							commands[CMD_PLAYER_FIRE] = true;
+
 						if(keypress == SDL_SCANCODE_ESCAPE)
 							commands[CMD_QUIT] = true;
 						break;

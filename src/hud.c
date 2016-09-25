@@ -49,8 +49,8 @@ static float coinX = 0;
 static int coinFrame = 1;
 static const int COIN_FRAMES = 12;
 static float coinY = 0;
-static float coinThrowPower = 5.0;
-
+static float coinThrowPower;
+static bool coinIn = false;
 void spawnScorePlume(PlumeType type, int score) {
 	if(plumeInc+1 == MAX_PLUMES) plumeInc = 0;
 
@@ -102,9 +102,9 @@ void hudAnimateFrame() {
 	// Insert coin flash
 	if (gameState == STATE_COIN || gameState == STATE_TITLE || gameState == STATE_INTRO) {
 		// Two flashing speeds depending on what mode we're in.
-		if(!coinInserting && timer(&lastInsertCoinFlash, INSERT_COIN_FLASH_TIME)) {
+		if(timer(&lastInsertCoinFlash, INSERT_COIN_FLASH_TIME)) {
 			coinBoxFlash = !coinBoxFlash;
-		} else if(coinInserting && timer(&lastInsertCoinFlash, INSERT_COIN_FLASH_TIME_FAST)) {
+		} else if(coinIn && timer(&lastInsertCoinFlash, INSERT_COIN_FLASH_TIME_FAST)) {
 			coinBoxFlash = !coinBoxFlash;
 		}
 	}
@@ -120,6 +120,47 @@ void hudAnimateFrame() {
 
 	if(noneAnimInc == noneMaxAnims) noneAnimInc = 0;
 	noneAnimInc++;
+}
+
+void persistentHudRenderFrame() {
+	if(!(gameState == STATE_COIN || gameState == STATE_TITLE || gameState == STATE_INTRO)) return;
+
+	// Animate the coin box.
+	char coinBoxFile[50];
+	sprintf(coinBoxFile,
+		"insert-coin-%s%d.png",
+		!coinIn ? "dim-" : "",
+		coinBoxFlash ? 0 : 1
+	);
+
+	// Draw coin box.
+	Sprite warning = makeSprite(getTexture(coinBoxFile), zeroCoord(), SDL_FLIP_NONE);
+	drawSpriteAbs(warning, makeCoord(screenBounds.x - 16, screenBounds.y - 20));
+
+	// Draw coin insertion animation.
+	if(coinInserting) {
+		if(coinX < 82) {
+			// Throw the coin
+			coinThrowPower -= 0.15;
+			coinY -= coinThrowPower;
+
+			char coinFile[50];
+			sprintf(coinFile, "coin-%02d.png", coinFrame);
+			Sprite coin = makeSprite(getTexture(coinFile), zeroCoord(), SDL_FLIP_NONE);
+
+			drawSpriteAbsRotated(coin, makeCoord(
+				screenBounds.x /2  + (coinX += 0.95),
+				(screenBounds.y + 8) + coinY),
+				90
+			);
+		}else {
+			coinX = 0;
+			coinInserting = false;
+			coinIn = true;
+//			triggerState(STATE_GAME);
+			play("Powerup8.wav");
+		}
+	}
 }
 
 void hudInit() {
@@ -206,45 +247,6 @@ void insertCoin() {
 //	play("Pickup_Coin34b.wav");
 }
 
-void persistentHudRenderFrame() {
-	if(!(gameState == STATE_COIN || gameState == STATE_TITLE || gameState == STATE_INTRO)) return;
-
-	// Animate the coin box.
-	char coinBoxFile[50];
-	sprintf(coinBoxFile,
-		"insert-coin-%s%d.png",
-		!coinInserting ? "dim-" : "",
-		coinBoxFlash ? 0 : 1
-	);
-
-	// Draw coin box.
-	Sprite warning = makeSprite(getTexture(coinBoxFile), zeroCoord(), SDL_FLIP_NONE);
-	drawSpriteAbs(warning, makeCoord(screenBounds.x - 16, screenBounds.y - 20));
-
-	// Draw coin insertion animation.
-	if(coinInserting) {
-		if(coinX < 50) {
-            // Throw the coin
-            coinThrowPower -= 0.15;
-            coinY -= coinThrowPower;
-
-			char coinFile[50];
-			sprintf(coinFile, "coin-%02d.png", coinFrame);
-			Sprite coin = makeSprite(getTexture(coinFile), zeroCoord(), SDL_FLIP_NONE);
-
-            drawSpriteAbs(coin, makeCoord(
-				screenBounds.x - 77 + (coinX += 0.85),
-                (screenBounds.y + 8) + coinY)
-            );
-		}else {
-			coinX = 0;
-			coinInserting = false;
-			triggerState(STATE_GAME);
-			play("Pickup_Coin34b.wav");
-		}
-	}
-}
-
 void hudRenderFrame() {
 	Coord underScore = makeCoord(pixelGrid.x - 7, 26);
 
@@ -327,5 +329,6 @@ void resetHud() {
 	coinInserting = false;
 	coinX = 0;
 	coinY = 0;
-	coinThrowPower = 5.0;
+	coinThrowPower = 7.0;
+	coinIn = false;
 }
