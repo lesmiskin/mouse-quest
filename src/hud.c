@@ -40,9 +40,10 @@ static long lastWarningFlash;
 static const int WARNING_TIME = 3000;
 static const int WARNING_FLASH_TIME = 500;
 
-static bool insertCoinFlash;
+static bool coinBoxFlash;
 static long lastInsertCoinFlash;
 static const int INSERT_COIN_FLASH_TIME = 250;
+static const int INSERT_COIN_FLASH_TIME_FAST = 50;
 bool coinInserting = false;
 static float coinX = 0;
 static int coinFrame = 1;
@@ -99,10 +100,13 @@ void hudGameFrame() {
 
 void hudAnimateFrame() {
 	// Insert coin flash
-	if(	(gameState == STATE_TITLE || gameState == STATE_INTRO) &&
-		timer(&lastInsertCoinFlash, INSERT_COIN_FLASH_TIME)
-	) {
-		insertCoinFlash = !insertCoinFlash;
+	if (gameState == STATE_COIN || gameState == STATE_TITLE || gameState == STATE_INTRO) {
+		// Two flashing speeds depending on what mode we're in.
+		if(!coinInserting && timer(&lastInsertCoinFlash, INSERT_COIN_FLASH_TIME)) {
+			coinBoxFlash = !coinBoxFlash;
+		} else if(coinInserting && timer(&lastInsertCoinFlash, INSERT_COIN_FLASH_TIME_FAST)) {
+			coinBoxFlash = !coinBoxFlash;
+		}
 	}
 
 	// coin rotation animation.
@@ -203,18 +207,21 @@ void insertCoin() {
 }
 
 void persistentHudRenderFrame() {
-	if(!(gameState == STATE_TITLE || gameState == STATE_INTRO)) return;
+	if(!(gameState == STATE_COIN || gameState == STATE_TITLE || gameState == STATE_INTRO)) return;
 
-	// Render the message
-	if(insertCoinFlash) {
-		Sprite warning = makeSprite(getTexture("insert-coin-0.png"), zeroCoord(), SDL_FLIP_NONE);
-		drawSpriteAbs(warning, makeCoord(screenBounds.x - 15, screenBounds.y - 20));
-	}else{
-		Sprite warning = makeSprite(getTexture("insert-coin-1.png"), zeroCoord(), SDL_FLIP_NONE);
-		drawSpriteAbs(warning, makeCoord(screenBounds.x - 15, screenBounds.y - 20));
-	}
+	// Animate the coin box.
+	char coinBoxFile[50];
+	sprintf(coinBoxFile,
+		"insert-coin-%s%d.png",
+		!coinInserting ? "dim-" : "",
+		coinBoxFlash ? 0 : 1
+	);
 
-	// Show coin insertion.
+	// Draw coin box.
+	Sprite warning = makeSprite(getTexture(coinBoxFile), zeroCoord(), SDL_FLIP_NONE);
+	drawSpriteAbs(warning, makeCoord(screenBounds.x - 16, screenBounds.y - 20));
+
+	// Draw coin insertion animation.
 	if(coinInserting) {
 		if(coinX < 50) {
             // Throw the coin
@@ -233,7 +240,7 @@ void persistentHudRenderFrame() {
 			coinX = 0;
 			coinInserting = false;
 			triggerState(STATE_GAME);
-		play("Pickup_Coin34b.wav");
+			play("Pickup_Coin34b.wav");
 		}
 	}
 }

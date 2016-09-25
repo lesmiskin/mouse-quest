@@ -30,6 +30,12 @@ typedef enum {
 } TitleCues;
 
 typedef enum {
+	COIN_CUE,
+	COIN_PLAY,
+	COIN_END_CUE
+};
+
+typedef enum {
 	INTRO_CUE,
 	INTRO_LOGO,
 	INTRO_BATTLE_CUE,
@@ -57,16 +63,31 @@ void scriptGameFrame() {
 		case STATE_GAME_OVER:
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
-				insertCoin();
-//				triggerState(STATE_TITLE);
+//				insertCoin();
+				triggerState(STATE_COIN);
+			}
+			break;
+
+		case STATE_COIN:
+			switch(scriptStatus.sceneNumber) {
+				case COIN_CUE:
+					resetEnemies();
+					useMike = false;
+					insertCoin();
+					break;
+				case COIN_PLAY:
+					break;
+				case COIN_END_CUE:
+					triggerState(STATE_GAME);
+					break;
 			}
 			break;
 
 		case STATE_INTRO:
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
-				insertCoin();
-//				triggerState(STATE_TITLE);
+//				insertCoin();
+				triggerState(STATE_COIN);
 			}
 
 			switch(scriptStatus.sceneNumber) {
@@ -150,8 +171,8 @@ void scriptGameFrame() {
 				case TITLE_LOOP:
 					//Begin game when fire button is pressed.
 					if(checkCommand(CMD_PLAYER_FIRE)) {
-						insertCoin();
-//						triggerState(STATE_GAME);
+//						insertCoin();
+						triggerState(STATE_COIN);
 					}
 					break;
 			}
@@ -173,7 +194,6 @@ void scriptGameFrame() {
 				triggerState(STATE_TITLE);
 			}
 			break;
-
 	}
 
 	endOfFrameTransition();
@@ -248,7 +268,7 @@ void scriptRenderFrame() {
 }
 
 void initScripts() {
-	Script intro, title, game, gameOver;
+	Script intro, title, game, gameOver, coin;
 
 	//Introduction script.
 	intro.scenes[INTRO_CUE] = 						newCueStep();
@@ -282,4 +302,10 @@ void initScripts() {
 	gameOver.scenes[1] = 							newCueStep();
 	gameOver.totalScenes = 2;
 	scripts[STATE_GAME_OVER] = gameOver;
+
+	coin.scenes[COIN_CUE] = 						newCueStep();
+	coin.scenes[COIN_PLAY] = 						newTimedStep(SCENE_LOOP, 5000, FADE_OUT);
+	coin.scenes[COIN_END_CUE] = 					newCueStep();
+	coin.totalScenes = 3;
+	scripts[STATE_COIN] = coin;
 }

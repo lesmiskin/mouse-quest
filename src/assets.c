@@ -145,6 +145,8 @@ static void loadImages() {
 		{ "top-score.png", false, false, false, false, false },
 		{ "insert-coin-0.png", false, false, false, false, false },
 		{ "insert-coin-1.png", false, false, false, false, false },
+		{ "insert-coin-dim-0.png", false, false, false, false, false },
+		{ "insert-coin-dim-1.png", false, false, false, false, false },
 		{ "font-x.png", false, true, false, false, false },
 		{ "font-00.png", false, true, false, false, false },
 		{ "font-01.png", false, true, false, false, false },
