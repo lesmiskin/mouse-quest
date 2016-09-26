@@ -12,12 +12,12 @@
 * Tighten offscreen bounds for sideways-exiting shooters.
 * Enemy shoot frequency should vary with onscreen entrance, not spawn.
 
-* Fix boss bounding box.
 * Fix boss kamikaze bug.
 * Loop back to title after boss death.
 * Add shadow to Game Over logo.
 * Animated dying frames.
 
+* Fix boss bounding box. [done]
 * Fix first-shot bug on game start. [done]
 * Scrollers to use homing bullets. [done]
 * Fix first-shot bug on game start.

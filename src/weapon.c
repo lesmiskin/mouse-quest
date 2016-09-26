@@ -214,7 +214,7 @@ void pewGameFrame() {
 
 			//If he's within our projectile bounds.
 			Rect enemyBound;
-			if(enemies[i].type == ENEMY_BOSS) {  //HACK!
+			if(enemies[p].type == ENEMY_BOSS) {  //HACK!
 				enemyBound = makeBounds(enemies[p].parallax, 72, 32);
 			}else{
 				enemyBound = makeSquareBounds(enemies[p].parallax, ENEMY_BOUND);

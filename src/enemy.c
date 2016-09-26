@@ -545,6 +545,7 @@ void formationFrame(Enemy* e) {
 				e->scrollDir = !e->scrollDir;
 				e->spawnTime = clock(); //HACK!
 			}
+			e->formationOrigin.y = e->origin.y;
 
 			// Blasts.
 			if(due(e->lastBlastTime, 1000)) {
@@ -552,8 +553,9 @@ void formationFrame(Enemy* e) {
 				e->lastBlastTime = clock();
 			}
 
-			e->formationOrigin.x = sineInc(e->origin.x, &e->swayIncX, 0.04, 30);
-			e->formationOrigin.y = e->origin.y;
+			// Sway him from side to side.
+//			e->formationOrigin.x = sineInc(e->origin.x, &e->swayIncX, 0.04, 30);
+
 			break;
 
 		case PATTERN_CIRCLE:
