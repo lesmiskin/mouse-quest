@@ -12,7 +12,9 @@
 * Tighten offscreen bounds for sideways-exiting shooters.
 * Enemy shoot frequency should vary with onscreen entrance, not spawn.
 
-* Fix boss kamikaze bug.
+* Fix duplicate hurt sound on boss touch.
+* Fix auto-coin insertion on Game Over.
+* Stop multiple bouncing on death.
 * Loop back to title after boss death.
 * Add shadow to Game Over logo.
 * Animated dying frames.
