@@ -44,6 +44,7 @@ Enemy enemies[MAX_ENEMIES];
 int spawnInc = 0;
 const double HEALTH_LIGHT = 3.0;
 const double HEALTH_HEAVY = 5.0;
+bool bossOnscreen = false;
 
 static int boomCount;
 static Boom booms[MAX_BOOMS];
@@ -381,6 +382,8 @@ void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat
 
 	//Add it to the list of renderables.
 	enemies[enemyCount++] = enemy;
+
+	if(type == ENEMY_BOSS) bossOnscreen = true;
 };
 
 static void spawnShot(Enemy* enemy) {
@@ -624,6 +627,7 @@ void enemyGameFrame() {
 			// Final death.
 			if(due(enemies[i].fatalTime, 2500)) {
 				enemies[i] = nullEnemy();
+				bossOnscreen = false;
 				continue;
 			}
 			// Explosion drama.
@@ -707,4 +711,5 @@ void enemyGameFrame() {
 void enemyInit() {
 	resetEnemies();
 	animateEnemy();
+	bossOnscreen = false;
 }
