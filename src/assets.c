@@ -140,6 +140,8 @@ void shutdownAssets() {
 static void loadImages() {
 	//Define assets to be loaded.
 	AssetDef definitions[] = {
+		{ "text-keyface.png", false, false, false, false, false },
+		{ "health-bar.png", false, false, false, false, false },
 		{ "text-laser-upgraded.png", false, true, false, false, false },
 		{ "text-full-power.png", false, true, false, false, false },
 		{ "top-score.png", false, false, false, false, false },

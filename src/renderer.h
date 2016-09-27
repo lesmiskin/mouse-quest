@@ -49,7 +49,7 @@ extern SDL_Renderer *renderer;
 extern Coord pixelGrid;
 extern Sprite makeSimpleSprite(char *textureName);
 extern Sprite makeSprite(SDL_Texture *texture, Coord offset, SDL_RendererFlip flip);
-extern void drawSpriteAbsRotated2(Sprite sprite, Coord origin, double angle, double scale);
+extern void drawSpriteAbsRotated2(Sprite sprite, Coord origin, double angle, double scaleX, double scaleY);
 extern void drawSpriteAbsRotated(Sprite drawSprite, Coord origin, double angle);
 extern void drawSpriteAbs(Sprite drawSprite, Coord origin);
 extern void drawSprite(Sprite drawSprite, Coord origin);

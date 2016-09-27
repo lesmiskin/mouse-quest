@@ -231,7 +231,7 @@ void itemRenderFrame() {
 		SDL_Texture *texture = getTexture(items[i].realFrameName);
 		Sprite sprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
 		if(items[i].traveling) {
-			drawSpriteAbsRotated2(sprite, items[i].origin, 0, 1.2  );
+			drawSpriteAbsRotated2(sprite, items[i].origin, 0, 1.2, 1.2);
 		}else{
 			drawSpriteAbs(sprite, items[i].parallax);
 		}

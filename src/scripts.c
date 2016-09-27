@@ -33,7 +33,7 @@ typedef enum {
 	COIN_CUE,
 	COIN_PLAY,
 	COIN_END_CUE
-};
+} CoinCues;
 
 typedef enum {
 	INTRO_CUE,
@@ -63,8 +63,7 @@ void scriptGameFrame() {
 		case STATE_GAME_OVER:
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
-//				insertCoin();
-				triggerState(STATE_COIN);
+				triggerState(STATE_TITLE);
 			}
 			break;
 
@@ -84,9 +83,8 @@ void scriptGameFrame() {
 			break;
 
 		case STATE_INTRO:
-			//Skip to titlescreen if fire button pressed.
+			// Insert coin if fire button is pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
-//				insertCoin();
 				triggerState(STATE_COIN);
 			}
 

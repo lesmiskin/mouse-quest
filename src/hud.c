@@ -125,6 +125,11 @@ void hudAnimateFrame() {
 void persistentHudRenderFrame() {
 	if(!(gameState == STATE_COIN || gameState == STATE_TITLE || gameState == STATE_INTRO)) return;
 
+	Sprite bossHealth = makeSprite(getTexture("health-bar.png"), zeroCoord(), SDL_FLIP_NONE);
+	drawSpriteAbsRotated2(bossHealth, makeCoord(50, 50), 0, 100, 1);
+	Sprite bossName = makeSprite(getTexture("text-keyface.png"), zeroCoord(), SDL_FLIP_NONE);
+	drawSprite(bossName, makeCoord(100, 50));
+
 	// Animate the coin box.
 	char coinBoxFile[50];
 	sprintf(coinBoxFile,

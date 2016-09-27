@@ -67,7 +67,7 @@ void drawSprite(Sprite drawSprite, Coord origin) {
 }
 
 //Optional absolutely-positioned drawing, for precise character movements.
-void drawSpriteAbsRotated2(Sprite sprite, Coord origin, double angle, double scale) {
+void drawSpriteAbsRotated2(Sprite sprite, Coord origin, double angle, double scaleX, double scaleY) {
 	//Ensure we're always calling this with an initialised sprite_t.
 	assert(sprite.texture != NULL);
 
@@ -83,8 +83,8 @@ void drawSpriteAbsRotated2(Sprite sprite, Coord origin, double angle, double sca
 	SDL_Rect destination  = {
 			(origin.x + offsetX),
 			(origin.y + offsetY),
-			sprite.size.x * scale,
-			sprite.size.y * scale
+			sprite.size.x * scaleX,
+			sprite.size.y * scaleY
 	};
 
 	//Rotation
@@ -98,7 +98,7 @@ void drawSpriteAbsRotated2(Sprite sprite, Coord origin, double angle, double sca
 }
 
 void drawSpriteAbsRotated(Sprite sprite, Coord origin, double angle) {
-	drawSpriteAbsRotated2(sprite, origin, angle, 1);
+	drawSpriteAbsRotated2(sprite, origin, angle, 1, 1);
 }
 
 void drawSpriteAbs(Sprite sprite, Coord origin) {
