@@ -51,6 +51,7 @@ static const int COIN_FRAMES = 12;
 static float coinY = 0;
 static float coinThrowPower;
 static bool coinIn = false;
+
 void spawnScorePlume(PlumeType type, int score) {
 	if(plumeInc+1 == MAX_PLUMES) plumeInc = 0;
 
@@ -139,7 +140,7 @@ void persistentHudRenderFrame() {
 
 	// Draw coin insertion animation.
 	if(coinInserting) {
-		if(coinX < 82) {
+		if(coinX < 83) {
 			// Throw the coin
 			coinThrowPower -= 0.15;
 			coinY -= coinThrowPower;
@@ -149,7 +150,7 @@ void persistentHudRenderFrame() {
 			Sprite coin = makeSprite(getTexture(coinFile), zeroCoord(), SDL_FLIP_NONE);
 
 			drawSpriteAbsRotated(coin, makeCoord(
-				screenBounds.x /2  + (coinX += 0.95),
+				screenBounds.x /2  + (coinX += 1.325),
 				(screenBounds.y + 8) + coinY),
 				90
 			);
@@ -157,7 +158,6 @@ void persistentHudRenderFrame() {
 			coinX = 0;
 			coinInserting = false;
 			coinIn = true;
-//			triggerState(STATE_GAME);
 			play("Powerup8.wav");
 		}
 	}
@@ -340,6 +340,6 @@ void resetHud() {
 	coinInserting = false;
 	coinX = 0;
 	coinY = 0;
-	coinThrowPower = 7.0;
+	coinThrowPower = 5.25;
 	coinIn = false;
 }

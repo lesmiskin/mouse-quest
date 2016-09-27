@@ -3,7 +3,7 @@
 
 #include "renderer.h"
 
-#define MAX_SCRIPTS 5
+#define MAX_SCRIPTS 10
 #define MAX_SCENES 25
 
 typedef enum {

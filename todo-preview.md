@@ -11,13 +11,17 @@
 * Restore 'straight ahead' shooter option for magnet wave.
 * Tighten offscreen bounds for sideways-exiting shooters.
 * Enemy shoot frequency should vary with onscreen entrance, not spawn.
-
-* Fix duplicate hurt sound on boss touch.
-* Fix auto-coin insertion on Game Over.
 * Stop multiple bouncing on death.
-* Loop back to title after boss death.
-* Add shadow to Game Over logo.
+* Fix duplicate hurt sound on boss touch.
 * Animated dying frames.
+
+Must be done:
+* Loop back to title on game complete.
+* Shorten coin flip.
+* Should die on one hit from boss.
+
+
+
 
 * Fix boss bounding box. [done]
 * Fix first-shot bug on game start. [done]

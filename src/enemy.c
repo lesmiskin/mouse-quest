@@ -636,6 +636,7 @@ void enemyGameFrame() {
 			if(due(enemies[i].fatalTime, 2500)) {
 				enemies[i] = nullEnemy();
 				bossOnscreen = false;
+				triggerState(STATE_LEVEL_COMPLETE);
 				continue;
 			}
 			// Explosion drama.

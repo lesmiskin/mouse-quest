@@ -36,6 +36,12 @@ typedef enum {
 } CoinCues;
 
 typedef enum {
+	END_CUE,
+	END_PLAY,
+	END_FINISH
+} EndCues;
+
+typedef enum {
 	INTRO_CUE,
 	INTRO_LOGO,
 	INTRO_BATTLE_CUE,
@@ -60,6 +66,18 @@ void scriptGameFrame() {
 	}
 
 	switch(gameState) {
+		case STATE_LEVEL_COMPLETE:
+			switch(scriptStatus.sceneNumber){
+				case END_CUE:
+					Mix_PauseMusic();
+					play("warp.wav");
+					break;
+				case END_PLAY:
+					playerOrigin.y -= 4.0;
+					break;
+			}
+			break;
+
 		case STATE_GAME_OVER:
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
@@ -197,6 +215,14 @@ void scriptGameFrame() {
 	endOfFrameTransition();
 }
 
+void superFrame() {
+	for(int i = 0; i < playerOrigin.y + 10; i += 8) {
+		SDL_Texture *superTex = getTextureVersion("mike-01.png", ASSET_SUPER);
+		Sprite superSprite = makeSprite(superTex, zeroCoord(), SDL_FLIP_NONE);
+		drawSpriteAbs(superSprite, deriveCoord(playerOrigin, 0, i));
+	}
+}
+
 void scriptRenderFrame() {
 
 	//Only ever ensure we process a scripted render frame if the script itself has been initialised.
@@ -220,6 +246,13 @@ void scriptRenderFrame() {
 			}
 			break;
 		}
+		case STATE_LEVEL_COMPLETE:
+			switch(scriptStatus.sceneNumber) {
+				case END_PLAY:
+					superFrame();
+					break;
+			}
+			break;
 		case STATE_INTRO:
 			switch(scriptStatus.sceneNumber) {
 				//Show "Les Miskin presents"
@@ -230,11 +263,7 @@ void scriptRenderFrame() {
 				}
 				//Add special blue trailing shadows to Mike as he flies off.
 				case INTRO_BATTLE_MIKE_DEPART: {
-					for(int i = 0; i < playerOrigin.y + 10; i += 8) {
-						SDL_Texture *superTex = getTextureVersion("mike-01.png", ASSET_SUPER);
-						Sprite superSprite = makeSprite(superTex, zeroCoord(), SDL_FLIP_NONE);
-						drawSpriteAbs(superSprite, deriveCoord(playerOrigin, 0, i));
-					}
+					superFrame();
 					break;
 				}
 			}
@@ -266,7 +295,7 @@ void scriptRenderFrame() {
 }
 
 void initScripts() {
-	Script intro, title, game, gameOver, coin;
+	Script intro, title, game, gameOver, coin, end;
 
 	//Introduction script.
 	intro.scenes[INTRO_CUE] = 						newCueStep();
@@ -302,8 +331,14 @@ void initScripts() {
 	scripts[STATE_GAME_OVER] = gameOver;
 
 	coin.scenes[COIN_CUE] = 						newCueStep();
-	coin.scenes[COIN_PLAY] = 						newTimedStep(SCENE_LOOP, 2250, FADE_NONE);
+	coin.scenes[COIN_PLAY] = 						newTimedStep(SCENE_LOOP, 1650, FADE_NONE);
 	coin.scenes[COIN_END_CUE] = 					newCueStep();
 	coin.totalScenes = 3;
 	scripts[STATE_COIN] = coin;
+
+	end.scenes[END_CUE] = 							newCueStep();
+	end.scenes[END_PLAY] = 							newTimedStep(SCENE_LOOP, 1250, FADE_OUT);
+	end.scenes[END_FINISH] = 						newStateStep(STATE_TITLE);
+	end.totalScenes = 3;
+	scripts[STATE_LEVEL_COMPLETE] = end;
 }

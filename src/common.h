@@ -25,7 +25,8 @@ typedef enum {
 	STATE_TITLE = 1,
 	STATE_GAME = 2,
 	STATE_GAME_OVER = 3,
-	STATE_COIN = 4
+	STATE_COIN = 4,
+	STATE_LEVEL_COMPLETE = 5
 } GameState;
 GameState gameState;
 
