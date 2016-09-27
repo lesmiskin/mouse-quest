@@ -45,6 +45,7 @@ int spawnInc = 0;
 const double HEALTH_LIGHT = 3.0;
 const double HEALTH_HEAVY = 5.0;
 bool bossOnscreen = false;
+double bossHealth = 0;
 
 static int boomCount;
 static Boom booms[MAX_BOOMS];
@@ -112,6 +113,10 @@ void hitEnemy(Enemy* enemy, double damage, bool collision) {
 
 	//Apply knockback by directly altering enemy's Y coordinate (improve with lerping).
 	enemy->origin.y -= HIT_KNOCKBACK;
+
+	if(bossOnscreen) {
+		bossHealth = enemy->health;
+	}
 }
 
 void enemyShadowFrame() {
@@ -383,7 +388,10 @@ void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat
 	//Add it to the list of renderables.
 	enemies[enemyCount++] = enemy;
 
-	if(type == ENEMY_BOSS) bossOnscreen = true;
+	if(type == ENEMY_BOSS) {
+		bossOnscreen = true;
+		bossHealth = health;
+	}
 };
 
 static void spawnShot(Enemy* enemy) {
@@ -712,4 +720,5 @@ void enemyInit() {
 	resetEnemies();
 	animateEnemy();
 	bossOnscreen = false;
+	bossHealth = 0;
 }

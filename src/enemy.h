@@ -86,6 +86,7 @@ typedef struct {
 	long fatalTime;
 } Enemy;
 
+extern double bossHealth;
 extern bool bossOnscreen;
 extern void spawnBoom(Coord origin);
 extern const double HEALTH_LIGHT;

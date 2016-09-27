@@ -324,10 +324,13 @@ void hudRenderFrame() {
 
 	// Boss health bar.
 	if(bossOnscreen) {
-		Sprite bossHealth = makeSprite(getTexture("health-bar.png"), zeroCoord(), SDL_FLIP_NONE);
-		drawSpriteAbsRotated2(bossHealth, makeCoord(50, 50), 0, 100, 1);
+		const double BAR_LENGTH = 60;
+		Sprite bossBarBg = makeSprite(getTexture("health-bar-bg.png"), zeroCoord(), SDL_FLIP_NONE);
+		drawSpriteAbsRotated2(bossBarBg, makeCoord(50, 9), 0, BAR_LENGTH*2, 1);
+		Sprite bossBar = makeSprite(getTexture("health-bar.png"), zeroCoord(), SDL_FLIP_NONE);
+		drawSpriteAbsRotated2(bossBar, makeCoord(50, 9), 0, (bossHealth / 100) * BAR_LENGTH, 1);
 		Sprite bossName = makeSprite(getTexture("text-keyface.png"), zeroCoord(), SDL_FLIP_NONE);
-		drawSprite(bossName, makeCoord(100, 50));
+		drawSprite(bossName, makeCoord(112, 9));
 	}
 }
 
