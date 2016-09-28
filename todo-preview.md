@@ -1,36 +1,30 @@
 
-* Randomised PCB configurations.
-* Mike slides into display on game entry.
-* Flash '--Insert Coin--' in header during attract mode.
-* Flash today's high score in header.
-* Boss explodes into coins and fruit.
-* Second-stage boss attack with hot bullets and animation.
-* End-of-line enemies give fruit.
-* High score and coins show on game completion.
-* 'You Win' message on game completion.
-* Restore 'straight ahead' shooter option for magnet wave.
-* Tighten offscreen bounds for sideways-exiting shooters.
-* Enemy shoot frequency should vary with onscreen entrance, not spawn.
+* Sweat animation during boss death.
+* Stop music on Mike death.
+* Flash used batteries in HUD.
+
+* Restore random PCB layouts.
+* Slide Mike into view on game start.
+* Gives fruit when killing a wave.
+* Boss shakes while dying.
+* Boss drops to the bottom of the screen while dying.
+
+* Boss has animated split sequence.
+* Boss fires seeking bullets in this mode.
+* Boss expells some coins and fruit on dying.
+
+-----------------------------------------------------
+
+* Two-frame Mike death animation.
 * Stop multiple bouncing on death.
-* Fix duplicate hurt sound on boss touch.
-* Animated dying frames.
+* Die on one hit from boss.
+* Fix position of boss explosions while dying.
 
-Must be done:
-* Loop back to title on game complete.
-* Shorten coin flip.
-* Should die on one hit from boss.
+* Less abrupt script transition for end of level.
+* Add 'Level complete' HUD element.
+* Top score during attract mode.
+* Top score saves to disk.
 
-
-
-
-* Fix boss bounding box. [done]
-* Fix first-shot bug on game start. [done]
-* Scrollers to use homing bullets. [done]
-* Fix first-shot bug on game start.
-* Fix background vanishing on game over trigger [done]
-* Disable G and H cheat keys. [done]
-* Take boss out of intro roster rotation [done]
-* Fullscreen by default. [done]
-* Detect computer resolution. [done]
-* Default to titlescreen on load. [done]
+* Stop enemies slightly offscreen from shooting.
+* Enemy shoot frequency should vary with onscreen entrance, not spawn.
 

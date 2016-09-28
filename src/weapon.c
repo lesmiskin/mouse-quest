@@ -55,7 +55,7 @@ int weaponInc = 0;
 static Weapon weapons[MAX_WEAPONS];
 //static const int SHOT_HZ = 1000 / 11 ;
 static const double SHOT_SPEED = 7;
-static const double SHOT_DAMAGE = 7000.7;
+static const double SHOT_DAMAGE = 0.7;
 static Shot shots[MAX_SHOTS];
 static int shotInc = 0;
 static Sprite shotSprite;
