@@ -1,16 +1,7 @@
-==========================================
-==          PREVIEW RELEASE             ==
-==========================================
-
-This version of Mouse Quest is a small preview only, and includes just one 
-level and limited game features. The quality of the full game may change 
-dramatically upon release, so please keep this in mind while playing.
-
-If you have any comments or feedback on Mouse Quest, please contact Les
-Miskin on <trilinear.nz@gmail.com>.
+Version 0.1
 
 ==========================================
-==             INTRODUCTION             ==
+==           INTRODUCTION               ==
 ==========================================
 
 Mouse Quest is a top-down shoot-em-up ("smhup" for short), in the style of
@@ -19,6 +10,13 @@ video games from the 1980's and 1990's.
 You control Mike, a sentient computer mouse who's out to save the world
 from a virus-infected fleet of computer hardware. Fight the humble floppy
 disk and CD-ROM, all the way to perhipherals of immense size and ferocity.
+
+This version of Mouse Quest is a small preview only, and includes just one 
+level and limited game features. The quality of the full game may change 
+dramatically upon release, so please keep this in mind while playing.
+
+If you have any comments or feedback on Mouse Quest, please contact Les
+Miskin on <trilinear.nz@gmail.com>.
 
 
 ==========================================
@@ -39,20 +37,24 @@ if you're in the middle of a level.
 ==                LICENSE               ==
 ==========================================
 
-See LICENSE.TXT for the complete license.
+Visual and audio assets
+-----------------------
+The PNG, OGG, and WAV files supplied with the game are licensed under 
+CC BY-NC-SA 4.0. See 'licenses/LICENSE-MEDIA.txt' or 
+<https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
-Mouse Quest is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free 
-Software Foundation, either version 3 of the License, or (at your option) 
-any later version.
+Other game files and source code
+--------------------------------
+All other files supplied with the game which are not listed above, 
+including source if you received it, are licensed under CC BY-NC-ND 4.0. 
+See 'licenses/LICENSE-DEFAULT.txt' or 
+<https://creativecommons.org/licenses/by-nc-nd/4.0/>.
 
-Mouse Quest is distributed in the hope that it will be useful, but WITHOUT 
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for 
-more details.
-
-You should have received a copy of the GNU General Public License along with
-Mouse Quest.  If not, see <http://www.gnu.org/licenses/>.
+Third-party software
+--------------------
+SDL 2.0 runtime environment: See 'licenses/SDL2'.
+SDL Mixer 2.0: See 'licenses/SDL2-Mixer'.
+SDL Image 2.0: See 'licenses/SDL2-Image'.
 
 
 ==========================================
@@ -65,11 +67,12 @@ Les Miskin
 
 Special thanks
 --------------
+Rachael Ashby
 Bob Brown
-R. Ashby
 
 Testing and feedback
 --------------------
+Andrew Schofield
 Brendon Mills
 Graham Griffin
 Kit Randel
@@ -81,9 +84,13 @@ Dr. Peter Ashby
 Steff Ashby
 Thomi Richards
 
-Tools
------
-GIMP
-CLion
+Software
+--------
 Bfxr
+CLion
 GarageBand
+GIMP
+GitLab
+SDL 2.0
+SDL Image 2.0
+SDL Mixer 2.0
