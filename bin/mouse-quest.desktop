@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Mouse Quest
-Comment=Retro scrolling shoot-em-up
-Exec=/home/les/dev/mouse-quest/src/mouse-quest
-Icon=/home/les/dev/mouse-quest/bin/icon.png
-Categories=Games;

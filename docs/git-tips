@@ -1,3 +1,0 @@
-git add -u				//Add all modified and deleted.
-git add -A 				//Add all files, including unstaged.
-
