@@ -163,6 +163,7 @@ void playerAnimate() {
 		//Start to die - reset animation frames.
 		if(!begunDyingRender) {
 			play("mike-die.wav");
+			Mix_PauseMusic();
 			animationInc = 1;
 			begunDyingRender = true;
 			deathTime = clock();

@@ -235,8 +235,13 @@ void animateEnemy() {
 		AssetVersion frameVersion = ASSET_DEFAULT;
 		int maxFrames = 0;
 
+		//Freeze animation on dying bosses.
+		if(enemies[i].dying && enemies[i].type == ENEMY_BOSS) {
+			return;
+		}
+
 		//Death animation
-		if(enemies[i].dying && enemies[i].type != ENEMY_BOSS) {
+		if(enemies[i].dying) {
 			//Change animation sequence to explosion (except for bosses)
 			if(enemies[i].animSequence != ENEMY_ANIMATION_DEATH){
 				enemies[i].animSequence = ENEMY_ANIMATION_DEATH;
@@ -588,6 +593,8 @@ void formationFrame(Enemy* e) {
 	}
 }
 
+static bool bossDeathDir = false;
+
 void enemyGameFrame() {
 
 	//Bob enemies in sine pattern.
@@ -611,7 +618,9 @@ void enemyGameFrame() {
 				//Flag for death sequence.
 				if (enemies[i].health <= 0) {
 					if(enemies[i].type == ENEMY_BOSS) {
-						spawnBoom(enemies[i].origin);
+						Mix_PauseMusic();
+						SDL_Texture* texture = getTextureVersion("keyboss-06.png", ASSET_DEFAULT);
+						enemies[i].sprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
 					}else{
 						play(chance(50) ? "Explosion14.wav" : "Explosion3.wav");
 					}
@@ -639,10 +648,16 @@ void enemyGameFrame() {
 				triggerState(STATE_LEVEL_COMPLETE);
 				continue;
 			}
-			// Explosion drama.
+			// Explosion and shaking drama.
 			else if(enemies[i].dying && due(enemies[i].boomTime, 75)) {
-				spawnBoom(deriveCoord(enemies[i].origin, randomMq(-40, 40), randomMq(-15, 15)));
+				// Explosions.
+				spawnBoom(deriveCoord(enemies[i].formationOrigin, randomMq(-60, 60), randomMq(-15, 15)));
 				enemies[i].boomTime = clock();
+
+				// Shaking.
+				enemies[i].formationOrigin.x += bossDeathDir ? 3 : -3;
+				enemies[i].formationOrigin.y += 0.5;	// slight drop down.
+				bossDeathDir = !bossDeathDir;
 			}
 		}
 

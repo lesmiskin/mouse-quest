@@ -149,7 +149,12 @@ void backgroundRenderFrame() {
 	}
 
 	//Don't do planet, platform rendering, or star scrolling for static backgrounds.
-	if(staticBackground || (gameState != STATE_GAME && gameState != STATE_GAME_OVER)) return;
+	if(	staticBackground || (
+		gameState != STATE_GAME &&
+		gameState != STATE_GAME_OVER &&
+		gameState != STATE_LEVEL_COMPLETE)) {
+		return;
+	}
 
 	//We show two large textures, one after the other, to create a seamless scroll. Once the first texture
 	// moves out of the viewport, however, we snap it back to the top.

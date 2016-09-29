@@ -253,7 +253,10 @@ void hudRenderFrame() {
 //	showDebugStats();
 
 	//Show score and coin HUD during the game, and game over sequences.
-	if(gameState == STATE_GAME || gameState == STATE_GAME_OVER) {
+	if(	gameState == STATE_GAME ||
+		gameState == STATE_LEVEL_COMPLETE ||
+		gameState == STATE_GAME_OVER
+	) {
 		//Score HUD
 		writeText(score, makeCoord(pixelGrid.x - 5, 10));
 
@@ -290,11 +293,11 @@ void hudRenderFrame() {
 
 			drawSpriteAbs(lifeNone, lifePositions[bar]);
 		}else{
-//			char noneName[50];
-//			sprintf(noneName, "battery-low-%02d.png", noneAnimInc);
-//			Sprite lifeNone = makeSprite(getTexture(noneName), zeroCoord(), SDL_FLIP_NONE);
-//
-//			drawSpriteAbs(lifeNone, lifePositions[bar]);
+			char noneName[50];
+			sprintf(noneName, "battery-low-%02d.png", noneAnimInc);
+			Sprite lifeNone = makeSprite(getTexture(noneName), zeroCoord(), SDL_FLIP_NONE);
+
+			drawSpriteAbs(lifeNone, lifePositions[bar]);
 		}
 	}
 

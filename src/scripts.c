@@ -36,8 +36,11 @@ typedef enum {
 } CoinCues;
 
 typedef enum {
-	END_CUE,
-	END_PLAY,
+	END_PAUSE,
+	END_SMILE_CUE,
+	END_SMILE,
+	END_WARP_CUE,
+	END_WARP,
 	END_FINISH
 } EndCues;
 
@@ -68,11 +71,13 @@ void scriptGameFrame() {
 	switch(gameState) {
 		case STATE_LEVEL_COMPLETE:
 			switch(scriptStatus.sceneNumber){
-				case END_CUE:
-					Mix_PauseMusic();
+				case END_SMILE_CUE:
+					smile();
+					break;
+				case END_WARP_CUE:
 					play("warp.wav");
 					break;
-				case END_PLAY:
+				case END_WARP:
 					playerOrigin.y -= 4.0;
 					break;
 			}
@@ -248,7 +253,7 @@ void scriptRenderFrame() {
 		}
 		case STATE_LEVEL_COMPLETE:
 			switch(scriptStatus.sceneNumber) {
-				case END_PLAY:
+				case END_WARP:
 					superFrame();
 					break;
 			}
@@ -336,9 +341,12 @@ void initScripts() {
 	coin.totalScenes = 3;
 	scripts[STATE_COIN] = coin;
 
-	end.scenes[END_CUE] = 							newCueStep();
-	end.scenes[END_PLAY] = 							newTimedStep(SCENE_LOOP, 1250, FADE_OUT);
+	end.scenes[END_PAUSE] = 						newTimedStep(SCENE_LOOP, 1000, FADE_NONE);
+	end.scenes[END_SMILE_CUE] = 					newCueStep();
+	end.scenes[END_SMILE] = 						newTimedStep(SCENE_LOOP, 1000, FADE_NONE);
+	end.scenes[END_WARP_CUE] = 						newCueStep();
+	end.scenes[END_WARP] = 							newTimedStep(SCENE_LOOP, 1250, FADE_OUT);
 	end.scenes[END_FINISH] = 						newStateStep(STATE_TITLE);
-	end.totalScenes = 3;
+	end.totalScenes = 6;
 	scripts[STATE_LEVEL_COMPLETE] = end;
 }
