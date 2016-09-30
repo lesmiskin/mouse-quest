@@ -326,7 +326,7 @@ void initScripts() {
 	title.totalScenes = TITLE_INTRO_CUE+1;
 	scripts[STATE_TITLE] = title;
 
-	game.scenes[0] = 								newTimedStep(SCENE_INFINITE, 0, FADE_BOTH);
+	game.scenes[0] = 								newTimedStep(SCENE_INFINITE, 0, FADE_IN);
 	game.totalScenes = 1;
 	scripts[STATE_GAME] = game;
 

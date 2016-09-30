@@ -28,6 +28,7 @@ typedef struct {
 typedef struct {
 	Coord origin;
 	int animFrame;
+    double scale;
 } Boom;
 
 typedef struct {
@@ -152,19 +153,6 @@ void enemyShadowFrame() {
 		shadowCoord.y += STATIC_SHADOW_OFFSET;
 		drawSpriteAbs(shotShadow, shadowCoord);
 	}
-
-	// Booms FIXME: Merge with RenderFrame, like Enemy.
-	for(int i=0; i < MAX_BOOMS; i++) {
-		if (booms[i].origin.x == 0 && booms[i].origin.y == 0) continue;
-		char frameFile[20];
-		char* frameTemplate = "exp-%02d.png";
-
-		sprintf(frameFile, frameTemplate, booms[i].animFrame);
-		Coord boomParallax = parallax(booms[i].origin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_XY, PARALLAX_ADDITIVE);
-		SDL_Texture* texture = getTextureVersion(frameFile, ASSET_SHADOW);
-		Sprite sprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
-		drawSpriteAbs(sprite, boomParallax);
-	}
 }
 
 void enemyRenderFrame() {
@@ -199,16 +187,16 @@ void enemyRenderFrame() {
 
 		sprintf(frameFile, frameTemplate, booms[i].animFrame);
 		Coord boomParallax = parallax(booms[i].origin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_XY, PARALLAX_ADDITIVE);
-		drawSpriteAbs(makeSimpleSprite(frameFile), boomParallax);
+		drawSpriteAbsRotated2(makeSimpleSprite(frameFile), boomParallax, 0, booms[i].scale, booms[i].scale);
 	}
 }
 
-void spawnBoom(Coord origin) {
+void spawnBoom(Coord origin, double scale) {
 	play(chance(50) ? "Explosion14.wav" : "Explosion3.wav");
 
 	boomCount = boomCount > MAX_BOOMS-1 ? 0 : boomCount + 1;
 
-	Boom boom = { origin, 1 };
+	Boom boom = { origin, 1, (scale == 0.0 ? 1.0 : scale) };
 	booms[boomCount] = boom;
 }
 
@@ -643,7 +631,16 @@ void enemyGameFrame() {
 		if(enemies[i].dying && enemies[i].type == ENEMY_BOSS) {
 			// Final death.
 			if(due(enemies[i].fatalTime, 2500)) {
-				enemies[i] = nullEnemy();
+                // Final explosion to hide sprite vanishing.
+                spawnBoom(deriveCoord(enemies[i].formationOrigin, -20, -15), 1);
+                spawnBoom(deriveCoord(enemies[i].formationOrigin, 20, -15), 1);
+                spawnBoom(deriveCoord(enemies[i].formationOrigin, -35, 0), 1);
+                spawnBoom(enemies[i].formationOrigin, 1);
+                spawnBoom(deriveCoord(enemies[i].formationOrigin, 35, 0), 1);
+                spawnBoom(deriveCoord(enemies[i].formationOrigin, -20, 15), 1);
+                spawnBoom(deriveCoord(enemies[i].formationOrigin, 20, 15), 1);
+
+                enemies[i] = nullEnemy();
 				bossOnscreen = false;
 				triggerState(STATE_LEVEL_COMPLETE);
 				continue;
@@ -651,7 +648,7 @@ void enemyGameFrame() {
 			// Explosion and shaking drama.
 			else if(enemies[i].dying && due(enemies[i].boomTime, 75)) {
 				// Explosions.
-				spawnBoom(deriveCoord(enemies[i].formationOrigin, randomMq(-60, 60), randomMq(-15, 15)));
+				spawnBoom(deriveCoord(enemies[i].formationOrigin, randomMq(-60, 60), randomMq(-15, 15)), 1);
 				enemies[i].boomTime = clock();
 
 				// Shaking.

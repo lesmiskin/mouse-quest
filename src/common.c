@@ -1,5 +1,6 @@
 #include "myc.h"
 #include "common.h"
+#include "renderer.h"
 #include <unistd.h>
 #include <time.h>
 
@@ -43,6 +44,12 @@ bool isScripted() {
 void triggerState(GameState newState) {
 	gameState = newState;
 	stateInitialised = false;
+
+	// FIXME: GIANT HACKS for fixing "one visible frame" issue when scripting is wholly responsible
+	// for coordinating scene fade-ins.
+	if(newState == STATE_INTRO || newState == STATE_GAME || newState == STATE_TITLE) {
+		fadeIn();
+	}
 }
 
 int randomMq(int min, int max) {

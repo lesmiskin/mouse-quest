@@ -75,6 +75,8 @@ void drawSpriteAbsRotated2(Sprite sprite, Coord origin, double angle, double sca
 	int offsetX = sprite.offset.x * renderScale;
 	int offsetY = sprite.offset.y * renderScale;
 
+    // FIXME: Origin is when when scaling the sprites beyond 1.0
+
 	//NB: We adjust the offset to ensure all sprites are drawn centered at their origin points
 	offsetX -= (sprite.size.x / 2) * renderScale;
 	offsetY -= (sprite.size.y / 2) * renderScale;

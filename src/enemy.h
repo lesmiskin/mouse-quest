@@ -88,7 +88,7 @@ typedef struct {
 
 extern double bossHealth;
 extern bool bossOnscreen;
-extern void spawnBoom(Coord origin);
+extern void spawnBoom(Coord origin, double scale);
 extern const double HEALTH_LIGHT;
 extern bool invalidEnemy(Enemy* enemy);
 extern void resetEnemies();

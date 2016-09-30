@@ -133,9 +133,34 @@ void endOfFrameTransition() {
 			}
 			break;
 		case SCENE_INFINITE:
+			// Fade on infinite scripts too.
+			// TODO: Tidy this up - lots of duplication from above.
+			switch(scriptStatus.sceneProgress) {
+				//Initialised, go to fade in or loop.
+				case SCENE_UNINITIALISED:
+					//Toggle fade in.
+					if((scene.fadeMode & FADE_IN) > 0) {
+						scriptStatus.sceneProgress = SCENE_FADE_IN;
+						fadeIn();
+						//Toggle main loop. IMPORTANT: We start our frame clock now, AFTER the fade.
+					} else {
+						scriptStatus.sceneProgress = SCENE_LOOPING;
+						scriptStatus.sceneTimer = clock();
+					}
+					break;
+					//Fading and complete? Go to loop.
+				case SCENE_FADE_IN:
+					if(!isFading()) {
+						scriptStatus.sceneProgress = SCENE_LOOPING;
+						scriptStatus.sceneTimer = clock();
+					}
+					break;
+			}
+
 			if(scriptStatus.sceneProgress == SCENE_UNINITIALISED) {
 				scriptStatus.sceneProgress = SCENE_INITIALISED;
 			}
+
 			//Keep cycling 'till we manually trigger a state change.
 			break;
 	}
