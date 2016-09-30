@@ -26,3 +26,15 @@
 
 -----------------------------------------------------
 
+Offer donations out of the blue - any sites for this?
+Offer donations per month to continue development.
+Offer donations per major release of the game:
+- 2 player mode
+- 5 level pack
+- iOS version
+- Android version
+- Floppy disk version
+
+
+
+
