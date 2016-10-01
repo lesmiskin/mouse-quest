@@ -1,11 +1,8 @@
 
+* Fix non-shooting intro sequence.
+
 * Add 'Level complete' HUD element.
 * Score display during 'you win'
-
-* Die on one hit from boss.
-* Fix non-shooting intro sequence.
-* Stop warning sound being overridden by another sound.
-* Fix boss health bar staying onscreen between games.
 
 -----------------------------------------------------
 
@@ -18,23 +15,11 @@
 * Gives fruit when killing a wave.
 * Slide Mike into view on game start.
 
-* Stop multiple bouncing on death.
 * Two-frame Mike death animation.
 * Restore random PCB layouts.
 * Stop enemies slightly offscreen from shooting.
 * Sweat animation during boss death.
+* Joystick control.
 
 -----------------------------------------------------
-
-Offer donations out of the blue - any sites for this?
-Offer donations per month to continue development.
-Offer donations per major release of the game:
-- 2 player mode
-- 5 level pack
-- iOS version
-- Android version
-- Floppy disk version
-
-
-
 

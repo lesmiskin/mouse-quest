@@ -450,7 +450,7 @@ static void loadSounds() {
 	SoundDef defs[] = {
 		{ "mike-die.wav", SOUND_VOLUME * 4 },
 		{ "intro-presents.wav", SOUND_VOLUME * 2 },
-		{ "warning.wav", SOUND_VOLUME * 1.5 },
+		{ "warning.wav", SOUND_VOLUME * 3 },
 		{ "Powerup9.wav", SOUND_VOLUME * 4 },
 		{ "Powerup8.wav", SOUND_VOLUME * 4 },
 		{ "loss.wav", SOUND_VOLUME * 5 },

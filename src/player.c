@@ -63,7 +63,7 @@ static bool bubbleFinished = false;
 static long bubbleLastTime;
 static char* frameName;
 static long lastHitTime;
-static bool pain;
+bool pain;
 static bool flickerPain;
 static const int PAIN_RECOVER_TIME = 2000;
 static bool painShocked;
@@ -80,7 +80,7 @@ static bool canControl() {
 static bool canAnimate() {
 	return ( playerState&PSTATE_CAN_ANIMATE) > 0;
 }
-static bool isDying() {
+bool isDying() {
 	return playerState == PSTATE_DYING;
 }
 
@@ -102,11 +102,6 @@ extern void restoreHealth() {
 void hitPlayer(double damage) {
 	//Don't take damage when in hit recovery mode.
 	if(pain && !isDying() || godMode) return;
-
-	if(begunDyingGame && dieBounce < 1) {
-		dieBounce = 4.0;
-		return;
-	}
 
 	//Take damage.
 	playerHealth -= damage;

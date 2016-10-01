@@ -43,6 +43,10 @@ static void initSDL() {
 	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
 		fatalError("Fatal error", "SDL_Mixer did not initialise.");
 	}
+
+	// We increase max channels beyond default of 8, so 'warning.wav' never gets cut off.
+	// TODO: Have weapons, enemies etc. on single channel.
+	Mix_AllocateChannels(16);
 }
 static void initWindow() {
 	SDL_DisplayMode currentRes;

@@ -107,6 +107,11 @@ static EnemyShot nullEnemyShot() {
 }
 
 void hitEnemy(Enemy* enemy, double damage, bool collision) {
+	// Don't keep hitting boss if in pain (prevents kamikaze boss cheat)
+	if(pain && enemy->type == ENEMY_BOSS) {
+		return;
+	}
+
 	play("Hit_Hurt9.wav");
 	enemy->hitAnimate = true;
 	enemy->health -= damage;
@@ -433,6 +438,8 @@ void resetEnemies() {
 	enemyCount = 0;
 	enemyShotCount = 0;
 	boomCount = 0;
+	bossOnscreen = false;
+	bossHealth = 0;
 }
 
 void incScript(Enemy *e, int toMove) {
@@ -681,8 +688,7 @@ void enemyGameFrame() {
 		}else{
 			enemyBound = makeSquareBounds(enemies[i].parallax, ENEMY_BOUND);
 		}
-
-		if(inBounds(playerOrigin, enemyBound)) {
+		if(inBounds(playerOrigin, enemyBound) && !isDying()) {
 			hitPlayer(enemies[i].collisionDamage);
 			hitEnemy(&enemies[i], playerStrength, true);
 		}
@@ -732,6 +738,4 @@ void enemyGameFrame() {
 void enemyInit() {
 	resetEnemies();
 	animateEnemy();
-	bossOnscreen = false;
-	bossHealth = 0;
 }
