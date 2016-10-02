@@ -332,6 +332,7 @@ void pewInit() {
 }
 
 void resetPew() {
+	for(int i=0; i < shotInc; i++) shots[i] = nullShot();
 	weaponInc = 0;
 	shotInc = 0;
 	canFireInLevel = false;

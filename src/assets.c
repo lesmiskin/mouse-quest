@@ -450,7 +450,7 @@ static void loadSounds() {
 	SoundDef defs[] = {
 		{ "mike-die.wav", SOUND_VOLUME * 4 },
 		{ "intro-presents.wav", SOUND_VOLUME * 2 },
-		{ "warning.wav", SOUND_VOLUME * 3 },
+		{ "warning.wav", SOUND_VOLUME * 2.25 },
 		{ "Powerup9.wav", SOUND_VOLUME * 4 },
 		{ "Powerup8.wav", SOUND_VOLUME * 4 },
 		{ "loss.wav", SOUND_VOLUME * 5 },
@@ -500,9 +500,7 @@ static void loadSounds() {
 
 static void loadMusic() {
 	char* defs[] = {
-		"intro-battle.ogg",
 		"intro-battle-3.ogg",
-		"level-01.ogg",
 		"level-01c.ogg",
 		"title.ogg"
 	};
