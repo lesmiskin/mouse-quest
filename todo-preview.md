@@ -1,6 +1,4 @@
 
-* Fix non-shooting intro sequence.
-
 * Add 'Level complete' HUD element.
 * Score display during 'you win'
 

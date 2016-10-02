@@ -138,10 +138,11 @@ void upgradeWeapon() {
 }
 
 void pew() {
-	//Rate-limiter, and HACK for skipping initial shots post-menu.
-	if(!canFireInLevel || !timer(&lastShotTime, weapons[weaponInc].speed)) {
+	//Rate-limiter, and preventing initial shots post-menu.
+	if(!timer(&lastShotTime, weapons[weaponInc].speed))
 		return;
-	}
+	if(!canFireInLevel && gameState != STATE_INTRO)
+		return;
 
 //	SDL_HapticRumblePlay(haptic, 0.4, 100);
 	play("Laser_Shoot18.wav");

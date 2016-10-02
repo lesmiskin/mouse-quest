@@ -108,10 +108,10 @@ void levelInit() {
 	const int RIGHT_OFF = (int)screenBounds.x + 85;
 	const int LEFT_OFF = -40;
 
-    warning();
-
-	wave(0, W_COL, CENTER, NA, PATTERN_BOSS, ENEMY_BOSS, COMBAT_HOMING, false, 0.5, 1, 200, 1);
-	return;
+//    warning();
+//
+//	wave(0, W_COL, CENTER, NA, PATTERN_BOSS, ENEMY_BOSS, COMBAT_HOMING, false, 0.5, 1, 200, 1);
+//	return;
 
 	pause(2000);
 
