@@ -1,4 +1,4 @@
-Version 0.1
+Ubuntu version 0.1
 
 ==========================================
 ==           INTRODUCTION               ==
@@ -8,8 +8,8 @@ Mouse Quest is a top-down shoot-em-up ("smhup" for short), in the style of
 video games from the 1980's and 1990's.
 
 You control Mike, a sentient computer mouse who's out to save the world
-from a virus-infected fleet of computer hardware. Fight the humble floppy
-disk and CD-ROM, all the way to perhipherals of immense size and ferocity.
+from a virus-infected fleet of computer hardware! Fight the humble floppy
+disk and CD-ROM, all the way to perhipherals of immense size and ferocity!
 
 This version of Mouse Quest is a small preview only, and includes just one 
 level and limited game features. The quality of the full game may change 
@@ -17,6 +17,21 @@ dramatically upon release, so please keep this in mind while playing.
 
 If you have any comments or feedback on Mouse Quest, please contact Les
 Miskin on <trilinear.nz@gmail.com>.
+
+
+==========================================
+==            INSTALLATION              ==
+==========================================
+
+1. Extract the Mouse Quest compressed file to a folder of your choosing.
+2. From a terminal instance, run the command "sudo ./install.sh".
+3. Type your password and press ENTER.
+4. After the requisite SDL files have been installed to your computer, 
+   press any key to start Mouse Quest.
+
+Once Mouse Quest has been installed, you can run the 'mouse-quest' binary
+file directly from your computer at any time, or make a link to it and 
+store it on your desktop for easy access. You know you want to!
 
 
 ==========================================
