@@ -1,4 +1,4 @@
-Ubuntu version 0.1
+Ubuntu version 0.12
 
 ==========================================
 ==           INTRODUCTION               ==
