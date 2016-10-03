@@ -4,12 +4,12 @@ Ubuntu version 0.12
 ==           INTRODUCTION               ==
 ==========================================
 
-Mouse Quest is a top-down shoot-em-up ("smhup" for short), in the style of
+Mouse Quest is a top-down shoot-em-up ("shmup" for short), in the style of
 video games from the 1980's and 1990's.
 
 You control Mike, a sentient computer mouse who's out to save the world
-from a virus-infected fleet of computer hardware! Fight the humble floppy
-disk and CD-ROM, all the way to perhipherals of immense size and ferocity!
+from a virus-infected fleet of computer hardware. Fight the humble floppy
+disk and CD-ROM, all the way to peripherals of immense size and ferocity.
 
 This version of Mouse Quest is a small preview only, and includes just one 
 level and limited game features. The quality of the full game may change 
