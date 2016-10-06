@@ -1,4 +1,4 @@
-Windows version 0.12
+Windows version 0.13
 
 ==========================================
 ==           INTRODUCTION               ==
@@ -96,4 +96,23 @@ GitLab
 SDL 2.0
 SDL Image 2.0
 SDL Mixer 2.0
+
+
+==========================================
+==             CHANGELOG                ==
+==========================================
+
+0.1
+Initial public release
+
+0.11
+Testing release for attempted bugfix: Shooting stops after a few seconds after game start.
+
+0.12
+Fixed bug: Shooting stops after a few seconds after game start.
+
+0.13
+Added boss introduction animation sequence.
+Added unique music for boss encounter.
+Fixed bug: Warning sound would sometimes not play during boss intro.
 

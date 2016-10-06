@@ -178,7 +178,6 @@ static void loadImages() {
 		{ "mike-fright-left.png", false, true, false, false, false },
 		{ "mike-fright-right.png", false, true, false, false, false },
 		{ "key-a.png", true, true, false, false, false },
-		{ "keyboss-mini.png", false, false, false, false, false },
 		{ "keyboss-mini-01.png", false, false, false, false, false },
 		{ "keyboss-mini-02.png", false, false, false, false, false },
 		{ "keyboss-01.png", true, true, false, false, false },
