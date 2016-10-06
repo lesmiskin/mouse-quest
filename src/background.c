@@ -93,6 +93,17 @@ SDL_Texture* createPlatformTexture() {
 	);
 }
 
+void foregroundRenderFrame() {
+	//Draw 'base' platforms.
+	for(int i=0; i < MAX_PLATFORMS; i++) {
+		//Skip null platforms.
+		if(invalidPlatform(&platforms[i])) continue;
+
+		Coord parallaxOrigin = parallax(platforms[i].origin, PARALLAX_PAN, PARALLAX_LAYER_PLATFORM, PARALLAX_X, PARALLAX_ADDITIVE);
+		drawSpriteAbs(platforms[i].sprite, parallaxOrigin);
+	}
+}
+
 void backgroundRenderFrame() {
 
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
@@ -165,15 +176,6 @@ void backgroundRenderFrame() {
 		if(invalidPlanet(&planets[i])) continue;
 		Coord parallaxOrigin = parallax(planets[i].origin, PARALLAX_PAN, PARALLAX_LAYER_PLANET, PARALLAX_X, PARALLAX_ADDITIVE);
 		drawSpriteAbs(planets[i].sprite, parallaxOrigin);
-	}
-
-	//Draw 'base' platforms.
-	for(int i=0; i < MAX_PLATFORMS; i++) {
-		//Skip null platforms.
-		if(invalidPlatform(&platforms[i])) continue;
-
-		Coord parallaxOrigin = parallax(platforms[i].origin, PARALLAX_PAN, PARALLAX_LAYER_PLATFORM, PARALLAX_X, PARALLAX_ADDITIVE);
-		drawSpriteAbs(platforms[i].sprite, parallaxOrigin);
 	}
 }
 

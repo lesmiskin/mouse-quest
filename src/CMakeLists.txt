@@ -13,7 +13,7 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-add_executable(mouse-quest level.c common.c renderer.c assets.c player.c input.c main.c background.c weapon.c enemy.c scripting.c scripts.c hud.c item.c sound.c)
+add_executable(mouse-quest level.c common.c renderer.c assets.c player.c input.c main.c background.c weapon.c enemy.c formations.c scripting.c scripts.c hud.c item.c sound.c)
 
 # SDL includes (Source: https://github.com/tcbrindle/sdl2-cmake-scripts)
 find_package(SDL2 REQUIRED)

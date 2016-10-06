@@ -40,13 +40,9 @@ static void initSDL() {
 	}
 
 	//Init SDL_Mixer for simpler, high-level sound API.
-	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0) {
 		fatalError("Fatal error", "SDL_Mixer did not initialise.");
 	}
-
-	// We increase max channels beyond default of 8, so 'warning.wav' never gets cut off.
-	// TODO: Have weapons, enemies etc. on single channel.
-	Mix_AllocateChannels(16);
 }
 static void initWindow() {
 	SDL_DisplayMode currentRes;
@@ -149,6 +145,9 @@ static void shutdownMain() {
 			if(vsync) clearBackground(makeBlack());
 
 			backgroundRenderFrame();
+			enemyBackgroundRenderFrame();	// we show certain enemies behind the background.
+			foregroundRenderFrame();		// show platforms.
+
 			if(ENABLE_SHADOWS) {
 				pewShadowFrame();
 				enemyShadowFrame();

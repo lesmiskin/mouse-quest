@@ -19,6 +19,7 @@ typedef enum {
 	ENEMY_BUG,
 	ENEMY_CD,
 	ENEMY_BOSS,
+	ENEMY_BOSS_INTRO
 } EnemyType;
 
 typedef enum {
@@ -27,6 +28,8 @@ typedef enum {
 	PATTERN_SNAKE,
 	PATTERN_BOB,
 	PATTERN_CIRCLE,
+	PATTERN_BOSS_INTRO,
+
 	P_CURVE_LEFT,
 	P_CURVE_RIGHT,
 
@@ -84,6 +87,8 @@ typedef struct {
 	double collisionDamage;
 	long boomTime;
 	long fatalTime;
+	bool nonInteractive;
+	bool inBackground;
 } Enemy;
 
 extern double bossHealth;
@@ -98,6 +103,7 @@ extern const int ENEMY_BOUND;
 extern Enemy enemies[MAX_ENEMIES];
 extern void enemyInit();
 extern void enemyShadowFrame();
+extern void enemyBackgroundRenderFrame();
 extern void enemyRenderFrame();
 extern void enemyGameFrame();
 extern void animateEnemy();

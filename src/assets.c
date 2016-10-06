@@ -178,6 +178,9 @@ static void loadImages() {
 		{ "mike-fright-left.png", false, true, false, false, false },
 		{ "mike-fright-right.png", false, true, false, false, false },
 		{ "key-a.png", true, true, false, false, false },
+		{ "keyboss-mini.png", false, false, false, false, false },
+		{ "keyboss-mini-01.png", false, false, false, false, false },
+		{ "keyboss-mini-02.png", false, false, false, false, false },
 		{ "keyboss-01.png", true, true, false, false, false },
 		{ "keyboss-02.png", true, true, false, false, false },
 		{ "keyboss-03.png", true, true, false, false, false },
@@ -500,6 +503,7 @@ static void loadSounds() {
 
 static void loadMusic() {
 	char* defs[] = {
+		"tension.ogg",
 		"intro-battle-3.ogg",
 		"level-01c.ogg",
 		"title.ogg"

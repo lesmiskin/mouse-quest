@@ -221,7 +221,7 @@ void pewGameFrame() {
 				enemyBound = makeSquareBounds(enemies[p].parallax, ENEMY_BOUND);
 			}
 
-			if(inBounds(shots[i].coord, enemyBound)) {
+			if(inBounds(shots[i].coord, enemyBound) && !enemies[p].nonInteractive) {
 				hitEnemy(&enemies[p], SHOT_DAMAGE, false);
 
 				//Set shot as null, and cancel out of this loop (since this shot is now finished with).

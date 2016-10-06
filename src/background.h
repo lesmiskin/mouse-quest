@@ -2,6 +2,7 @@
 #define BACKGROUND_H
 
 extern void initBackground();
+extern void foregroundRenderFrame();
 extern void backgroundRenderFrame();
 extern void backgroundGameFrame();
 extern void resetBackground();

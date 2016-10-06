@@ -218,11 +218,21 @@ void toggleWarning() {
 	warningOn = true;
 	warningStartTime = clock();
 	lastWarningFlash = clock();
+
+	// Stop the music (drama!)
+	Mix_FadeOutMusic(250);
+
+	// Force initial display
+	play("warning.wav");
+	warningShowing = true;
 }
 
 void renderWarning() {
-	// Halting.
-	if(!warningOn || due(warningStartTime, WARNING_TIME)) {
+	if(!warningOn) return;
+
+	// Halt the warning, and start special boss music.
+	if(warningOn && due(warningStartTime, WARNING_TIME)) {
+		playMusic("tension.ogg", -1);
 		warningOn = false;
 		return;
 	}
