@@ -25,6 +25,10 @@ if(WIN32)
     # Special parameter to make a native windows app, rather than a console app.
     # This prevents a superfluous console window opening when running the game.
     target_link_libraries(mouse-quest -mwindows -lm ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2MIXER_LIBRARY})
+
+    # Link to icon resource file.
+    set( MQ_LINKFLAGS ${CMAKE_CURRENT_SOURCE_DIR}/mq.res )
+    set_target_properties( mouse-quest PROPERTIES LINK_FLAGS ${MQ_LINKFLAGS} )
 else()
     target_link_libraries(mouse-quest -lm ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2MIXER_LIBRARY})
 endif()
