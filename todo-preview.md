@@ -1,4 +1,18 @@
 
+* Stop console window showing on Windows.
+* Windowed display mode.
+* Config file
+
+* Boss expells some coins and fruit on dying.
+* Gives fruit when killing a wave.
+
+* Fix tic at end of level music.
+
+
+
+
+
+* Splitting boss animation.
 * Side-scrolling PCB clouds.
 * High score table.
 * Stats at level end.
@@ -12,8 +26,6 @@
 - SineA
 - SineB
 
-* Boss expells some coins and fruit on dying.
-* Gives fruit when killing a wave.
 
 
 -----------------------------------------------------

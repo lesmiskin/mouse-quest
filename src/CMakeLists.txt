@@ -21,4 +21,10 @@ find_package(SDL2_Image REQUIRED)
 find_package(SDL2_Mixer REQUIRED)
 include_directories(${SDL2_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIR} ${SDL2_MIXER_INCLUDE_DIR})
 
-target_link_libraries(mouse-quest -lm ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2MIXER_LIBRARY})
+if(WIN32)
+    # Special parameter to make a native windows app, rather than a console app.
+    # This prevents a superfluous console window opening when running the game.
+    target_link_libraries(mouse-quest -mwindows -lm ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2MIXER_LIBRARY})
+else()
+    target_link_libraries(mouse-quest -lm ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2MIXER_LIBRARY})
+endif()
