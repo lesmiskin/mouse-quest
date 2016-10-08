@@ -1,6 +1,7 @@
 #include <time.h>
 #include "formations.h"
 #include "enemy.h"
+#include "myc.h"
 
 static void incScript(Enemy *e, int toMove) {
 	if(e->scriptInc == toMove) e->scriptInc++;
