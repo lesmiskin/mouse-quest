@@ -45,18 +45,13 @@ static void initSDL() {
 	}
 }
 static void initWindow() {
-	SDL_DisplayMode currentRes;
-	SDL_GetDesktopDisplayMode(0, &currentRes);
-
 	window = SDL_CreateWindow(
 		GAME_TITLE,
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
-//		(int)windowSize.x,					//dimensions
-//		(int)windowSize.y,
-		currentRes.w,
-		currentRes.h,
-		SDL_WINDOW_OPENGL | (FULLSCREEN ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_MAXIMIZED)
+		(int)windowSize.x,					//dimensions
+		(int)windowSize.y,
+		SDL_WINDOW_OPENGL | (FULLSCREEN ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0)
 	);
 
 	//Hide cursor in fullscreen
@@ -80,7 +75,15 @@ static void shutdownMain() {
 }
 
 #if defined(_WIN32)
-	int main(int argc, char *argv[])  {
+	int main(int argc, char *argv[]) {
+
+        // Windowed mode argument.
+        if(argc > 1 && strcmp(argv[1], "-window") == 0) {
+            FULLSCREEN = false;
+            windowSize.x = 672;
+            windowSize.y = 768;
+        }
+
 #else
 	int main()  {
 #endif
@@ -141,9 +144,6 @@ static void shutdownMain() {
 
 		//Renderer frame
 		if(timer(&lastRenderFrameTime, RENDER_HZ)) {
-			//V-sync requires us to clear on every frame.
-			if(vsync) clearBackground(makeBlack());
-
 			backgroundRenderFrame();
 			enemyBackgroundRenderFrame();	// we show certain enemies behind the background.
 			foregroundRenderFrame();		// show platforms.

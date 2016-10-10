@@ -6,7 +6,6 @@
 
 SDL_Window *window = NULL;
 GameState gameState;
-const bool vsync = false;
 
 const bool ENABLE_PARALLAX = true;
 const bool ENABLE_SHADOWS = true;

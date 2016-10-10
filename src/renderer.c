@@ -266,9 +266,6 @@ void toggleFullscreen() {
 }
 
 void initRenderer() {
-	//Enable v-sync in SDL.
-	if(vsync) SDL_GL_SetSwapInterval(1);
-
 	//EXPERIMENTAL: Toggle for old-school 'bilinear filtering' look.
 //	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
 
@@ -277,7 +274,6 @@ void initRenderer() {
 		window,
 		-1,							            //insert at default index position for renderer list.
 		SDL_RENDERER_TARGETTEXTURE           	//supports rendering to textures.
-//		| SDL_RENDERER_PRESENTVSYNC
 	);
 	assert(renderer != NULL);
 
