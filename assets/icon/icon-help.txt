@@ -1,0 +1,4 @@
+Layer sizes in GIMP:
+http://stackoverflow.com/questions/4354617/how-to-make-get-a-multi-size-ico-file
+
+http://skyboygames.com/easily-create-a-windows-app-icon-with-gimp/
