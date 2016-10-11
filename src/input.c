@@ -56,6 +56,9 @@ void pollInput() {
 				SDL_Keycode keypress = event.key.keysym.scancode;
 
 				switch(keypress) {
+                    case SDL_SCANCODE_F1:
+                        screenshot();
+                        break;
 					case SDL_SCANCODE_F11:
 						toggleFullscreen();
 						break;

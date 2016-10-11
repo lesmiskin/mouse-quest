@@ -10,6 +10,7 @@
 SDL_Texture *renderBuffer;
 const int STATIC_SHADOW_OFFSET = 8;
 SDL_Renderer *renderer = NULL;
+static SDL_Texture *shotBuffer;
 static int renderScale;
 static const double PIXEL_SCALE = 1;				//pixel doubling for assets.
 
@@ -107,14 +108,45 @@ void drawSpriteAbs(Sprite sprite, Coord origin) {
 	drawSpriteAbsRotated(sprite, origin, 0);
 }
 
+static int screenshotInc = 0;
+
+void screenshot() {
+    // We do a little magic here to take screenshots with 3x scale.
+    // We render one frame to a specially-scaled canvas texture, then write *that* to the file system :)
+
+    // Prepare screenshot surface.
+    SDL_Surface *sshot = SDL_CreateRGBSurface(
+        0, BASE_SCALE_WIDTH*3, BASE_SCALE_HEIGHT*3, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000
+    );
+
+    // Redirect renderer to the screenshot buffer.
+    SDL_SetRenderTarget(renderer, shotBuffer);
+
+    // Use SDL to blit (and scale) renderBuffer contents to the screenshot buffer.
+    SDL_RenderSetLogicalSize(renderer, pixelGrid.x, pixelGrid.y);
+    SDL_RenderCopy(renderer, renderBuffer, NULL, NULL);
+
+    // Copy the pixels from the renderer to our screenshot surface.
+    SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_ARGB8888, sshot->pixels, sshot->pitch);
+
+    // Switch rendering target back to the buffer.
+    SDL_SetRenderTarget(renderer, renderBuffer);
+
+    // Prepare filename, and save to file system.
+    char filename[12];
+    sprintf(filename, "MQ%04d.bmp", screenshotInc++);
+    SDL_SaveBMP(sshot, filename);
+    SDL_FreeSurface(sshot);
+}
+
 void setDrawColour(Colour colour) {
 	SDL_SetRenderDrawColor(
-			renderer,
-			colour.red,
-			colour.green,
-			colour.blue,
-			colour.alpha
-	);
+        renderer,
+        colour.red,
+        colour.green,
+        colour.blue,
+        colour.alpha
+    );
 }
 void clearBackground(Colour colour) {
 	setDrawColour(colour);
@@ -299,9 +331,18 @@ void initRenderer() {
 		(int)pixelGrid.y
 	);
 
-	/* Clear the entire window surface to a solid colour (need to do this since our actual
-	 * drawing area is a small vertical rectangle in the middle of the screen - leaving the
-	 * sides undrawn per-frame. */
+    // Screenshot canvas.
+    shotBuffer = SDL_CreateTexture(
+        renderer,
+        SDL_PIXELFORMAT_RGB24,
+        SDL_TEXTUREACCESS_TARGET,
+        BASE_SCALE_WIDTH*3,
+        BASE_SCALE_HEIGHT*3
+    );
+
+    /* Clear the entire window surface to a solid colour (need to do this since our actual
+     * drawing area is a small vertical rectangle in the middle of the screen - leaving the
+     * sides undrawn per-frame. */
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_RenderClear(renderer);

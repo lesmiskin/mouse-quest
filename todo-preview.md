@@ -1,5 +1,4 @@
 
-* Screenshot key (3x scale)
 * Boss expells some coins and fruit on dying.
 * Level 2
 

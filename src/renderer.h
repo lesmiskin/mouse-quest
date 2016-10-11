@@ -39,6 +39,7 @@ typedef enum {
 extern SDL_Texture *renderBuffer;
 extern const int STATIC_SHADOW_OFFSET;
 
+extern void screenshot();
 extern void toggleFullscreen();
 extern Coord getParallaxOffset();
 extern Coord parallax(Coord subject, ParallaxReference reference, ParallaxLayer layer, ParallaxDimensions dimensions, ParallaxMode mode);
