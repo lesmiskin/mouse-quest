@@ -28,6 +28,7 @@ typedef struct {
 	Mix_Music*music;
 } MusicAsset;
 
+extern SDL_Surface* reloadSurface(char* path);
 extern void initAssets();
 extern SDL_Texture *getTexture(char *path);
 extern SDL_Texture *getTextureVersion(char *path, AssetVersion version);

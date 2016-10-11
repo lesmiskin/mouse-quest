@@ -55,9 +55,9 @@ static void initWindow() {
 	);
 
 	//Hide cursor in fullscreen
-	if(FULLSCREEN) SDL_ShowCursor(SDL_DISABLE);
+//	if(FULLSCREEN) SDL_ShowCursor(SDL_DISABLE);
 
-	assert(window != NULL);
+    assert(window != NULL);
 }
 static void shutdownWindow() {
 	if(window == NULL) return;			//OK to call if not yet setup (an established subsystem pattern elsewhere)
@@ -72,6 +72,11 @@ static void shutdownMain() {
 	shutdownInput();
 
 	SDL_Quit();
+}
+
+static void setWindowIcon() {
+	SDL_Surface* icon = reloadSurface("mike-lean-02.png");
+	SDL_SetWindowIcon(window, icon);
 }
 
 #if defined(_WIN32)
@@ -96,8 +101,8 @@ static void shutdownMain() {
 	initWindow();
 	initRenderer();
 	initAssets();
+	setWindowIcon();
 	initInput();
-
 	initScripts();
 	playerInit();
 	initBackground();

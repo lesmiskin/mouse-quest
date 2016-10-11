@@ -249,18 +249,19 @@ void faderRenderFrame() {
 }
 
 void toggleFullscreen() {
-	//IMPORTANT: We need to set the size, *THEN* toggle fullscreen for a smooth transition.
-	//TODO: Fix bug: Won't position window in center of display(!)
-
-	//Change window size in anticipation of next mode change.
+	// Make a window.
 	if(FULLSCREEN) {
-		SDL_SetWindowPosition(window,SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-		SDL_SetWindowSize(window, pixelGrid.x * 4, pixelGrid.y * 4);
+		SDL_SetWindowSize(window, 672, 768);
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_SHOWN);
+		SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
+	// Go back to fullscreen.
 	}else{
-		SDL_SetWindowSize(window, windowSize.x, windowSize.y);
-		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	}
+
+	// Need to reinitialise fader after all this, otherwise it doesn't work properly :p
+	initFader();
 
 	FULLSCREEN = !FULLSCREEN;
 }

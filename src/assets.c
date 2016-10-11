@@ -47,6 +47,12 @@ SoundAsset getSound(char *path) {
 	fatalError("Could not find Asset in register", path);
 }
 
+SDL_Surface* reloadSurface(char* path) {
+    char *absPath = combineStrings(assetPath, path);
+    if(!fileExists(absPath)) fatalError("Could not find Asset on disk", absPath);
+    return IMG_Load(absPath);
+}
+
 static Asset makeAsset(AssetDef definition) {
 	assert(renderer != NULL);
 

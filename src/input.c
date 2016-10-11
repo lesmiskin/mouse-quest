@@ -56,9 +56,12 @@ void pollInput() {
 				SDL_Keycode keypress = event.key.keysym.scancode;
 
 				switch(keypress) {
-					case SDL_SCANCODE_F10:
-						toggleMusic();
+					case SDL_SCANCODE_F11:
+						toggleFullscreen();
 						break;
+//					case SDL_SCANCODE_F10:
+//						toggleMusic();
+//						break;
 					// Activate fire-on-space only after we've switched modes, to prevent too-soon firing on game start.
 					case SDL_SCANCODE_SPACE:
 					case SDL_SCANCODE_LCTRL:
