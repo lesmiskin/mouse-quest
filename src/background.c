@@ -93,7 +93,17 @@ SDL_Texture* createPlatformTexture() {
 	);
 }
 
+bool skipClutter() {
+    //Don't do planet, platform rendering, or star scrolling for static backgrounds.
+    return staticBackground || (
+        gameState != STATE_GAME &&
+        gameState != STATE_GAME_OVER &&
+        gameState != STATE_LEVEL_COMPLETE);
+}
+
 void foregroundRenderFrame() {
+    if(skipClutter()) return;
+
 	//Draw 'base' platforms.
 	for(int i=0; i < MAX_PLATFORMS; i++) {
 		//Skip null platforms.
@@ -159,15 +169,9 @@ void backgroundRenderFrame() {
 		drawSprite(sprite, parallaxOrigin);
 	}
 
-	//Don't do planet, platform rendering, or star scrolling for static backgrounds.
-	if(	staticBackground || (
-		gameState != STATE_GAME &&
-		gameState != STATE_GAME_OVER &&
-		gameState != STATE_LEVEL_COMPLETE)) {
-		return;
-	}
+    if(skipClutter()) return;
 
-	//We show two large textures, one after the other, to create a seamless scroll. Once the first texture
+    //We show two large textures, one after the other, to create a seamless scroll. Once the first texture
 	// moves out of the viewport, however, we snap it back to the top.
 
 	//Render planets.

@@ -55,7 +55,7 @@ static void initWindow() {
 	);
 
 	//Hide cursor in fullscreen
-//	if(FULLSCREEN) SDL_ShowCursor(SDL_DISABLE);
+	if(FULLSCREEN) SDL_ShowCursor(SDL_DISABLE);
 
     assert(window != NULL);
 }

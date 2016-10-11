@@ -136,13 +136,13 @@ void persistentHudRenderFrame() {
 
 	// Draw coin box.
 	Sprite warning = makeSprite(getTexture(coinBoxFile), zeroCoord(), SDL_FLIP_NONE);
-	drawSpriteAbs(warning, makeCoord(screenBounds.x - 16, screenBounds.y - 20));
+	drawSpriteAbs(warning, makeCoord(screenBounds.x - 20, screenBounds.y - 20));
 
 	// Draw coin insertion animation.
 	if(coinInserting) {
-		if(coinX < 83) {
+		if(coinX < 77) {
 			// Throw the coin
-			coinThrowPower -= 0.15;
+			coinThrowPower -= 0.16;
 			coinY -= coinThrowPower;
 
 			char coinFile[50];

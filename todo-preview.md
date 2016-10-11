@@ -1,18 +1,14 @@
 
-* Windowed param on all operating systems.
-* Window/fullscreen toggle.
-* Move insert coin to the left a bit.
-* Stores highest score and shows throughout game.
-* Stats at level end.
 * Screenshot key (3x scale)
-* Scale setting for screenshots.
-* Config file (screenshot scale, windowed mode on or off).
-* Fix missing sprite bug (boss?).
-* Print missing sprite name in error.
+* Boss expells some coins and fruit on dying.
+* Level 2
 
 ==============================================
 
-* Boss expells some coins and fruit on dying.
+* Stores highest score and shows throughout game.
+* Stats at level end.
+* Windowed param on all operating systems.
+* Fix missing sprite bug (boss?).
 * Gives fruit when killing a wave.
 * Fix tic at end of level music.
 * Stop terminal window showing on mac build.
@@ -21,6 +17,7 @@
 
 ----------------------------------------------
 
+* Fix too-long wait when looping tension.ogg.
 * Side-scrolling PCB clouds.
 * High score table.
 * Simplify enemy patterns.
