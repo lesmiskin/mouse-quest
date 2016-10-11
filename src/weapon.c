@@ -10,7 +10,7 @@
 #include "hud.h"
 #include "myc.h"
 
-#define MAX_SHOTS 50
+#define MAX_SHOTS 20
 
 typedef enum {
 	NORTH,
@@ -113,7 +113,7 @@ static void spawnPew(int xOffset, int yOffset, ShotDir direction) {
 	};
 
     //Ensure we stick within the bounds of our Shot array.
-    shotInc+1 > MAX_SHOTS ? shotInc = 0 : shotInc++;
+    shotInc = shotInc+1 == MAX_SHOTS ? 0 : shotInc + 1;
 
     //Add to the shot list.
 	shots[shotInc] = shot;
