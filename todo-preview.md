@@ -4,6 +4,11 @@
 * Move insert coin to the left a bit.
 * Stores highest score and shows throughout game.
 * Stats at level end.
+* Screenshot key (3x scale)
+* Scale setting for screenshots.
+* Config file (screenshot scale, windowed mode on or off).
+* Fix missing sprite bug (boss?).
+* Print missing sprite name in error.
 
 ==============================================
 
