@@ -6,35 +6,32 @@
 #include "player.h"
 #include "myc.h"
 #include "hud.h"
+#include "savepng.h"
 
-SDL_Texture *renderBuffer;
-const int STATIC_SHADOW_OFFSET = 8;
-SDL_Renderer *renderer = NULL;
-static SDL_Texture *shotBuffer;
-static int renderScale;
-static const double PIXEL_SCALE = 1;				//pixel doubling for assets.
-
-//ORIGINAL
+// Core rendering
 static const int BASE_SCALE_WIDTH = 224;
 static const int BASE_SCALE_HEIGHT = 256;
-
-//4:3
-//static const int BASE_SCALE_WIDTH = 320;
-//static const int BASE_SCALE_HEIGHT = 240;
-
-//16:10
-//static const int BASE_SCALE_WIDTH = 380;
-//static const int BASE_SCALE_HEIGHT = 240;
-
+SDL_Texture *renderBuffer;
+SDL_Renderer *renderer = NULL;
 Coord pixelGrid;								//helps aligning things to the tiled background.
 Coord screenBounds;
+static int renderScale;
+static const double PIXEL_SCALE = 1;			//pixel doubling for assets.
 
+// Fader
 const FadeMode FADE_BOTH = FADE_IN | FADE_OUT;
 static SDL_Texture* fadeOverlay;
 static const int FADE_DURATION = 1000;
 static int fadeAlphaInc;
 static FadeMode currentFadeMode;
 static int currentFadeAlpha;
+
+// Screenshots
+static SDL_Texture *shotBuffer;
+static Coord shotDimensions;
+static int screenshotInc = 0;
+
+const int STATIC_SHADOW_OFFSET = 8;
 
 Coord getTextureSize(SDL_Texture *texture) {
 	int x, y;
@@ -84,10 +81,10 @@ void drawSpriteAbsRotated2(Sprite sprite, Coord origin, double angle, double sca
 
 	//Configure homeTarget location output sprite_t size, adjusting the latter for the constant sprite_t scaling factor.
 	SDL_Rect destination  = {
-			(origin.x + offsetX),
-			(origin.y + offsetY),
-			sprite.size.x * scaleX,
-			sprite.size.y * scaleY
+		(origin.x + offsetX),
+		(origin.y + offsetY),
+		sprite.size.x * scaleX,
+		sprite.size.y * scaleY
 	};
 
 	//Rotation
@@ -108,26 +105,28 @@ void drawSpriteAbs(Sprite sprite, Coord origin) {
 	drawSpriteAbsRotated(sprite, origin, 0);
 }
 
-static int screenshotInc = 0;
-
 void screenshot() {
     // We do a little magic here to take screenshots with 3x scale.
     // We render one frame to a specially-scaled canvas texture, then write *that* to the file system :)
+	// TODO: Stop overwriting existing shots between sessions.
+
+	// Loop max screenshots.
+	if(screenshotInc > 9999) screenshotInc = 0;
 
     // Prepare screenshot surface.
-    SDL_Surface *sshot = SDL_CreateRGBSurface(
-        0, BASE_SCALE_WIDTH*3, BASE_SCALE_HEIGHT*3, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000
+    SDL_Surface *shot = SDL_CreateRGBSurface(
+        0, (int)shotDimensions.x, (int)shotDimensions.y, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000
     );
 
     // Redirect renderer to the screenshot buffer.
     SDL_SetRenderTarget(renderer, shotBuffer);
 
     // Use SDL to blit (and scale) renderBuffer contents to the screenshot buffer.
-    SDL_RenderSetLogicalSize(renderer, pixelGrid.x, pixelGrid.y);
+    SDL_RenderSetLogicalSize(renderer, (int)pixelGrid.x, (int)pixelGrid.y);
     SDL_RenderCopy(renderer, renderBuffer, NULL, NULL);
 
     // Copy the pixels from the renderer to our screenshot surface.
-    SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_ARGB8888, sshot->pixels, sshot->pitch);
+    SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_ARGB8888, shot->pixels, shot->pitch);
 
     // Switch rendering target back to the buffer.
     SDL_SetRenderTarget(renderer, renderBuffer);
@@ -135,8 +134,11 @@ void screenshot() {
     // Prepare filename, and save to file system.
     char filename[12];
     sprintf(filename, "MQ%04d.bmp", screenshotInc++);
-    SDL_SaveBMP(sshot, filename);
-    SDL_FreeSurface(sshot);
+
+	// Save it to the filesystem
+	SDL_SaveBMP(shot, filename);
+//	SDL_SavePNG(sshot, filename);
+	SDL_FreeSurface(shot);
 }
 
 void setDrawColour(Colour colour) {
@@ -157,7 +159,7 @@ void updateCanvas() {
 	SDL_SetRenderTarget(renderer, NULL);
 
 	//Activate scaler, and blit the buffer to the screen.
-	SDL_RenderSetLogicalSize(renderer, pixelGrid.x, pixelGrid.y);
+	SDL_RenderSetLogicalSize(renderer, (int)pixelGrid.x, (int)pixelGrid.y);
 	SDL_RenderCopy(renderer, renderBuffer, NULL, NULL);
 
 	//Actually update the screen itself.
@@ -332,12 +334,13 @@ void initRenderer() {
 	);
 
     // Screenshot canvas.
+	shotDimensions = makeCoord(BASE_SCALE_WIDTH*3, BASE_SCALE_HEIGHT*3);
     shotBuffer = SDL_CreateTexture(
         renderer,
         SDL_PIXELFORMAT_RGB24,
         SDL_TEXTUREACCESS_TARGET,
-        BASE_SCALE_WIDTH*3,
-        BASE_SCALE_HEIGHT*3
+		(int)shotDimensions.x,
+		(int)shotDimensions.y
     );
 
     /* Clear the entire window surface to a solid colour (need to do this since our actual
