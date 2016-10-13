@@ -12,14 +12,14 @@ typedef enum {
 } EnemyAnimation;
 
 typedef enum {
-	ENEMY_MAGNET,
-	ENEMY_DISK,
-	ENEMY_DISK_BLUE,
-	ENEMY_VIRUS,
-	ENEMY_BUG,
-	ENEMY_CD,
-	ENEMY_BOSS,
-	ENEMY_BOSS_INTRO
+	ENEMY_MAGNET = 0,
+	ENEMY_DISK = 1,
+	ENEMY_DISK_BLUE = 2,
+	ENEMY_VIRUS = 3,
+	ENEMY_BUG = 4,
+	ENEMY_CD = 5,
+	ENEMY_BOSS = 6,
+	ENEMY_BOSS_INTRO = 7
 } EnemyType;
 
 typedef enum {

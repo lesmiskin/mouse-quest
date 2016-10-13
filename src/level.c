@@ -3,6 +3,7 @@
 #include "common.h"
 #include "enemy.h"
 #include "hud.h"
+#include "myc.h"
 
 typedef enum {
 	W_COL,
@@ -99,6 +100,48 @@ void levelGameFrame() {
 	}
 }
 
+typedef struct wave {
+	EnemyType type;
+	long time;
+} Wave;
+
+void loadLevel() {
+	// Open the level file.
+	char* fileName = "C:\\Users\\lxm\\dev\\c\\mouse-quest\\src\\LEVEL01.txt";
+	FILE* file = fopen(fileName, "r");
+	Wave waves[50];
+
+	// Read each line.
+	char line[256];
+	while (fgets(line, sizeof(line), file)) {
+		char *part;
+		part = strtok (line, "|");
+		int partInc = 0;
+
+		// Go through each line.
+		while (part != NULL) {
+			switch(partInc) {
+				case 0:
+					// Choose the enemy.
+					waves[waveInc].type = (EnemyType)atoi(part);
+					break;
+				case 1: {
+					// Choose the time.
+					waves[waveInc].time = (long)atoi(part);
+					waveInc++;
+					break;
+				}
+			}
+
+			part = strtok (NULL, "|");
+			partInc++;
+		}
+	}
+
+	// Close the file.
+	fclose(file);
+}
+
 void levelInit() {
 	const int LEFT = 40;
 	const int RIGHT = 230;
@@ -108,7 +151,9 @@ void levelInit() {
 	const int RIGHT_OFF = (int)screenBounds.x + 85;
 	const int LEFT_OFF = -40;
 
-//	pause(2000);
+	loadLevel();
+
+	//	pause(2000);
 //    warning();
 //    wave(0, W_COL, CENTER, 310, PATTERN_BOSS_INTRO, ENEMY_BOSS_INTRO, COMBAT_IDLE, false, 2, 0, 200, 1);
 //    pause(3000);
