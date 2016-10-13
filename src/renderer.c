@@ -5,8 +5,6 @@
 #include "renderer.h"
 #include "player.h"
 #include "myc.h"
-#include "hud.h"
-#include "savepng.h"
 
 // Core rendering
 static const int BASE_SCALE_WIDTH = 224;
@@ -137,7 +135,6 @@ void screenshot() {
 
 	// Save it to the filesystem
 	SDL_SaveBMP(shot, filename);
-//	SDL_SavePNG(sshot, filename);
 	SDL_FreeSurface(shot);
 }
 
