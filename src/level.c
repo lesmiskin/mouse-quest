@@ -28,13 +28,34 @@ typedef struct {
 	int Qty;
 } WaveTrigger;
 
+typedef enum mapEnemy {
+    LEFT_SNAKE,
+    RIGHT_SNAKE,
+    MAG_SPLIT,
+    CROSSOVER,
+    STRAFER_LEFT,
+    STRAFER_RIGHT,
+    PEELER_LEFT,
+    PEELER_RIGHT,
+    SWIRLER_LEFT,
+    SWIRLER_RIGHT,
+    WARNING,
+    BOSS_INTRO,
+    BOSS,
+} MapEnemy;
+
+typedef struct mapWave {
+    MapEnemy enemy;
+    long delay;
+} MapWave;
+
 #define MAX_WAVES 100
 WaveTrigger triggers[MAX_WAVES];
 long gameTime = 0;
 int waveInc = 0;
 int waveAddInc = 0;
 const int NA = -50;
-const int ENEMY_SPACE = 35;
+static MapWave waves[50];
 
 bool invalidWave(WaveTrigger *wave) {
 	return wave->Health == 0 && !wave->Pause && !wave->Warning;
@@ -100,35 +121,6 @@ void levelGameFrame() {
 	}
 }
 
-typedef struct wave {
-	EnemyType type;
-	long time;
-} Wave;
-
-typedef enum mapEnemy {
-    NONE,
-    LEFT_SNAKE,
-    RIGHT_SNAKE,
-    MAG_SPLIT,
-    CROSSOVER,
-    STRAFER_LEFT,
-    STRAFER_RIGHT,
-    PEELER_LEFT,
-    PEELER_RIGHT,
-    SWIRLER_LEFT,
-    SWIRLER_RIGHT,
-    WARNING,
-    BOSS_INTRO,
-    BOSS,
-} MapEnemy;
-
-typedef struct mapWave {
-    MapEnemy enemy;
-    long delay;
-} MapWave;
-
-static MapWave waves[50];
-
 MapEnemy getMapEnemy(char* str) {
     if(strcmp(str, "LEFT_SNAKE") == 0) {
         return LEFT_SNAKE;
@@ -163,7 +155,6 @@ void loadLevel() {
 	// Open the level file.
 	char* fileName = "C:\\Users\\lxm\\dev\\c\\mouse-quest\\src\\LEVEL01.txt";
 	FILE* file = fopen(fileName, "r");
-    int waveInc = 0;
 
 	// Read each line.
 	char line[256];
@@ -176,14 +167,8 @@ void loadLevel() {
 		while (part != NULL) {
 			switch(partInc) {
 				case 0:
-                    // Skip enemy
-                    if(strcmp(part, "\n") > 0){
-                        waves[waveInc].enemy = NONE;
-                    // Choose the enemy.
-                    }else{
-                        waves[waveInc].enemy = getMapEnemy(part);
-                    }
-
+					// Choose the enemy.
+					waves[waveInc].enemy = getMapEnemy(part);
 					break;
 				case 1: {
 					// Choose the time.
@@ -201,6 +186,9 @@ void loadLevel() {
 	// Close the file.
 	fclose(file);
 
+}
+
+static void runLevel() {
     const int LEFT = 40;
     const int RIGHT = 230;
     const int CENTER = 135;
@@ -218,17 +206,20 @@ void loadLevel() {
                     wave(i * 350, W_COL, C_RIGHT, NA, P_CURVE_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 1, HEALTH_LIGHT, 1);
                 }
                 break;
+
             case CROSSOVER:
                 for(int i=0; i < 6; i++) {
                     wave(i * 350, W_COL, LEFT, NA, P_CROSS_LEFT, ENEMY_DISK, COMBAT_IDLE, false, 1.2, 0.03, HEALTH_LIGHT, 1);
                     wave(i * 350, W_COL, RIGHT, NA, P_CROSS_RIGHT, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1.2, 0.03, HEALTH_LIGHT, 1);
                 }
                 break;
+
             case STRAFER_LEFT:
                 for(int i=0; i < 3; i++) {
                     wave(i * 750, W_COL, RIGHT_OFF, -40, P_STRAFE_LEFT, ENEMY_VIRUS, COMBAT_HOMING, false, 0.7, 0.004, HEALTH_LIGHT, 1);
                 }
                 break;
+
             case STRAFER_RIGHT:
                 for(int i=0; i < 3; i++) {
                     wave(i * 750, W_COL, LEFT_OFF, -40, P_STRAFE_RIGHT, ENEMY_VIRUS, COMBAT_HOMING, false, 0.7, 0.004, HEALTH_LIGHT, 1);
@@ -248,7 +239,6 @@ void loadLevel() {
                 break;
 
             case SWIRLER_LEFT:
-                // Swirlers.
                 for(int i=0; i < 5; i++) {
                     wave(i * 325, W_COL, LEFT + 50, NA, P_SWIRL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
                     wave(150 + i * 325, W_COL, LEFT, NA, P_SWIRL_LEFT, ENEMY_MAGNET, i == 4 ? COMBAT_SHOOTER : COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
@@ -294,92 +284,8 @@ void loadLevel() {
 }
 
 void levelInit() {
-	const int LEFT = 40;
-	const int RIGHT = 230;
-	const int CENTER = 135;
-	const int C_LEFT = 120;
-	const int C_RIGHT = 150;
-	const int RIGHT_OFF = (int)screenBounds.x + 85;
-	const int LEFT_OFF = -40;
-
 	loadLevel();
-
-    return;
-//    return;
-
-	//	pause(2000);
-//    warning();
-//    wave(0, W_COL, CENTER, 310, PATTERN_BOSS_INTRO, ENEMY_BOSS_INTRO, COMBAT_IDLE, false, 2, 0, 200, 1);
-//    pause(3000);
-//    wave(0, W_COL, CENTER, NA, PATTERN_BOSS, ENEMY_BOSS, COMBAT_HOMING, false, 0.5, 1, 1, 1);
-//	return;
-
-	pause(2000);
-
-	// Two columns that split, and merge (NEEDS SINE)
-	for(int i=0; i < 6; i++) {
-		wave(i * 350, W_COL, C_LEFT, NA, P_CURVE_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 1, HEALTH_LIGHT, 1);
-		wave(i * 350, W_COL, C_RIGHT, NA, P_CURVE_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 1, HEALTH_LIGHT, 1);
-	}
-	pause(6000);
-
-
-	// Snakes.
-	for(int i=0; i < 8; i++) {
-		wave(i * 350, W_COL, C_LEFT, NA, P_SNAKE_RIGHT, ENEMY_DISK, COMBAT_IDLE, false, 1.2, 0.05, HEALTH_LIGHT, 1);
-	}
-	pause(5000);
-	for(int i=0; i < 8; i++) {
-		wave(i * 350, W_COL, C_RIGHT, NA, P_SNAKE_LEFT, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1.2, 0.05, HEALTH_LIGHT, 1);
-	}
-	pause(6000);
-
-
-	// Crossover.
-	for(int i=0; i < 6; i++) {
-		wave(i * 350, W_COL, LEFT, NA, P_CROSS_LEFT, ENEMY_DISK, COMBAT_IDLE, false, 1.2, 0.03, HEALTH_LIGHT, 1);
-		wave(i * 350, W_COL, RIGHT, NA, P_CROSS_RIGHT, ENEMY_DISK_BLUE, COMBAT_IDLE, false, 1.2, 0.03, HEALTH_LIGHT, 1);
-	}
-	pause(6000);
-
-
-	// Strafers coming from either side.
-	for(int i=0; i < 3; i++) {
-		wave(i * 750, W_COL, RIGHT_OFF, -40, P_STRAFE_LEFT, ENEMY_VIRUS, COMBAT_HOMING, false, 0.7, 0.004, HEALTH_LIGHT, 1);
-	}
-	pause(4000);
-	for(int i=0; i < 3; i++) {
-		wave(i * 750, W_COL, LEFT_OFF, -40, P_STRAFE_RIGHT, ENEMY_VIRUS, COMBAT_HOMING, false, 0.7, 0.004, HEALTH_LIGHT, 1);
-	}
-	pause(7000);
-
-	// Peelers.
-	for(int i=0; i < 7; i++) {
-		wave(i * 300, W_COL, LEFT, NA, P_PEEL_RIGHT, ENEMY_BUG, COMBAT_HOMING, false, 2, 0.02, HEALTH_LIGHT, 1);
-	}
-	pause(3500);
-	for(int i=0; i < 7; i++) {
-		wave(i * 300, W_COL, RIGHT, NA, P_PEEL_LEFT, ENEMY_BUG, COMBAT_HOMING, false, 2, 0.02, HEALTH_LIGHT, 1);
-	}
-	pause(5000);
-
-	// Swirlers.
-	for(int i=0; i < 5; i++) {
-		wave(i * 325, W_COL, LEFT + 50, NA, P_SWIRL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
-		wave(150 + i * 325, W_COL, LEFT, NA, P_SWIRL_LEFT, ENEMY_MAGNET, i == 4 ? COMBAT_SHOOTER : COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
-	}
-	pause(5000);
-	for(int i=0; i < 5; i++) {
-		wave(i * 325, W_COL, RIGHT, NA, P_SWIRL_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
-		wave(150 + i * 325, W_COL, RIGHT - 50, NA, P_SWIRL_LEFT, ENEMY_MAGNET, i == 4 ? COMBAT_SHOOTER : COMBAT_IDLE, false, 1.4, 0.09, HEALTH_LIGHT, 1);
-	}
-
-	pause(6000);
-
-    warning();
-    wave(0, W_COL, CENTER, 310, PATTERN_BOSS_INTRO, ENEMY_BOSS_INTRO, COMBAT_IDLE, false, 2, 0, 200, 1);
-    pause(3500);
-    wave(0, W_COL, CENTER, NA, PATTERN_BOSS, ENEMY_BOSS, COMBAT_HOMING, false, 0.5, 1, 200, 1);
+    runLevel();
 }
 
 void resetLevel() {
