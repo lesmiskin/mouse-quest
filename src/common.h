@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 //#define DEBUG_WINDOW_T500
-//#define DEBUG_SKIP_TO_GAME
+#define DEBUG_SKIP_TO_GAME
 //#define DEBUG_CHEATS
 
 extern const bool ENABLE_PARALLAX;
