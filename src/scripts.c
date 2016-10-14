@@ -201,9 +201,9 @@ void scriptGameFrame() {
 
 		case STATE_GAME:
 			if(!sceneInitialised()) {
-				resetLevel();
 				resetPlayer();
-				resetEnemies();
+//				resetEnemies();
+				resetLevel();
 				resetBackground();
 				resetItems();
 				hudReset();

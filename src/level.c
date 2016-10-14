@@ -26,6 +26,8 @@ typedef struct {
 	double SpeedX;
 	double Health;
 	int Qty;
+	bool Finished;
+	long LastTime;
 } WaveTrigger;
 
 typedef enum enemyPatternDef {
@@ -41,13 +43,13 @@ typedef enum enemyPatternDef {
 } EnemyPatternDef;
 
 typedef enum enemyPosition {
-    POS_L,
-    POS_R,
-    POS_C,
-    POS_LC,
-    POS_RC,
-    POS_LL,
-    POS_RR,
+	POS_LL = 10,
+    POS_L = 60,
+	POS_LC = 90,
+	POS_C = 125,
+	POS_CR = 255,
+    POS_R = 220,
+    POS_RR = 250,
 } EnemyPosition;
 
 typedef struct mapWave {
@@ -67,7 +69,6 @@ static const int NA = -50;
 WaveTrigger triggers[MAX_WAVES];
 static MapWave mapWaves[50];
 static int mapWaveInc = 0;
-static int waveInc = 0;
 static int waveAddInc = 0;
 
 bool invalidWave(WaveTrigger *wave) {
@@ -92,7 +93,7 @@ void pause(int spawnTime) {
 
 void wave(int spawnTime, WaveType waveType, int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat combat, bool async, double speed, double speedX, double health, int qty) {
 	WaveTrigger e = {
-		false, false, false, spawnTime, waveType, x, y, movement, type, combat, async, speed, speedX, health, qty
+		false, false, false, spawnTime, waveType, x, y, movement, type, combat, async, speed, speedX, health, qty, false, 0
 	};
 
 	triggers[waveAddInc++] = e;
@@ -112,48 +113,62 @@ void w_column(int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat c
 	}
 }
 
+static bool pausing = false;
+
 //Wires up wave spawners with their triggers.
 void levelGameFrame() {
 	if(gameState != STATE_GAME) return;
 
-	WaveTrigger trigger = triggers[waveInc];
+	for(int i=0; i < MAX_WAVES; i++) {
+		WaveTrigger trigger = triggers[i];
 
-	if(	waveInc < MAX_WAVES && !invalidWave(&trigger) && due(gameTime, trigger.SpawnTime) ) {
+		if(trigger.Finished || invalidWave(&trigger)) continue;
+
 		if(trigger.Pause) {
-			if (due(gameTime, trigger.SpawnTime)) {
+			if (due(trigger.LastTime, trigger.SpawnTime)) {
 				gameTime = clock();
-				waveInc++;
+				triggers[i].Finished = true;
+				pausing = false;
+			}else if(!pausing){
+				pausing = true;
+				triggers[i].LastTime = clock();
 			}
-		}else if(trigger.Warning) {
+			continue;
+		}
+
+		if(pausing) continue;
+
+		if(trigger.Warning) {
 			toggleWarning();
-			waveInc++;
+			triggers[i].Finished = true;
 		}else{
 			w_column(trigger.x, trigger.y, trigger.Movement, trigger.Type, trigger.Combat, trigger.Async, trigger.Speed, trigger.SpeedX, trigger.Qty, trigger.Health);
-			waveInc++;
+			triggers[i].LastTime = clock();
+			triggers[i].Finished = true;
 		}
 	}
 }
 
 EnemyPosition getEnemyPosition(char* str) {
-	if(strcmp(str, "L") == 0) {
-		return POS_L;
-	}else if(strcmp(str, "R") == 0) {
-		return POS_R;
+	if(strcmp(str, "LC") == 0) {
+		return POS_LC;
+	}else if(strcmp(str, "CR") == 0) {
+		return POS_CR;
 	}else if(strcmp(str, "LL") == 0) {
 		return POS_LL;
 	}else if(strcmp(str, "RR") == 0) {
 		return POS_RR;
-	}else if(strcmp(str, "LC") == 0) {
-		return POS_LC;
-	}else if(strcmp(str, "RC") == 0) {
-		return POS_RC;
+	}else if(strcmp(str, "L") == 0) {
+		return POS_L;
+	}else if(strcmp(str, "R") == 0) {
+		return POS_R;
 	}else{
 		return POS_C;
 	}
 }
 
 EnemyPatternDef getMapEnemy(char* str) {
-    if(strcmp(str, "RIGHT") == 0) {
+    if(strcmp(str, "SNAKE") == 0) {
         return SNAKE;
     }else if(strcmp(str, "MAG_SPLIT") == 0) {
         return MAG_SPLIT;
@@ -212,7 +227,6 @@ void loadLevel() {
 
 	// Close the file.
 	fclose(file);
-
 }
 
 static void runLevel() {
@@ -224,7 +238,7 @@ static void runLevel() {
     const int RIGHT_OFF = (int)screenBounds.x + 85;
     const int LEFT_OFF = -40;
 
-    for(int w=0; w < waveInc; w++) {
+    for(int w=0; w < mapWaveInc; w++) {
         int offscreenPos = mapWaves[w].position == POS_L ? LEFT_OFF : RIGHT_OFF;
 
         switch(mapWaves[w].pattern) {
@@ -238,7 +252,7 @@ static void runLevel() {
 
 			case SNAKE:
 				for(int i=0; i < 8; i++) {
-					wave(i * 350, W_COL, mapWaves[w].position, NA, P_SNAKE_RIGHT, ENEMY_DISK, COMBAT_IDLE, false, 1.2, 0.05, HEALTH_LIGHT, 1);
+					wave(i * 350, W_COL, mapWaves[w].position, NA, PATTERN_NONE, ENEMY_DISK, COMBAT_IDLE, false, 1.2, 0.05, HEALTH_LIGHT, 1);
 				}
 				break;
 
@@ -287,12 +301,13 @@ static void runLevel() {
     }
 }
 
+void resetLevel() {
+	gameTime = clock();
+	mapWaveInc = 0;
+}
+
 void levelInit() {
 	loadLevel();
     runLevel();
 }
 
-void resetLevel() {
-	gameTime = clock();
-	waveInc = 0;
-}
