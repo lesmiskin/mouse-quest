@@ -1,16 +1,26 @@
 
+* Voice-overs:
+  - Alert
+  - Enemy dreadnaught approaching
+  - Good luck
+  - Mission start
+  - Commencing operation
+  - Fire at will
+  - Laser upgraded
+  - Delicious fruit
+  - Systems interrupted. Fire in optical compartment.
+  - Unidentified vessel approaching.
+  - Mission accomplished.
+  
+- Well-insulated room
+- Use iPhone to record.
+
+
 * Second level with ID-based scripting.
-* Levels to be based off LEV01.TXT
-
-LEFT_SNAKE | ENEMY_ANY | 500
-RIGHT_SNAKE | ENEMY_ANY | 1000
-WIDE_SNAKE | ENEMY_ANY | 1000
-
 
 ==============================================
 
 * Boss expells some coins and fruit on dying.
-* Level 2
 * Stores highest score and shows throughout game.
 * Stats at level end.
 * Windowed param on all operating systems.
