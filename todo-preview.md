@@ -1,17 +1,21 @@
 
 * Voice-overs:
   - Alert
-  - Enemy dreadnaught approaching
   - Good luck
-  - Mission start
-  - Commencing operation
   - Fire at will
-  - Laser upgraded
+  - Upgrade
   - Delicious fruit
+  - Enemy dreadnaught approaching
+  - Mission start
+  - Systems nominal.
+  - Commencing operation
   - Systems interrupted. Fire in optical compartment.
   - Unidentified vessel approaching.
   - Mission accomplished.
-  
+  - Energy low.
+  - Energising.
+  - Hyperdrive engaged.
+
 - Well-insulated room
 - Use iPhone to record.
 
