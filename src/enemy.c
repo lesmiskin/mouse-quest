@@ -67,7 +67,7 @@ static double COLLIDE_DAMAGE = 1;
 static double BOSS_COLLIDE_DAMAGE = 1000;
 
 static const int BOSS_IDLE_FRAMES = 12;
-static const int MAGNET_IDLE_FRAMES = 8;
+static const int MAGNET_IDLE_FRAMES = 12;
 static const int DISK_IDLE_FRAMES = 12;
 static const int VIRUS_IDLE_FRAMES = 6;
 static const int CD_IDLE_FRAMES = 4;
@@ -304,7 +304,7 @@ void animateEnemy() {
 					maxFrames = VIRUS_IDLE_FRAMES;
 					break;
 				case ENEMY_MAGNET:
-					animGroupName = "magnet-%02d.png";
+					animGroupName = "cone-%02d.png";
 					maxFrames = MAGNET_IDLE_FRAMES;
 					break;
 				case ENEMY_BOSS_INTRO:

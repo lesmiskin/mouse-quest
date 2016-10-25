@@ -191,7 +191,11 @@ EnemyPatternDef getMapEnemy(char* str) {
 
 void loadLevel() {
 	// Open the level file.
+#ifdef _WIN32
 	char* fileName = "C:\\Users\\lxm\\dev\\c\\mouse-quest\\src\\LEVEL01.txt";
+#elif __linux__
+	char* fileName = "/home/les/dev/c/mouse-quest/src/LEVEL01.txt";
+#endif
 	FILE* file = fopen(fileName, "r");
 
 	// Read each line.
