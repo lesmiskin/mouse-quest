@@ -10,6 +10,37 @@ typedef enum {
 	W_WARNING
 } WaveType;
 
+typedef enum {
+    SNAKE,
+    MAG_SPLIT,
+    CROSSOVER,
+    STRAFER,
+    PEELER,
+    SWIRLER,
+    WARNING,
+    BOSS_INTRO,
+    BOSS,
+} EnemyPatternDef;
+
+typedef enum {
+	POS_LL = 10,
+    POS_L = 60,
+	POS_LC = 90,
+	POS_C = 125,
+	POS_CR = 255,
+    POS_R = 220,
+    POS_RR = 250,
+} EnemyPosition;
+
+typedef struct {
+    EnemyPatternDef pattern;
+    long delay;
+    EnemyPosition position;
+//    bool shoots;
+//    EnemyType enemyType;
+//    double speed;
+} MapWave;
+
 typedef struct {
 	bool Warning;
 	bool Pause;
@@ -30,46 +61,17 @@ typedef struct {
 	long LastTime;
 } WaveTrigger;
 
-typedef enum enemyPatternDef {
-    SNAKE,
-    MAG_SPLIT,
-    CROSSOVER,
-    STRAFER,
-    PEELER,
-    SWIRLER,
-    WARNING,
-    BOSS_INTRO,
-    BOSS,
-} EnemyPatternDef;
-
-typedef enum enemyPosition {
-	POS_LL = 10,
-    POS_L = 60,
-	POS_LC = 90,
-	POS_C = 125,
-	POS_CR = 255,
-    POS_R = 220,
-    POS_RR = 250,
-} EnemyPosition;
-
-typedef struct mapWave {
-    EnemyPatternDef pattern;
-    long delay;
-    EnemyPosition position;
-//    bool shoots;
-//    EnemyType enemyType;
-//    double speed;
-} MapWave;
-
 #define MAX_WAVES 100
 
-static long gameTime = 0;
 static const int NA = -50;
 
 WaveTrigger triggers[MAX_WAVES];
 static MapWave mapWaves[50];
 static int mapWaveInc = 0;
 static int waveAddInc = 0;
+static bool pausing = false;
+
+// -------------------------------------------------------------------------
 
 bool invalidWave(WaveTrigger *wave) {
 	return wave->Health == 0 && !wave->Pause && !wave->Warning;
@@ -85,7 +87,7 @@ void warning() {
 
 void pause(int spawnTime) {
 	WaveTrigger e = {
-		false, true, false, spawnTime, W_COL, 0, 0, PATTERN_BOB, ENEMY_CD, COMBAT_IDLE, false, 0, 0, 0, 0
+		false, true, false, spawnTime, W_COL, 0, 0, PATTERN_BOB, ENEMY_CD, COMBAT_IDLE, false, 0, 0, 0, 0, false, 0
 	};
 
 	triggers[waveAddInc++] = e;
@@ -113,7 +115,8 @@ void w_column(int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat c
 	}
 }
 
-static bool pausing = false;
+static long lastPauseTime;
+static int pauseInc;
 
 //Wires up wave spawners with their triggers.
 void levelGameFrame() {
@@ -126,25 +129,30 @@ void levelGameFrame() {
 
 		if(trigger.Pause) {
 			if (due(trigger.LastTime, trigger.SpawnTime)) {
-				gameTime = clock();
 				triggers[i].Finished = true;
 				pausing = false;
-			}else if(!pausing){
+				lastPauseTime = clock();
+				pauseInc = 0;
+			}else if(!pausing && lastPauseTime){
 				pausing = true;
 				triggers[i].LastTime = clock();
+				pauseInc = i;
 			}
 			continue;
 		}
 
-		if(pausing) continue;
+		if(pausing && pauseInc > 0 && i > pauseInc+1)
+			continue;
 
 		if(trigger.Warning) {
 			toggleWarning();
 			triggers[i].Finished = true;
 		}else{
-			w_column(trigger.x, trigger.y, trigger.Movement, trigger.Type, trigger.Combat, trigger.Async, trigger.Speed, trigger.SpeedX, trigger.Qty, trigger.Health);
-			triggers[i].LastTime = clock();
-			triggers[i].Finished = true;
+			if(due(lastPauseTime, trigger.SpawnTime)) {
+				w_column(trigger.x, trigger.y, trigger.Movement, trigger.Type, trigger.Combat, trigger.Async, trigger.Speed, trigger.SpeedX, trigger.Qty, trigger.Health);
+				triggers[i].LastTime = clock();
+				triggers[i].Finished = true;
+			}
 		}
 	}
 }
@@ -306,12 +314,12 @@ static void runLevel() {
 }
 
 void resetLevel() {
-	gameTime = clock();
 	mapWaveInc = 0;
 }
 
 void levelInit() {
 	loadLevel();
     runLevel();
+	lastPauseTime = clock();
+	pauseInc = 0;
 }
-
