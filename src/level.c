@@ -13,7 +13,7 @@ typedef enum {
 typedef enum {
     SNAKE,
     MAG_SPLIT,
-    CROSSOVER,
+    SNAKE_WIDE,
     STRAFER,
     PEELER,
     SWIRLER,
@@ -230,8 +230,8 @@ EnemyPatternDef getMapPattern(char *str) {
 		return COLUMN;
     }else if(strcmp(str, "MAG_SPLIT") == 0) {
         return MAG_SPLIT;
-    }else if(strcmp(str, "CROSSOVER") == 0) {
-        return CROSSOVER;
+    }else if(strcmp(str, "SNAKE_WIDE") == 0) {
+        return SNAKE_WIDE;
     }else if(strcmp(str, "STRAFER") == 0) {
         return STRAFER;
     }else if(strcmp(str, "PEELER") == 0) {
@@ -351,10 +351,13 @@ void runLevel() {
                 }
                 break;
 
-            case CROSSOVER:
-                for(int i=0; i < map.qty; i++) {
-                    wave(i * spacing, W_COL, LEFT, NA, P_CROSS_LEFT, map.enemyType, map.combat, false, map.speed, 0.03, HEALTH_LIGHT, 1);
-                    wave(i * spacing, W_COL, RIGHT, NA, P_CROSS_RIGHT, map.enemyType, map.combat, false, map.speed, 0.03, HEALTH_LIGHT, 1);
+            case SNAKE_WIDE:
+				for(int i=0; i < map.qty; i++) {
+					if(map.position < CENTER) {
+						wave(i * spacing, W_COL, map.position, NA, P_CROSS_LEFT, map.enemyType, map.combat, false, map.speed, 0.03, HEALTH_LIGHT, 1);
+					}else{
+						wave(i * spacing, W_COL, map.position, NA, P_CROSS_RIGHT, map.enemyType, map.combat, false, map.speed, 0.03, HEALTH_LIGHT, 1);
+					}
                 }
                 break;
 
