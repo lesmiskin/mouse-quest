@@ -20,6 +20,7 @@ typedef enum {
     WARNING,
     BOSS_INTRO,
     BOSS,
+	COLUMN
 } EnemyPatternDef;
 
 typedef enum {
@@ -211,6 +212,8 @@ EnemyType getMapEnemy(char *str) {
 EnemyPatternDef getMapPattern(char *str) {
     if(strcmp(str, "SNAKE") == 0) {
         return SNAKE;
+	}else if(strcmp(str, "COLUMN") == 0) {
+		return COLUMN;
     }else if(strcmp(str, "MAG_SPLIT") == 0) {
         return MAG_SPLIT;
     }else if(strcmp(str, "CROSSOVER") == 0) {
@@ -242,6 +245,9 @@ void loadLevel() {
 	// Read each line.
 	char line[256];
 	while (fgets(line, sizeof(line), file)) {
+		// Skip blank and commented-out lines.
+		if(strlen(line)== 0 || line[0] == '#') continue;
+
 		char *part;
 		part = strtok (line, ",");
 		int partInc = 0;
@@ -299,11 +305,19 @@ void runLevel() {
         int offscreenPos = mapWaves[w].position == POS_L ? LEFT_OFF : RIGHT_OFF;
 		MapWave map = mapWaves[w];
 
+		// TODO: Spacing should be correct / consistent amongst configurations.
+
         switch(map.pattern) {
 
-            case SNAKE:
+			case COLUMN:
+				for(int i=0; i < map.qty; i++)
+					wave(i * 350, W_COL, map.position, NA, PATTERN_NONE, map.enemyType, map.combat, false, 1.7, 0.05, HEALTH_LIGHT, 1);
+
+				break;
+
+			case SNAKE:
                 for(int i=0; i < map.qty; i++)
-                    wave(i * 350, W_COL, map.position, NA, PATTERN_NONE, map.enemyType, map.combat, false, 1.7, 0.05, HEALTH_LIGHT, 1);
+                    wave(i * 350, W_COL, map.position, NA, PATTERN_SNAKE, map.enemyType, map.combat, false, 1.7, 0.05, HEALTH_LIGHT, 1);
 
                 break;
 
@@ -349,11 +363,11 @@ void runLevel() {
                 break;
 
             case BOSS_INTRO:
-                wave(0, W_COL, CENTER, 310, PATTERN_BOSS_INTRO, ENEMY_BOSS_INTRO, COMBAT_IDLE, false, 2, 0, 200, 1);
+                wave(0, W_COL, CENTER, 310, PATTERN_BOSS_INTRO, map.enemyType, COMBAT_IDLE, false, 2, 0, 200, 1);
                 break;
 
             case BOSS:
-                wave(0, W_COL, CENTER, NA, PATTERN_BOSS, ENEMY_BOSS, COMBAT_HOMING, false, 0.5, 1, 200, 1);
+                wave(0, W_COL, CENTER, NA, PATTERN_BOSS, map.enemyType, COMBAT_HOMING, false, 0.5, 1, 200, 1);
                 break;
         }
 
