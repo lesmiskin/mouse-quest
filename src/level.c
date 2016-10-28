@@ -36,7 +36,7 @@ typedef enum {
 typedef struct {
     EnemyPatternDef pattern;
     int delay;
-    EnemyPosition position;
+    int position;
     EnemyType enemyType;
     EnemyCombat combat;
 	int qty;
@@ -167,7 +167,7 @@ void levelGameFrame() {
 	}
 }
 
-EnemyPosition getEnemyPosition(char* str) {
+int getEnemyPosition(char* str) {
 	if(strcmp(str, "LC") == 0) {
 		return POS_LC;
 	}else if(strcmp(str, "CR") == 0) {
@@ -180,8 +180,10 @@ EnemyPosition getEnemyPosition(char* str) {
 		return POS_L;
 	}else if(strcmp(str, "R") == 0) {
 		return POS_R;
-	}else{
+	}else if(strcmp(str, "C") == 0) {
 		return POS_C;
+	}else{
+		return atoi(str);
 	}
 }
 
