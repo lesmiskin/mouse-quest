@@ -34,7 +34,7 @@ typedef enum {
 
 typedef struct {
     EnemyPatternDef pattern;
-    long delay;
+    int delay;
     EnemyPosition position;
 //    bool shoots;
 //    EnemyType enemyType;
@@ -58,15 +58,16 @@ typedef struct {
 	double Health;
 	int Qty;
 	bool Finished;
-	long LastTime;
+	long StartedPausing;
+    bool Started;
 } WaveTrigger;
 
-#define MAX_WAVES 100
+#define MAX_WAVES 200
 
 static const int NA = -50;
 
 WaveTrigger triggers[MAX_WAVES];
-static MapWave mapWaves[50];
+static MapWave mapWaves[100];
 static int mapWaveInc = 0;
 static int waveAddInc = 0;
 static bool pausing = false;
@@ -87,7 +88,7 @@ void warning() {
 
 void pause(int spawnTime) {
 	WaveTrigger e = {
-		false, true, false, spawnTime, W_COL, 0, 0, PATTERN_BOB, ENEMY_CD, COMBAT_IDLE, false, 0, 0, 0, 0, false, 0
+		false, true, false, spawnTime, W_COL, 0, 0, PATTERN_BOB, ENEMY_CD, COMBAT_IDLE, false, 0, 0, 0, 0, false, 0, false
 	};
 
 	triggers[waveAddInc++] = e;
@@ -95,7 +96,7 @@ void pause(int spawnTime) {
 
 void wave(int spawnTime, WaveType waveType, int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat combat, bool async, double speed, double speedX, double health, int qty) {
 	WaveTrigger e = {
-		false, false, false, spawnTime, waveType, x, y, movement, type, combat, async, speed, speedX, health, qty, false, 0
+		false, false, false, spawnTime, waveType, x, y, movement, type, combat, async, speed, speedX, health, qty, false, 0, false
 	};
 
 	triggers[waveAddInc++] = e;
@@ -115,42 +116,48 @@ void w_column(int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat c
 	}
 }
 
-static long lastPauseTime;
-static int pauseInc;
+static long waveTime;
+static int pauseInc = -1;
 
 //Wires up wave spawners with their triggers.
 void levelGameFrame() {
 	if(gameState != STATE_GAME) return;
 
-	for(int i=0; i < MAX_WAVES; i++) {
+    // Cycle through all triggers per-frame.
+	for(int i=0; i < waveAddInc; i++) {
 		WaveTrigger trigger = triggers[i];
 
 		if(trigger.Finished || invalidWave(&trigger)) continue;
 
-		if(trigger.Pause) {
-			if (due(trigger.LastTime, trigger.SpawnTime)) {
+        // Dunno how this works, but it does! :p (nb: WaveTime is significant somehow)
+
+        // We've encountered a pause trigger.
+        if(trigger.Pause) {
+			// Stop pausing if we've reached the delay time.
+            if (due(waveTime, trigger.SpawnTime)) {
 				triggers[i].Finished = true;
-				pausing = false;
-				lastPauseTime = clock();
-				pauseInc = 0;
-			}else if(!pausing && lastPauseTime){
-				pausing = true;
-				triggers[i].LastTime = clock();
+                waveTime = clock();
+				pauseInc = -1;
+                continue;
+            // Start pausing if we're not already.
+			}else if(!triggers[i].Started){
+                waveTime = clock();
+                triggers[i].Started = true;
 				pauseInc = i;
 			}
-			continue;
 		}
 
-		if(pausing && pauseInc > 0 && i > pauseInc+1)
-			continue;
+        // Don't cycle past a pause if we're still on it.
+        if(pauseInc > -1 && i >= pauseInc)
+            break;
 
-		if(trigger.Warning) {
+        if(trigger.Warning) {
 			toggleWarning();
 			triggers[i].Finished = true;
 		}else{
-			if(due(lastPauseTime, trigger.SpawnTime)) {
+            // If our spawn time is due, SINCE the last pause time, fire away!
+			if(due(waveTime, trigger.SpawnTime)) {
 				w_column(trigger.x, trigger.y, trigger.Movement, trigger.Type, trigger.Combat, trigger.Async, trigger.Speed, trigger.SpeedX, trigger.Qty, trigger.Health);
-				triggers[i].LastTime = clock();
 				triggers[i].Finished = true;
 			}
 		}
@@ -255,18 +262,18 @@ static void runLevel() {
 
         switch(mapWaves[w].pattern) {
 
+            case SNAKE:
+                for(int i=0; i < 6; i++)
+                    wave(i * 350, W_COL, mapWaves[w].position, NA, PATTERN_NONE, ENEMY_DISK, COMBAT_IDLE, false, 1.7, 0.05, HEALTH_LIGHT, 1);
+
+                break;
+
             case MAG_SPLIT:
                 for(int i=0; i < 6; i++) {
                     wave(i * 350, W_COL, C_LEFT, NA, P_CURVE_LEFT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 1, HEALTH_LIGHT, 1);
                     wave(i * 350, W_COL, C_RIGHT, NA, P_CURVE_RIGHT, ENEMY_MAGNET, COMBAT_IDLE, false, 1.4, 1, HEALTH_LIGHT, 1);
                 }
                 break;
-
-			case SNAKE:
-				for(int i=0; i < 8; i++) {
-					wave(i * 350, W_COL, mapWaves[w].position, NA, PATTERN_NONE, ENEMY_DISK, COMBAT_IDLE, false, 1.2, 0.05, HEALTH_LIGHT, 1);
-				}
-				break;
 
             case CROSSOVER:
                 for(int i=0; i < 6; i++) {
@@ -277,13 +284,17 @@ static void runLevel() {
 
             case STRAFER:
                 for(int i=0; i < 3; i++) {
-                    wave(i * 750, W_COL, offscreenPos, -40, P_STRAFE_LEFT, ENEMY_VIRUS, COMBAT_HOMING, false, 0.7, 0.004, HEALTH_LIGHT, 1);
+                    wave(i * 400, W_COL, offscreenPos, -40,
+                         mapWaves[w].position == POS_L ? P_STRAFE_RIGHT : P_STRAFE_LEFT,
+                     ENEMY_VIRUS, COMBAT_HOMING, false, 0.7, 0.004, HEALTH_LIGHT, 1);
                 }
                 break;
 
             case PEELER:
                 for(int i=0; i < 7; i++) {
-                    wave(i * 300, W_COL, offscreenPos, NA, P_PEEL_RIGHT, ENEMY_BUG, COMBAT_HOMING, false, 2, 0.02, HEALTH_LIGHT, 1);
+                    wave(i * 400, W_COL, offscreenPos, NA,
+                         mapWaves[w].position == POS_L ? P_PEEL_RIGHT : P_PEEL_LEFT,
+                    ENEMY_BUG, COMBAT_HOMING, false, 1.2, 0.008, HEALTH_LIGHT, 1);
                 }
                 break;
 
@@ -320,6 +331,6 @@ void resetLevel() {
 void levelInit() {
 	loadLevel();
     runLevel();
-	lastPauseTime = clock();
-	pauseInc = 0;
+	waveTime = clock();
+	pauseInc = -1;
 }
