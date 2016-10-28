@@ -202,13 +202,14 @@ void scriptGameFrame() {
 		case STATE_GAME:
 			if(!sceneInitialised()) {
 				resetPlayer();
-//				resetEnemies();
+				resetEnemies();
 				resetLevel();
 				resetBackground();
 				resetItems();
 				hudReset();
 				useMike = true;
 				playMusic("level-01c.ogg", -1);
+				runLevel();
 			}
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {

@@ -357,8 +357,9 @@ void spawnFormation(int x, EnemyType enemyType, int qty, double speed) {
 }
 
 void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed, double speedX, double swayInc, double health) {
-	//Limit Enemy count to array size by looping over the top.
-	if(enemyCount == MAX_ENEMIES) enemyCount = 0;
+	// Limit Enemy count to array size by looping over the top.
+	// Todo: Consider fixing need for >= (using == bugs out boss explosions sometimes)
+	if(enemyCount >= MAX_ENEMIES) enemyCount = 0;
 
 	//Note: We don't bother setting/choosing the initial frame, since all this logic is
 	// centralised in Animate. As a result, we wait until that's been done before considering

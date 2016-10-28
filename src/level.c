@@ -235,7 +235,7 @@ void loadLevel() {
 #ifdef _WIN32
 	char* fileName = "C:\\Users\\lxm\\dev\\c\\mouse-quest\\src\\LEVEL01.csv";
 #elif __linux__
-	char* fileName = "/home/les/dev/c/mouse-quest/src/LEVEL01.txt";
+	char* fileName = "/home/les/dev/c/mouse-quest/src/LEVEL01.csv";
 #endif
 	FILE* file = fopen(fileName, "r");
 
@@ -271,7 +271,7 @@ void loadLevel() {
 					break;
 				case 5: {
 					// Choose the time.
-					mapWaves[mapWaveInc].delay = (long)atoi(part);
+					mapWaves[mapWaveInc].delay = atoi(part);
 					mapWaveInc++;
 					break;
 				}
@@ -286,7 +286,7 @@ void loadLevel() {
 	fclose(file);
 }
 
-static void runLevel() {
+void runLevel() {
     const int LEFT = 40;
     const int RIGHT = 230;
     const int CENTER = 135;
@@ -364,12 +364,12 @@ static void runLevel() {
 }
 
 void resetLevel() {
-	mapWaveInc = 0;
+	waveTime = clock();
+	pauseInc = -1;
+	waveAddInc = 0;
 }
 
 void levelInit() {
 	loadLevel();
-    runLevel();
-	waveTime = clock();
-	pauseInc = -1;
+	resetLevel();
 }
