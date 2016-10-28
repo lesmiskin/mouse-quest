@@ -24,11 +24,11 @@ typedef enum {
 } EnemyPatternDef;
 
 typedef enum {
-	POS_LL = 10,
-    POS_L = 60,
+	POS_LL = 20,
+    POS_L = 50,
 	POS_LC = 90,
-	POS_C = 125,
-	POS_CR = 255,
+	POS_C = 135,
+	POS_CR = 178,
     POS_R = 220,
     POS_RR = 250,
 } EnemyPosition;
