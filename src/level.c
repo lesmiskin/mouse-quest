@@ -40,7 +40,7 @@ typedef struct {
     EnemyType enemyType;
     EnemyCombat combat;
 	int qty;
-//    double speed;
+    double speed;
 } MapWave;
 
 typedef struct {
@@ -209,6 +209,18 @@ EnemyType getMapEnemy(char *str) {
 	}
 }
 
+double getMapSpeed(char *str) {
+	if(strcmp(str, "SLOW") == 0) {
+		return 1.2;
+	}else if(strcmp(str, "NORMAL") == 0) {
+		return 1.7;
+	}else if(strcmp(str, "FAST") == 0) {
+		return 2.2;
+	}else{
+		return atoi(str);
+	}
+}
+
 EnemyPatternDef getMapPattern(char *str) {
     if(strcmp(str, "SNAKE") == 0) {
         return SNAKE;
@@ -260,22 +272,26 @@ void loadLevel() {
 					mapWaves[mapWaveInc].enemyType = getMapEnemy(part);
 					break;
 				case 1:
-					// Choose the enemy.
+					// Shooting.
 					mapWaves[mapWaveInc].combat = getMapShoots(part);
 					break;
 				case 2:
-					// Choose the enemy.
+					// Quantity.
 					mapWaves[mapWaveInc].qty = atoi(part);
 					break;
 				case 3:
-					// Choose the enemy.
-					mapWaves[mapWaveInc].pattern = getMapPattern(part);
+					// Speed (and spacing).
+					mapWaves[mapWaveInc].speed = getMapSpeed(part);
 					break;
 				case 4:
+					// Pattern.
+					mapWaves[mapWaveInc].pattern = getMapPattern(part);
+					break;
+				case 5:
 					// Choose the position.
 					mapWaves[mapWaveInc].position = getEnemyPosition(part);
 					break;
-				case 5: {
+				case 6: {
 					// Choose the time.
 					mapWaves[mapWaveInc].delay = atoi(part);
 					mapWaveInc++;
@@ -292,10 +308,12 @@ void loadLevel() {
 	fclose(file);
 }
 
+static int SPACING_SCALE = 205;
+
 void runLevel() {
     const int LEFT = 40;
     const int RIGHT = 230;
-    const int CENTER = 135;
+    const int CENTER = 120;
     const int C_LEFT = 120;
     const int C_RIGHT = 150;
     const int RIGHT_OFF = (int)screenBounds.x + 85;
@@ -305,56 +323,59 @@ void runLevel() {
         int offscreenPos = mapWaves[w].position == POS_L ? LEFT_OFF : RIGHT_OFF;
 		MapWave map = mapWaves[w];
 
-		// TODO: Spacing should be correct / consistent amongst configurations.
+		// TODO: Leaving column blank should default to not shooting.
+
+		// Proportional spacing (based on 350 separation @ 1.7 speed).
+		int spacing = (int)(350 * (1.7 / map.speed));
 
         switch(map.pattern) {
 
 			case COLUMN:
 				for(int i=0; i < map.qty; i++)
-					wave(i * 350, W_COL, map.position, NA, PATTERN_NONE, map.enemyType, map.combat, false, 1.7, 0.05, HEALTH_LIGHT, 1);
+					wave(i * spacing, W_COL, map.position, NA, PATTERN_NONE, map.enemyType, map.combat, false, map.speed, 0.05, HEALTH_LIGHT, 1);
 
 				break;
 
 			case SNAKE:
                 for(int i=0; i < map.qty; i++)
-                    wave(i * 350, W_COL, map.position, NA, PATTERN_SNAKE, map.enemyType, map.combat, false, 1.7, 0.05, HEALTH_LIGHT, 1);
+                    wave(i * spacing, W_COL, map.position, NA, PATTERN_SNAKE, map.enemyType, map.combat, false, map.speed, 0.05, HEALTH_LIGHT, 1);
 
                 break;
 
             case MAG_SPLIT:
                 for(int i=0; i < map.qty; i++) {
-                    wave(i * 350, W_COL, C_LEFT, NA, P_CURVE_LEFT, map.enemyType, map.combat, false, 1.4, 1, HEALTH_LIGHT, 1);
-                    wave(i * 350, W_COL, C_RIGHT, NA, P_CURVE_RIGHT, map.enemyType, map.combat, false, 1.4, 1, HEALTH_LIGHT, 1);
+                    wave(i * spacing, W_COL, C_LEFT, NA, P_CURVE_LEFT, map.enemyType, map.combat, false, map.speed, 1, HEALTH_LIGHT, 1);
+                    wave(i * spacing, W_COL, C_RIGHT, NA, P_CURVE_RIGHT, map.enemyType, map.combat, false, map.speed, 1, HEALTH_LIGHT, 1);
                 }
                 break;
 
             case CROSSOVER:
                 for(int i=0; i < map.qty; i++) {
-                    wave(i * 350, W_COL, LEFT, NA, P_CROSS_LEFT, map.enemyType, map.combat, false, 1.2, 0.03, HEALTH_LIGHT, 1);
-                    wave(i * 350, W_COL, RIGHT, NA, P_CROSS_RIGHT, map.enemyType, map.combat, false, 1.2, 0.03, HEALTH_LIGHT, 1);
+                    wave(i * spacing, W_COL, LEFT, NA, P_CROSS_LEFT, map.enemyType, map.combat, false, map.speed, 0.03, HEALTH_LIGHT, 1);
+                    wave(i * spacing, W_COL, RIGHT, NA, P_CROSS_RIGHT, map.enemyType, map.combat, false, map.speed, 0.03, HEALTH_LIGHT, 1);
                 }
                 break;
 
             case STRAFER:
                 for(int i=0; i < map.qty; i++) {
-                    wave(i * 400, W_COL, offscreenPos, -40,
+                    wave(i * spacing, W_COL, offscreenPos, -40,
                          mapWaves[w].position == POS_L ? P_STRAFE_RIGHT : P_STRAFE_LEFT,
-						 map.enemyType, COMBAT_HOMING, false, 0.7, 0.004, HEALTH_LIGHT, 1);
+						 map.enemyType, COMBAT_HOMING, false, map.speed, 0.004, HEALTH_LIGHT, 1);
                 }
                 break;
 
             case PEELER:
                 for(int i=0; i < map.qty; i++) {
-                    wave(i * 400, W_COL, offscreenPos, NA,
+                    wave(i * spacing, W_COL, offscreenPos, NA,
                          mapWaves[w].position == POS_L ? P_PEEL_RIGHT : P_PEEL_LEFT,
-						 map.enemyType, COMBAT_HOMING, false, 1.2, 0.008, HEALTH_LIGHT, 1);
+						 map.enemyType, COMBAT_HOMING, false, map.speed, 0.008, HEALTH_LIGHT, 1);
                 }
                 break;
 
             case SWIRLER:
                 for(int i=0; i < map.qty; i++) {
-                    wave(i * 325, W_COL, mapWaves[w].position + 50, NA, P_SWIRL_RIGHT, map.enemyType, map.combat, false, 1.4, 0.09, HEALTH_LIGHT, 1);
-                    wave(150 + i * 325, W_COL, mapWaves[w].position, NA, P_SWIRL_LEFT, map.enemyType, i == 4 ? map.combat : map.combat, false, 1.4, 0.09, HEALTH_LIGHT, 1);
+                    wave(i * spacing, W_COL, mapWaves[w].position + 50, NA, P_SWIRL_RIGHT, map.enemyType, map.combat, false, map.speed, 0.09, HEALTH_LIGHT, 1);
+                    wave((spacing/2) + i * spacing, W_COL, mapWaves[w].position, NA, P_SWIRL_LEFT, map.enemyType, i == 4 ? map.combat : map.combat, false, map.speed, 0.09, HEALTH_LIGHT, 1);
                 }
                 break;
 
@@ -363,11 +384,11 @@ void runLevel() {
                 break;
 
             case BOSS_INTRO:
-                wave(0, W_COL, CENTER, 310, PATTERN_BOSS_INTRO, map.enemyType, COMBAT_IDLE, false, 2, 0, 200, 1);
+                wave(0, W_COL, CENTER, 310, PATTERN_BOSS_INTRO, map.enemyType, COMBAT_IDLE, false, map.speed, 0, 200, 1);
                 break;
 
             case BOSS:
-                wave(0, W_COL, CENTER, NA, PATTERN_BOSS, map.enemyType, COMBAT_HOMING, false, 0.5, 1, 200, 1);
+                wave(0, W_COL, CENTER, NA, PATTERN_BOSS, map.enemyType, COMBAT_HOMING, false, map.speed, 1, 200, 1);
                 break;
         }
 
