@@ -89,6 +89,8 @@ typedef struct {
 	long fatalTime;
 	bool nonInteractive;
 	bool inBackground;
+	double frequency;
+	double ampMult;
 } Enemy;
 
 extern double bossHealth;
@@ -97,7 +99,7 @@ extern void spawnBoom(Coord origin, double scale);
 extern const double HEALTH_LIGHT;
 extern bool invalidEnemy(Enemy* enemy);
 extern void resetEnemies();
-extern void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed, double speedX, double swayInc, double health);
+extern void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed, double speedX, double swayInc, double health, double frequency, double ampMult);
 extern void hitEnemy(Enemy* enemy, double damage, bool collision);
 extern const int ENEMY_BOUND;
 extern Enemy enemies[MAX_ENEMIES];

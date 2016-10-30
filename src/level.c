@@ -41,6 +41,8 @@ typedef struct {
     EnemyCombat combat;
 	int qty;
     double speed;
+	double frequency;
+	double ampMult;
 } MapWave;
 
 typedef struct {
@@ -62,7 +64,8 @@ typedef struct {
 	bool Finished;
 	long StartedPausing;
     bool Started;
-	EnemyType EnemyType;
+	double Frequency;
+	double AmpMult;
 } WaveTrigger;
 
 #define MAX_WAVES 200
@@ -91,21 +94,21 @@ void warning() {
 
 void pause(int spawnTime) {
 	WaveTrigger e = {
-		false, true, false, spawnTime, W_COL, 0, 0, PATTERN_BOB, ENEMY_CD, COMBAT_IDLE, false, 0, 0, 0, 0, false, 0, false
+		false, true, false, spawnTime, W_COL, 0, 0, PATTERN_BOB, ENEMY_CD, COMBAT_IDLE, false, 0, 0, 0, 0, false, 0, false, 0, 0
 	};
 
 	triggers[waveAddInc++] = e;
 }
 
-void wave(int spawnTime, WaveType waveType, int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat combat, bool async, double speed, double speedX, double health, int qty) {
+void wave(int spawnTime, WaveType waveType, int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat combat, bool async, double speed, double speedX, double health, int qty, double frequency, double ampMult) {
 	WaveTrigger e = {
-		false, false, false, spawnTime, waveType, x, y, movement, type, combat, async, speed, speedX, health, qty, false, 0, false
+		false, false, false, spawnTime, waveType, x, y, movement, type, combat, async, speed, speedX, health, qty, false, 0, false, frequency, ampMult
 	};
 
 	triggers[waveAddInc++] = e;
 }
 
-void w_column(int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat combat, bool async, double speed, double speedX, int qty, double health) {
+void w_column(int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat combat, bool async, double speed, double speedX, int qty, double health, double frequency, double ampMult) {
 	int startY = y > NA ? y : NA; //respect Y if given, otherwise normal offscreen pos.
 	int sineInc = 0;
 
@@ -113,7 +116,7 @@ void w_column(int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat c
 	double sineIncInc = qty / 3.14;
 
 	for(int i=0; i < qty; i++) {
-		spawnEnemy(x, startY, type, movement, combat, speed, speedX, sineInc, health);
+		spawnEnemy(x, startY, type, movement, combat, speed, speedX, sineInc, health, frequency, ampMult);
 		startY -= 35;
 		if(async) sineInc += sineIncInc;
 	}
@@ -160,7 +163,7 @@ void levelGameFrame() {
 		}else{
             // If our spawn time is due, SINCE the last pause time, fire away!
 			if(due(waveTime, trigger.SpawnTime)) {
-				w_column(trigger.x, trigger.y, trigger.Movement, trigger.Type, trigger.Combat, trigger.Async, trigger.Speed, trigger.SpeedX, trigger.Qty, trigger.Health);
+				w_column(trigger.x, trigger.y, trigger.Movement, trigger.Type, trigger.Combat, trigger.Async, trigger.Speed, trigger.SpeedX, trigger.Qty, trigger.Health, trigger.Frequency, trigger.AmpMult);
 				triggers[i].Finished = true;
 			}
 		}
@@ -183,6 +186,7 @@ int getEnemyPosition(char* str) {
 	}else if(strcmp(str, "C") == 0) {
 		return POS_C;
 	}else{
+		if(!isdigit(str[0])) fatalError("Unrecognised level position", str);
 		return atoi(str);
 	}
 }
@@ -208,6 +212,8 @@ EnemyType getMapEnemy(char *str) {
 		return ENEMY_BOSS_INTRO;
 	}else if(strcmp(str, "BOSS") == 0) {
 		return ENEMY_BOSS;
+	}else{
+		fatalError("Unrecognised level enemy", str);
 	}
 }
 
@@ -219,7 +225,8 @@ double getMapSpeed(char *str) {
 	}else if(strcmp(str, "FAST") == 0) {
 		return 2.2;
 	}else{
-		return atoi(str);
+		if(!isdigit(str[0])) fatalError("Unrecognised level enemy speed", str);
+		return atof(str);
 	}
 }
 
@@ -244,7 +251,9 @@ EnemyPatternDef getMapPattern(char *str) {
         return BOSS_INTRO;
     }else if(strcmp(str, "BOSS") == 0) {
         return BOSS;
-    }
+    }else{
+		fatalError("Unrecognised level pattern", str);
+	}
 }
 
 void loadLevel() {
@@ -260,7 +269,7 @@ void loadLevel() {
 	char line[256];
 	while (fgets(line, sizeof(line), file)) {
 		// Skip blank and commented-out lines.
-		if(strlen(line)== 0 || line[0] == '#') continue;
+		if(strlen(line) == 0 || strcmp(line, "\n") == 0 || line[0] == '#') continue;
 
 		char *part;
 		part = strtok (line, ",");
@@ -293,7 +302,13 @@ void loadLevel() {
 					// Choose the position.
 					mapWaves[mapWaveInc].position = getEnemyPosition(part);
 					break;
-				case 6: {
+				case 6:
+					mapWaves[mapWaveInc].frequency = atof(part);
+					break;
+				case 7:
+					mapWaves[mapWaveInc].ampMult = atoi(part);
+					break;
+				case 8: {
 					// Choose the time.
 					mapWaves[mapWaveInc].delay = atoi(part);
 					mapWaveInc++;
@@ -326,37 +341,40 @@ void runLevel() {
 		MapWave map = mapWaves[w];
 
 		// TODO: Leaving column blank should default to not shooting.
+		// TODO: Leading pause.
+		// TODO: Slow/medium/fast speed affects X speed, too.
+		// TODO: Proper sine method.
 
 		// Proportional spacing (based on 350 separation @ 1.7 speed).
-		int spacing = (int)(350 * (1.7 / map.speed));
+		int spacing = (int)(300 * (1.7 / map.speed));
 
         switch(map.pattern) {
 
 			case COLUMN:
 				for(int i=0; i < map.qty; i++)
-					wave(i * spacing, W_COL, map.position, NA, PATTERN_NONE, map.enemyType, map.combat, false, map.speed, 0.05, HEALTH_LIGHT, 1);
+					wave(i * spacing, W_COL, map.position, NA, PATTERN_NONE, map.enemyType, map.combat, false, map.speed, 0.05, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
 
 				break;
 
 			case SNAKE:
                 for(int i=0; i < map.qty; i++)
-                    wave(i * spacing, W_COL, map.position, NA, PATTERN_SNAKE, map.enemyType, map.combat, false, map.speed, 0.05, HEALTH_LIGHT, 1);
+                    wave(i * spacing, W_COL, map.position, NA, PATTERN_SNAKE, map.enemyType, map.combat, false, map.speed, 0.05, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
 
                 break;
 
             case MAG_SPLIT:
                 for(int i=0; i < map.qty; i++) {
-                    wave(i * spacing, W_COL, C_LEFT, NA, P_CURVE_LEFT, map.enemyType, map.combat, false, map.speed, 1, HEALTH_LIGHT, 1);
-                    wave(i * spacing, W_COL, C_RIGHT, NA, P_CURVE_RIGHT, map.enemyType, map.combat, false, map.speed, 1, HEALTH_LIGHT, 1);
+                    wave(i * spacing, W_COL, C_LEFT, NA, P_CURVE_LEFT, map.enemyType, map.combat, false, map.speed, 1, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
+                    wave(i * spacing, W_COL, C_RIGHT, NA, P_CURVE_RIGHT, map.enemyType, map.combat, false, map.speed, 1, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
                 }
                 break;
 
             case SNAKE_WIDE:
 				for(int i=0; i < map.qty; i++) {
 					if(map.position < CENTER) {
-						wave(i * spacing, W_COL, map.position, NA, P_CROSS_LEFT, map.enemyType, map.combat, false, map.speed, 0.03, HEALTH_LIGHT, 1);
+						wave(i * spacing, W_COL, map.position, NA, P_CROSS_LEFT, map.enemyType, map.combat, false, map.speed, 0.03, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
 					}else{
-						wave(i * spacing, W_COL, map.position, NA, P_CROSS_RIGHT, map.enemyType, map.combat, false, map.speed, 0.03, HEALTH_LIGHT, 1);
+						wave(i * spacing, W_COL, map.position, NA, P_CROSS_RIGHT, map.enemyType, map.combat, false, map.speed, 0.03, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
 					}
                 }
                 break;
@@ -365,7 +383,7 @@ void runLevel() {
                 for(int i=0; i < map.qty; i++) {
                     wave(i * spacing, W_COL, offscreenPos, -40,
                          mapWaves[w].position == POS_L ? P_STRAFE_RIGHT : P_STRAFE_LEFT,
-						 map.enemyType, COMBAT_HOMING, false, map.speed, 0.004, HEALTH_LIGHT, 1);
+						 map.enemyType, COMBAT_HOMING, false, map.speed, 0.004, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
                 }
                 break;
 
@@ -373,14 +391,14 @@ void runLevel() {
                 for(int i=0; i < map.qty; i++) {
                     wave(i * spacing, W_COL, offscreenPos, NA,
                          mapWaves[w].position == POS_L ? P_PEEL_RIGHT : P_PEEL_LEFT,
-						 map.enemyType, COMBAT_HOMING, false, map.speed, 0.008, HEALTH_LIGHT, 1);
+						 map.enemyType, COMBAT_HOMING, false, map.speed, 0.008, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
                 }
                 break;
 
             case SWIRLER:
                 for(int i=0; i < map.qty; i++) {
-                    wave(i * spacing, W_COL, mapWaves[w].position + 50, NA, P_SWIRL_RIGHT, map.enemyType, map.combat, false, map.speed, 0.09, HEALTH_LIGHT, 1);
-                    wave((spacing/2) + i * spacing, W_COL, mapWaves[w].position, NA, P_SWIRL_LEFT, map.enemyType, i == 4 ? map.combat : map.combat, false, map.speed, 0.09, HEALTH_LIGHT, 1);
+                    wave(i * spacing, W_COL, mapWaves[w].position + 50, NA, P_SWIRL_RIGHT, map.enemyType, map.combat, false, map.speed, 0.09, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
+                    wave((spacing/2) + i * spacing, W_COL, mapWaves[w].position, NA, P_SWIRL_LEFT, map.enemyType, i == 4 ? map.combat : map.combat, false, map.speed, 0.09, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
                 }
                 break;
 
@@ -389,11 +407,11 @@ void runLevel() {
                 break;
 
             case BOSS_INTRO:
-                wave(0, W_COL, CENTER, 310, PATTERN_BOSS_INTRO, map.enemyType, COMBAT_IDLE, false, map.speed, 0, 200, 1);
+                wave(0, W_COL, CENTER, 310, PATTERN_BOSS_INTRO, map.enemyType, COMBAT_IDLE, false, map.speed, 0, 200, 1, map.frequency, map.ampMult);
                 break;
 
             case BOSS:
-                wave(0, W_COL, CENTER, NA, PATTERN_BOSS, map.enemyType, COMBAT_HOMING, false, map.speed, 1, 200, 1);
+                wave(0, W_COL, CENTER, NA, PATTERN_BOSS, map.enemyType, COMBAT_HOMING, false, map.speed, 1, 200, 1, map.frequency, map.ampMult);
                 break;
         }
 

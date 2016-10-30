@@ -65,7 +65,7 @@ static void shutdownWindow() {
 	SDL_DestroyWindow(window);
 	window = NULL;
 }
-static void shutdownMain() {
+void shutdownMain() {
 	shutdownAssets();
 	shutdownRenderer();
 	shutdownWindow();

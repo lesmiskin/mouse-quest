@@ -244,11 +244,20 @@ bool due(long compareTime, double milliseconds) {
 	return ticsToMilliseconds(clock() - compareTime) >= milliseconds;
 }
 
-double sineInc(double offset, double *sineInc, double speed, double magnitude) {
-	*sineInc = *sineInc >= RADIAN_CIRCLE ? 0 : *sineInc + speed;
+double sineInc(double offset, double *sineInc, double frequency, double ampMultiplier) {
+	// https://csanyk.com/2012/10/game-maker-wave-motion-tutorial/
+	//0.2 & 50
 
-	double sineOffset = (sin(*sineInc) * magnitude);
-	return offset - sineOffset;
+	// Increase 'frequency' up to 2pi radians (anything over this will result in linear movement).
+	// NB: Assuming frequency is constant, changes to amplitude have no effect.
+	*sineInc = *sineInc >= RADIAN_CIRCLE ? 0 : *sineInc + frequency;
+
+	// NB: If amplitude is a *multiplier* for frequency, we ensure the two are locked and scale
+	// independently as would one expect.
+	double amplitude = frequency * ampMultiplier;
+
+	// 'Offset' keeps us at our original location.
+	return offset - amplitude * sin(*sineInc);
 }
 
 double cosInc(double offset, double *sineInc, double speed, double magnitude) {

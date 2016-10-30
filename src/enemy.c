@@ -356,7 +356,7 @@ void spawnFormation(int x, EnemyType enemyType, int qty, double speed) {
 	spawns[spawnInc++] = s;
 }
 
-void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed, double speedX, double swayInc, double health) {
+void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat combat, double speed, double speedX, double swayInc, double health, double frequency, double ampMult) {
 	// Limit Enemy count to array size by looping over the top.
 	// Todo: Consider fixing need for >= (using == bugs out boss explosions sometimes)
 	if(enemyCount >= MAX_ENEMIES) enemyCount = 0;
@@ -400,6 +400,8 @@ void spawnEnemy(int x, int y, EnemyType type, EnemyPattern movement, EnemyCombat
 		0,
 		type == ENEMY_BOSS_INTRO,	//nonInteractive
 		type == ENEMY_BOSS_INTRO,	//inBackground
+		frequency,
+		ampMult
 	};
 
 	//Add it to the list of renderables.
