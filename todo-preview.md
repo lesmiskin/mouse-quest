@@ -1,34 +1,5 @@
 
-* Voice-overs:
-  - Alert
-  - Good luck
-  - Fire at will
-  - Upgrade
-  - Delicious fruit
-  - Enemy dreadnaught approaching
-  - Mission start
-  - Systems nominal.
-  - Commencing operation
-  - Systems interrupted.
-  - System failure.
-  - Corruption detected.
-  - Unidentified vessel approaching.
-  - Mission accomplished.
-  - Energy low.
-  - Energise.
-  - Manual override engaged.
-  - User input required.
-  - Human intervention required.
-  - Thank you, human.
-  - Integrity compromised.
-  - Skill level insufficient. Additional practice advised.
-  - Enemy threat neutralised.
-
-- Well-insulated room
-- Use iPhone to record.
-
-
-* Second level with ID-based scripting.
+* BUG: Homing bullets aren't 100% accurate :'(
 
 ==============================================
 
