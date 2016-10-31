@@ -66,6 +66,7 @@ typedef struct {
     bool Started;
 	double Frequency;
 	double AmpMult;
+    long FinishedPausing;
 } WaveTrigger;
 
 #define MAX_WAVES 200
@@ -77,6 +78,7 @@ static MapWave mapWaves[100];
 static int mapWaveInc = 0;
 static int waveAddInc = 0;
 static bool pausing = false;
+static long gameStartTime;
 
 // -------------------------------------------------------------------------
 
@@ -94,7 +96,7 @@ void warning() {
 
 void pause(int spawnTime) {
 	WaveTrigger e = {
-		false, true, false, spawnTime, W_COL, 0, 0, PATTERN_BOB, ENEMY_CD, COMBAT_IDLE, false, 0, 0, 0, 0, false, 0, false, 0, 0
+		false, true, false, spawnTime, W_COL, 0, 0, PATTERN_BOB, ENEMY_CD, COMBAT_IDLE, false, 0, 0, 0, 0, false, 0, false, 0, 0, 0
 	};
 
 	triggers[waveAddInc++] = e;
@@ -102,7 +104,7 @@ void pause(int spawnTime) {
 
 void wave(int spawnTime, WaveType waveType, int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat combat, bool async, double speed, double speedX, double health, int qty, double frequency, double ampMult) {
 	WaveTrigger e = {
-		false, false, false, spawnTime, waveType, x, y, movement, type, combat, async, speed, speedX, health, qty, false, 0, false, frequency, ampMult
+		false, false, false, spawnTime, waveType, x, y, movement, type, combat, async, speed, speedX, health, qty, false, 0, false, frequency, ampMult, 0
 	};
 
 	triggers[waveAddInc++] = e;
@@ -122,9 +124,6 @@ void w_column(int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat c
 	}
 }
 
-static long waveTime;
-static int pauseInc = -1;
-
 //Wires up wave spawners with their triggers.
 void levelGameFrame() {
 	if(gameState != STATE_GAME) return;
@@ -133,36 +132,44 @@ void levelGameFrame() {
 	for(int i=0; i < waveAddInc; i++) {
 		WaveTrigger trigger = triggers[i];
 
-		if(trigger.Finished || invalidWave(&trigger)) continue;
-
-        // Dunno how this works, but it does! :p (nb: WaveTime is significant somehow)
+		// Ignore finished or unset triggers.
+        if(trigger.Finished || invalidWave(&trigger)) continue;
 
         // We've encountered a pause trigger.
         if(trigger.Pause) {
-			// Stop pausing if we've reached the delay time.
-            if (due(waveTime, trigger.SpawnTime)) {
-				triggers[i].Finished = true;
-                waveTime = clock();
-				pauseInc = -1;
-                continue;
-            // Start pausing if we're not already.
-			}else if(!triggers[i].Started){
-                waveTime = clock();
+            // Start pausing if we're not already (NB: We don't bother about many pauses at this point, because
+            // we stop looping at the first active or candidate trigger).
+            if(!triggers[i].Started) {
+                triggers[i].StartedPausing = clock();
                 triggers[i].Started = true;
-				pauseInc = i;
-			}
-		}
+                break;
 
-        // Don't cycle past a pause if we're still on it.
-        if(pauseInc > -1 && i >= pauseInc)
-            break;
+            // Stop pausing if we've reached the delay time.
+            } else if (due(triggers[i].StartedPausing, trigger.SpawnTime)) {
+				triggers[i].Finished = true;
+                triggers[i].FinishedPausing = clock();
 
-        if(trigger.Warning) {
+            // Don't cycle past a pause if we're still on it.
+			}else{
+                break;
+            }
+
+        // Warnings.
+		}else if(trigger.Warning) {
 			toggleWarning();
 			triggers[i].Finished = true;
-		}else{
+
+		// Enemies
+        }else{
             // If our spawn time is due, SINCE the last pause time, fire away!
-			if(due(waveTime, trigger.SpawnTime)) {
+            long pauseBeforeWave = gameStartTime;
+            for(int j=i; j > 0; j--) {
+                if(triggers[j].Pause && triggers[j].Finished) {
+                    pauseBeforeWave = triggers[j].FinishedPausing;
+                    break;
+                }
+            }
+			if(due(pauseBeforeWave, trigger.SpawnTime)) {
 				w_column(trigger.x, trigger.y, trigger.Movement, trigger.Type, trigger.Combat, trigger.Async, trigger.Speed, trigger.SpeedX, trigger.Qty, trigger.Health, trigger.Frequency, trigger.AmpMult);
 				triggers[i].Finished = true;
 			}
@@ -325,8 +332,6 @@ void loadLevel() {
 	fclose(file);
 }
 
-static int SPACING_SCALE = 205;
-
 void runLevel() {
     const int LEFT = 40;
     const int RIGHT = 230;
@@ -422,8 +427,7 @@ void runLevel() {
 }
 
 void resetLevel() {
-	waveTime = clock();
-	pauseInc = -1;
+    gameStartTime = clock();
 	waveAddInc = 0;
 }
 

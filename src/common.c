@@ -13,20 +13,10 @@ const bool ALPHA_SHADOWS = false;
 bool FULLSCREEN = false;
 
 //Windowed resolutions
-//Coord windowSize = { 224, 256 };		//1:1 scale
+Coord windowSize = { 224, 256 };		//1:1 scale
 //Coord windowSize = { 448, 512 };		//2:1 scale
 //Coord windowSize = { 672, 768 };		//3:1 scale
 //Coord windowSize = { 896, 1024 };		//4:1 scale
-
-//Widescreen resolutions
-//Coord windowSize = { 1280, 720};		//720p
-//Coord windowSize = { 1360, 768 };		//Perfect 3:1.
-//Coord windowSize = { 1600, 900 };
-
-//Native resolution
-
-//	Coord windowSize = { 1680, 1050 };
-	Coord windowSize = { 672, 768 };		//4:1 scale
 
 const double ASPECT = 1.142;
 const int ANIMATION_HZ = 1000 / 12;		//12fps

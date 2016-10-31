@@ -1,8 +1,11 @@
 # Boss intros.
 
-CD,NA,10,1.7,SNAKE_WIDE,C,0.05,20,2000
-CD,NA,10,2,SNAKE_WIDE,R,0.05,20,0
+# Delay at start.
+# Base pausing off time of last pause start.
 
+CD,NA,20,2,COLUMN,L,0.05,20,500
+CD,NA,20,2,COLUMN,R,0.05,20,250
+CD,NA,20,2,COLUMN,C,0.05,20,0
 
 #CD,NA,10,NORMAL,SNAKE_WIDE,R,0
 #CD,NA,10,SLOW,SNAKE_WIDE,LL,0

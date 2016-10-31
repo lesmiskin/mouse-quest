@@ -1,6 +1,7 @@
 #include <SDL.h>
 
 #ifdef _WIN32
+    #include <ctype.h>
     #include <math.h>
     #include <mem.h>
     #include <stdio.h>
