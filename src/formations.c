@@ -139,11 +139,11 @@ void formationFrame(Enemy* e) {
 
 		case PATTERN_CIRCLE:
 			//TODO: Find out why swayIncX and swayIncY need to be swapped :p
-			e->formationOrigin.y = sineInc(e->origin.y, &e->swayIncX, 0.04, 21);
-			e->formationOrigin.x = cosInc(e->origin.x, &e->swayIncY, 0.04, 21);
+			e->formationOrigin.y = sineInc(e->origin.y, &e->swayIncX, e->frequency, e->ampMult);
+			e->formationOrigin.x = cosInc(e->origin.x, &e->swayIncY, e->frequency, e->ampMult);
 			break;
 		case PATTERN_SNAKE:
-			e->formationOrigin.x = sineInc(e->origin.x, &e->swayIncX, 0.075, 12);
+			e->formationOrigin.x = sineInc(e->origin.x, &e->swayIncX, e->frequency, e->ampMult);
 			e->formationOrigin.y = e->origin.y;
 			break;
 		case PATTERN_BOB:
