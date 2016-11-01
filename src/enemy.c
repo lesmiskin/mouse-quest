@@ -42,7 +42,7 @@ typedef struct {
 EnemySpawn spawns[MAX_SPAWNS];
 Enemy enemies[MAX_ENEMIES];
 int spawnInc = 0;
-const double HEALTH_LIGHT = 3.0;
+const double HEALTH_LIGHT = 1.5;
 const double HEALTH_HEAVY = 5.0;
 bool bossOnscreen = false;
 double bossHealth = 0;
@@ -57,7 +57,7 @@ static double rollSine[5] = { 0.0, 1.25, 2.5, 3.75, 5.0 };
 
 static double SHOT_BOSS_HZ = 100;
 static double SHOT_HZ = 750;
-static double SHOT_SPEED = 2;
+static double SHOT_SPEED = 1;
 static double SHOT_DAMAGE = 1;
 
 const int ENEMY_BOUND = 26;

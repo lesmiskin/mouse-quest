@@ -6,54 +6,187 @@
 # Enemy, Shoots, Quantity, Speed, Pattern, Position, Sine Frequency, Sine Amplitude, Delay
 
 # ========================================================================================
-# LEVEL ONE
-# ========================================================================================
+
+# Fruit bonuses on wave destruction.
+# Upbeat, tempo, get all the waves !
+# Rapid. Pattern. Sequence of hits.
+# Challenge is in getting all the waves.
+
 
 # Initial easy waves of disks.
 DISK,NA,5,1.7,COLUMN,L,0,0,2000
-DISK_BLUE,NA,5,1.7,COLUMN,R,0,0,3000
+DISK_BLUE,NA,5,1.7,COLUMN,R,0,0,2000
 
-# Some tougher waves of snakes, one which shoots.
-BUG,NA,5,1.6,SNAKE,LC,0.1,120,1750
-VIRUS,SHOOTS,5,1.2,SNAKE,RR,0.1,120,5000
+CD,NA,5,1.8,SNAKE,125,0.1,125,100
+CD,NA,5,1.8,SNAKE_REV,125,0.1,125,2500
 
-# A delta wave of blue disks.
-DISK_BLUE,NA,1,1.0,COLUMN,LL,0.1,120,0
-DISK_BLUE,NA,1,1.2,COLUMN,L,0.1,120,0
-DISK_BLUE,NA,1,1.3,COLUMN,LC,0.1,120,0
-DISK_BLUE,NA,1,1.4,COLUMN,C,0.1,120,0
-DISK_BLUE,NA,1,1.3,COLUMN,CR,0.1,120,0
-DISK_BLUE,NA,1,1.2,COLUMN,R,0.1,120,0
-DISK_BLUE,NA,1,1.0,COLUMN,RR,0.1,120,7000
+MAGNET,NA,6,1.7,SNAKE,L,0.075,220,100
+MAGNET,NA,6,1.7,SNAKE_REV,L,0.075,220,1750
 
-# An inverse-delta wave of blue disks.
-DISK,NA,1,1.4,COLUMN,LL,0.1,120,0
-DISK,NA,1,1.2,COLUMN,L,0.1,120,0
-DISK,NA,1,1.1,COLUMN,LC,0.1,120,0
-DISK,NA,1,1.0,COLUMN,C,0.1,120,0
-DISK,NA,1,1.1,COLUMN,CR,0.1,120,0
-DISK,NA,1,1.2,COLUMN,R,0.1,120,0
-DISK,NA,1,1.4,COLUMN,RR,0.1,120,8000
+BUG,NA,6,1.7,SNAKE,R,0.075,220,2000
 
-# Fast bugs.
-VIRUS,SHOOTS,2,2.25,SNAKE,L,0.1,120,2500
-BUG,SHOOTS,2,2.25,SNAKE,CR,0.1,120,5000
+VIRUS,NA,6,1.7,SNAKE,L,0.075,220,4000
 
-# Row of cones
-CONE,NA,4,1,COLUMN,C,0.1,120,250
-CONE,NA,3,1,COLUMN,LC,0.1,120,0
-CONE,NA,3,1,COLUMN,CR,0.1,120,250
-CONE,NA,2,1,COLUMN,L,0.1,120,0
-CONE,NA,2,1,COLUMN,R,0.1,120,250
-CONE,NA,1,1,COLUMN,LL,0.1,120,0
-CONE,NA,1,1,COLUMN,RR,0.1,120,7000
+DISK,NA,5,2.2,COLUMN,LC,0,0,1000
+DISK_BLUE,NA,5,2.2,COLUMN,RR,0,0,1750
+DISK,NA,8,3.2,COLUMN,C,0,0,3000
 
-# Swirling magnets?
+DISK_BLUE,NA,1,1.2,COLUMN,LL,0.1,120,0
+DISK_BLUE,NA,1,1.6,COLUMN,L,0.1,120,0
+DISK_BLUE,NA,1,2.0,COLUMN,LC,0.1,120,0
+DISK_BLUE,NA,1,2.4,COLUMN,C,0.1,120,0
+DISK_BLUE,NA,1,2.0,COLUMN,CR,0.1,120,0
+DISK_BLUE,NA,1,1.6,COLUMN,R,0.1,120,0
+DISK_BLUE,NA,1,1.2,COLUMN,RR,0.1,120,7000
 
-# The boss.
-CD,NA,0,0,WARNING,C,0,0,0
-BOSS_INTRO,NA,1,2.3,BOSS_INTRO,C,0,0,3000
-BOSS,SHOOTS,1,0.8,BOSS,C,0,0,0
+# ========================================================================================
+# ========================================================================================
+
+
+
+
+
+
+## Some tougher waves of snakes, one which shoots.
+#BUG,NA,5,1.6,SNAKE,LC,0.1,120,1750
+#VIRUS,SHOOTS,5,1.2,SNAKE,RR,0.1,120,5000
+#
+## A delta wave of blue disks.
+#DISK_BLUE,NA,1,1.0,COLUMN,LL,0.1,120,0
+#DISK_BLUE,NA,1,1.2,COLUMN,L,0.1,120,0
+#DISK_BLUE,NA,1,1.3,COLUMN,LC,0.1,120,0
+#DISK_BLUE,NA,1,1.4,COLUMN,C,0.1,120,0
+#DISK_BLUE,NA,1,1.3,COLUMN,CR,0.1,120,0
+#DISK_BLUE,NA,1,1.2,COLUMN,R,0.1,120,0
+#DISK_BLUE,NA,1,1.0,COLUMN,RR,0.1,120,7000
+
+
+# WHAT IS FUN TO PLAY:
+#     - ROWS OF ENEMIES IN COLUMNS.
+#     - BIG LONG SNAKES OF ENEMIES.
+#     - GOOD, UPBEAT TIMING BETWEEN COLUMNS.
+#     - REQUIRING THE PLAYER TO MOVE AROUND A LOT.
+#     - BEING ABLE TO HIT ROWS OF ENEMIES IN ONE GO.
+#
+# # WHAT IS VISUALLY EFFECTIVE:
+#     - COMPLEX AND INTERESTING PATTERNS (E.G. MAG_SPLIT)
+#     - DELTAS WITH FAST/SLOW ENDS TO THEM.
+#     - SWINGING SPACE-INVADER ROWS.
+#
+# # WHAT IS CLEVER BUT NOT ANNOYING:
+#     - CHANGING UP PREVIOUSLY-ESTABLISHED PATTERNS.
+#     - ADDING SHOOTERS TO AVOID SITTING IN ONE SPOT.
+#
+#
+#
+# # WHAT IS NOT FUN TO PLAY:
+#     - SINING STRAFERS THAT SHOOT.
+#     - SHOTS THAT ARE WAY TOO FAST TO DODGE.
+#
+
+
+
+
+
+
+
+##
+## Shots move slowly, and are easy to dodge.
+##
+
+# L: Down screen all the way, then angles up (sine) completely offscreen.
+# R: Down screen all the way, then angles up (sine) completely offscreen.
+# L: Column down the screen, then angles up (sine) completely offscreen.
+
+# Fast-moving dropper, shoots two shots at a time.
+# Three slow-moving droppers, in tri configuration, only first one shoots two shots fast.
+
+# A row of deltas, traveling medium speed down the screen. [need v. light health]
+
+# Interlaced L and R strafers, sining offscreen, medium-speed shooting rate.
+
+# Two columns of CDs with sining floppies next to them.
+# Another set of strafers follows in behind, overlapping the second CD row.
+
+## Dramatic pause.
+
+# Two columns of CDs with sining floppies next to them.
+# Two fast columns of CDs come in
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Initial easy waves of disks.
+#DISK,NA,5,1.7,COLUMN,L,0,0,2000
+#DISK_BLUE,NA,5,1.7,COLUMN,R,0,0,3000
+
+
+## Some tougher waves of snakes, one which shoots.
+#BUG,NA,5,1.6,SNAKE,LC,0.1,120,1750
+#VIRUS,SHOOTS,5,1.2,SNAKE,RR,0.1,120,5000
+#
+## A delta wave of blue disks.
+#DISK_BLUE,NA,1,1.0,COLUMN,LL,0.1,120,0
+#DISK_BLUE,NA,1,1.2,COLUMN,L,0.1,120,0
+#DISK_BLUE,NA,1,1.3,COLUMN,LC,0.1,120,0
+#DISK_BLUE,NA,1,1.4,COLUMN,C,0.1,120,0
+#DISK_BLUE,NA,1,1.3,COLUMN,CR,0.1,120,0
+#DISK_BLUE,NA,1,1.2,COLUMN,R,0.1,120,0
+#DISK_BLUE,NA,1,1.0,COLUMN,RR,0.1,120,7000
+#
+## An inverse-delta wave of blue disks.
+#DISK,NA,1,1.4,COLUMN,LL,0.1,120,0
+#DISK,NA,1,1.2,COLUMN,L,0.1,120,0
+#DISK,NA,1,1.1,COLUMN,LC,0.1,120,0
+#DISK,NA,1,1.0,COLUMN,C,0.1,120,0
+#DISK,NA,1,1.1,COLUMN,CR,0.1,120,0
+#DISK,NA,1,1.2,COLUMN,R,0.1,120,0
+#DISK,NA,1,1.4,COLUMN,RR,0.1,120,8000
+#
+## Fast bugs.
+#VIRUS,SHOOTS,2,2.25,SNAKE,L,0.1,120,2500
+#BUG,SHOOTS,2,2.25,SNAKE,CR,0.1,120,5000
+#
+## Row of cones
+#CONE,NA,4,1,COLUMN,C,0.1,120,250
+#CONE,NA,3,1,COLUMN,LC,0.1,120,0
+#CONE,NA,3,1,COLUMN,CR,0.1,120,250
+#CONE,NA,2,1,COLUMN,L,0.1,120,0
+#CONE,NA,2,1,COLUMN,R,0.1,120,250
+#CONE,NA,1,1,COLUMN,LL,0.1,120,0
+#CONE,NA,1,1,COLUMN,RR,0.1,120,7000
+#
+## Swirling magnets?
+#
+## The boss.
+#CD,NA,0,0,WARNING,C,0,0,0
+#BOSS_INTRO,NA,1,2.3,BOSS_INTRO,C,0,0,3000
+#BOSS,SHOOTS,1,0.8,BOSS,C,0,0,0
+#
+
 
 
 # ========================================================================================
