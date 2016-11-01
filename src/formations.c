@@ -146,6 +146,10 @@ void formationFrame(Enemy* e) {
 			e->formationOrigin.x = sineInc(e->origin.x, &e->swayIncX, e->frequency, e->ampMult);
 			e->formationOrigin.y = e->origin.y;
 			break;
+		case PATTERN_SNAKE_REV:
+			e->formationOrigin.x = sineInc(e->origin.x, &e->swayIncX, e->frequency, -e->ampMult);
+			e->formationOrigin.y = e->origin.y;
+			break;
 		case PATTERN_BOB:
 			e->formationOrigin.x = e->origin.x;
 			e->formationOrigin.y = sineInc(e->origin.y, &e->swayIncY, 0.075, 12);;

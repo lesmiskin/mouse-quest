@@ -1,14 +1,12 @@
-# Boss intros.
+# Enemies: VIRUS; BUG; CD; DISK; DISK_BLUE; MAGNET; CONE; BOSS; BOSS_INTRO
+# Patterns: SNAKE; SNAKE_REV; COLUMN; MAG_SPLIT; STRAFER; PEELER; WARNING; BOSS_INTRO; BOSS
+# Positions: LL; L; LC; C; RC; R; RR; <int>
+# Speeds: SLOW; NORMAL; FAST; <float>
 
-# Delay at start.
-# Base pausing off time of last pause start.
+# Enemy, Shoots, Quantity, Speed, Pattern, Position, Sine Frequency, Sine Amplitude, Delay
 
-BUG,NA,10,2,SNAKE,L,0.1,100,1000
-VIRUS,NA,10,2,SNAKE,R,0.1,100,1000
-
-DISK,SHOOTS,10,2,COLUMN,LC,0.1,100,1000
-DISK_BLUE,NA,10,2,COLUMN,CR,0.1,100,1000
-
+CONE,NA,10,2,SNAKE,L,0.1,100,1000
+BUG,NA,10,2,SNAKE_REV,C,0.1,100,1000
 
 #CD,NA,20,2,COLUMN,R,0.05,20,250
 #CD,NA,20,2,COLUMN,C,0.05,20,0

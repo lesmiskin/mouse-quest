@@ -13,7 +13,7 @@ typedef enum {
 typedef enum {
     SNAKE,
     MAG_SPLIT,
-    SNAKE_WIDE,
+    SNAKE_REV,
     STRAFER,
     PEELER,
     SWIRLER,
@@ -207,6 +207,8 @@ EnemyType getMapEnemy(char *str) {
 		return ENEMY_DISK;
 	}else if(strcmp(str, "DISK_BLUE") == 0) {
 		return ENEMY_DISK_BLUE;
+	}else if(strcmp(str, "CONE") == 0) {
+		return ENEMY_CONE;
 	}else if(strcmp(str, "VIRUS") == 0) {
 		return ENEMY_VIRUS;
 	}else if(strcmp(str, "MAGNET") == 0) {
@@ -240,12 +242,12 @@ double getMapSpeed(char *str) {
 EnemyPatternDef getMapPattern(char *str) {
     if(strcmp(str, "SNAKE") == 0) {
         return SNAKE;
+	}else if(strcmp(str, "SNAKE_REV") == 0) {
+		return SNAKE_REV;
 	}else if(strcmp(str, "COLUMN") == 0) {
 		return COLUMN;
     }else if(strcmp(str, "MAG_SPLIT") == 0) {
         return MAG_SPLIT;
-    }else if(strcmp(str, "SNAKE_WIDE") == 0) {
-        return SNAKE_WIDE;
     }else if(strcmp(str, "STRAFER") == 0) {
         return STRAFER;
     }else if(strcmp(str, "PEELER") == 0) {
@@ -367,20 +369,16 @@ void runLevel() {
 
                 break;
 
-            case MAG_SPLIT:
+			case SNAKE_REV:
+				for(int i=0; i < map.qty; i++)
+					wave(i * spacing, W_COL, map.position, NA, PATTERN_SNAKE_REV, map.enemyType, map.combat, false, map.speed, 0.05, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
+
+				break;
+
+			case MAG_SPLIT:
                 for(int i=0; i < map.qty; i++) {
                     wave(i * spacing, W_COL, C_LEFT, NA, P_CURVE_LEFT, map.enemyType, map.combat, false, map.speed, 1, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
                     wave(i * spacing, W_COL, C_RIGHT, NA, P_CURVE_RIGHT, map.enemyType, map.combat, false, map.speed, 1, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
-                }
-                break;
-
-            case SNAKE_WIDE:
-				for(int i=0; i < map.qty; i++) {
-					if(map.position < CENTER) {
-						wave(i * spacing, W_COL, map.position, NA, P_CROSS_LEFT, map.enemyType, map.combat, false, map.speed, 0.03, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
-					}else{
-						wave(i * spacing, W_COL, map.position, NA, P_CROSS_RIGHT, map.enemyType, map.combat, false, map.speed, 0.03, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
-					}
                 }
                 break;
 
