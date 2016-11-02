@@ -27,7 +27,7 @@ typedef enum {
 
 PlayerState playerState;
 
-const PlayerState PSTATE_CAN_ANIMATE = PSTATE_NOT_PLAYING | PSTATE_NORMAL | PSTATE_WON | PSTATE_DYING | PSTATE_SMILING;
+const PlayerState PSTATE_CAN_ANIMATE = PSTATE_NOT_PLAYING | PSTATE_NORMAL | PSTATE_WON | PSTATE_DYING | PSTATE_SMILING | PSTATE_SLEEPING;
 const PlayerState PSTATE_CAN_CONTROL = PSTATE_NORMAL;
 
 //TODO: Group these for clarity.
@@ -35,7 +35,7 @@ bool godMode = false;
 bool useMike;		//onscreen, responds to actions etc.
 bool hideMike;		//still there, but don't render this frame.
 Coord playerOrigin;
-double playerStrength = 3.0;
+double playerStrength = 0.5;
 double playerHealth;
 static long deathTime = 0;
 static const double PLAYER_MAX_SPEED = 4.0;
@@ -80,6 +80,9 @@ static bool canControl() {
 static bool canAnimate() {
 	return ( playerState&PSTATE_CAN_ANIMATE) > 0;
 }
+bool isSolid() {
+	return playerState != PSTATE_DYING && playerState != PSTATE_SLEEPING;
+}
 bool isDying() {
 	return playerState == PSTATE_DYING;
 }
@@ -101,7 +104,7 @@ extern void restoreHealth() {
 
 void hitPlayer(double damage) {
 	//Don't take damage when in hit recovery mode.
-	if(pain && !isDying() || godMode) return;
+	if(pain && isSolid() || godMode) return;
 
 	//Take damage.
 	playerHealth -= damage;
@@ -124,6 +127,8 @@ void hitPlayer(double damage) {
 	}
 }
 
+static bool sleeping;
+
 //Perform an animation sceneNumber.
 void playerAnimate() {
 	if(!canAnimate()) return;
@@ -131,7 +136,7 @@ void playerAnimate() {
 	//TODO: Fix hard-coded smiling state animation loop.
 
 	//Reset animation loop.
-	if(playerState != PSTATE_SMILING) {
+	if(playerState != PSTATE_SMILING && playerState != PSTATE_SLEEPING) {
 		animationInc = animationInc == ANIMATION_FRAMES ? 1 : animationInc + 1;
 	}
 
@@ -159,29 +164,28 @@ void playerAnimate() {
 		if(!begunDyingRender) {
 			play("mike-die.wav");
 			Mix_PauseMusic();
-			animationInc = 1;
+			animationInc = 5;
 			begunDyingRender = true;
 			deathTime = clock();
 
 			//Save score.
 			if(score > topScore) topScore = score;
 		}
-			//Flag once bounced completely offscreen (with a little padding)
-		else if(playerOrigin.y > screenBounds.y + 64){
-			playerState = PSTATE_DEAD;
-			deathTime = 0;
-			triggerState(STATE_GAME_OVER);
-			return;
+
+		if(playerState != PSTATE_SLEEPING) {
+			if(dieDir) {
+				animGroupName = "mike-lean-right-03.png";
+			}else{
+				animGroupName = "mike-lean-left-03.png";
+			}
 		}
 
-		if(dieDir) {
-			animGroupName = "mike-fright-right.png";
-		}else{
-			animGroupName = "mike-fright-left.png";
-		}
-	}
+	}else if(playerState == PSTATE_SLEEPING) {
+		animGroupName = "sleep-%02d.png";
+		animationInc = animationInc == 8 ? 1 : animationInc + 1;
+
 	//Pain: In shock (change frame)
-	else if(pain && !painShocked) {
+	}else if(pain && !painShocked) {
 		animGroupName = "mike-shock3.png";
 		painShocked = true;
 	}
@@ -375,6 +379,19 @@ void playerGameFrame() {
 
 		//Decrease bounce thrust over time.
 		playerOrigin.y -= (dieBounce -= 0.15);
+
+		//Flag once bounced completely offscreen (with a little padding)
+		if(playerOrigin.y > screenBounds.y - 30){
+			playerState = PSTATE_SLEEPING;
+//			playerState = PSTATE_DEAD;
+			deathTime = 0;
+			triggerState(STATE_GAME_OVER);
+
+			// Change sprite immediately.
+			SDL_Texture* texture = getTextureVersion("sleep-05.png", ASSET_DEFAULT);
+			animationInc = 5;
+			bodySprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
+		}
 	}
 
 	if(!useMike || !canControl()) return;

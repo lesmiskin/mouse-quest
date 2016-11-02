@@ -7,29 +7,69 @@
 
 # ========================================================================================
 
+# Rows of destruction.
+# Tempo.
+# Moving around the screen.
+# Challenge is in getting all the waves.
+# Ballet of queued-up homing shots.
+
+# Shots to animate.
+# Big explosion and continue screen.
+# Mike goes to sleep.
+
+# IDEA: Angular enemies that can be destroyed in rows.
+# IDEA: Enemies that come together in a combined row.
+
+
+
+
+
 # Fruit bonuses on wave destruction.
 # Upbeat, tempo, get all the waves !
 # Rapid. Pattern. Sequence of hits.
-# Challenge is in getting all the waves.
+
+# Spawn weapons as own dropdowns.
+# Default weapon: Two shots that have light strength.
+# Weapon 2: Four shots (red)
+# Weapon 3: Six shots (green) plus two at angles.
+
 
 
 # Initial easy waves of disks.
 DISK,NA,5,1.7,COLUMN,L,0,0,2000
 DISK_BLUE,NA,5,1.7,COLUMN,R,0,0,2000
 
+# Center column of CD's.
 CD,NA,5,1.8,SNAKE,125,0.1,125,100
 CD,NA,5,1.8,SNAKE_REV,125,0.1,125,2500
 
+
+# Magnet columns.
 MAGNET,NA,6,1.7,SNAKE,L,0.075,220,100
 MAGNET,NA,6,1.7,SNAKE_REV,L,0.075,220,1750
 
-BUG,NA,6,1.7,SNAKE,R,0.075,220,2000
 
+# A couple of short snakes.
+BUG,NA,6,1.7,SNAKE,R,0.075,220,2000
 VIRUS,NA,6,1.7,SNAKE,L,0.075,220,4000
 
+
+# Some very-fast disk columns.
 DISK,NA,5,2.2,COLUMN,LC,0,0,1000
 DISK_BLUE,NA,5,2.2,COLUMN,RR,0,0,1750
 DISK,NA,8,3.2,COLUMN,C,0,0,3000
+
+# ========================================================================================
+
+
+# OWN: Row of one-hit disk deltas.
+# BACKGROUND: Long slow trailing row of CD's.
+# BACKGROUND: Big block of slow space-invader rows.
+# FORE: Some fast columns interspersed with them.
+# FORE: Some foreground spinners that shoot.
+# FORE: Some slow-stop-spray viruses.
+# DNA strand crossovers.
+
 
 DISK_BLUE,NA,1,1.2,COLUMN,LL,0.1,120,0
 DISK_BLUE,NA,1,1.6,COLUMN,L,0.1,120,0
@@ -42,6 +82,8 @@ DISK_BLUE,NA,1,1.2,COLUMN,RR,0.1,120,7000
 # ========================================================================================
 # ========================================================================================
 
+## Powerups to ultimately be spawned as explodable platforms.
+## Powerups get lost upon death, but can be picked up again.
 
 
 

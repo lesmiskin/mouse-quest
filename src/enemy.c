@@ -566,7 +566,7 @@ void enemyGameFrame() {
 		}else{
 			enemyBound = makeSquareBounds(enemies[i].parallax, ENEMY_BOUND);
 		}
-		if(inBounds(playerOrigin, enemyBound) && !isDying() && !enemies[i].nonInteractive) {
+		if(inBounds(playerOrigin, enemyBound) && isSolid() && !enemies[i].nonInteractive) {
 			hitPlayer(enemies[i].collisionDamage);
 			hitEnemy(&enemies[i], playerStrength, true);
 		}

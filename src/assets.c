@@ -357,7 +357,15 @@ static void loadImages() {
         { "magnet-08.png", true, true, false, false, false },
 
         // Player
-        { "mike-shades-01.png", false, true, false, false, false },
+        { "sleep-01.png", false, true, false, false, false },
+        { "sleep-02.png", false, true, false, false, false },
+		{ "sleep-03.png", false, true, false, false, false },
+		{ "sleep-04.png", false, true, false, false, false },
+		{ "sleep-05.png", false, true, false, false, false },
+		{ "sleep-06.png", false, true, false, false, false },
+		{ "sleep-07.png", false, true, false, false, false },
+		{ "sleep-08.png", false, true, false, false, false },
+		{ "mike-shades-01.png", false, true, false, false, false },
         { "mike-shades-02.png", false, true, false, false, false },
         { "mike-shades-03.png", false, true, false, false, false },
         { "mike-shades-04.png", false, true, false, false, false },

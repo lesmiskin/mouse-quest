@@ -9,9 +9,11 @@ typedef enum {
 	PSTATE_WON = 4,
 	PSTATE_DYING = 8,
 	PSTATE_SMILING = 16,
-	PSTATE_DEAD = 32
+	PSTATE_DEAD = 32,
+	PSTATE_SLEEPING = 64
 } PlayerState;
 
+extern bool isSolid();
 extern bool pain;
 extern bool isDying();
 extern bool godMode;

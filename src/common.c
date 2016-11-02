@@ -14,9 +14,9 @@ bool FULLSCREEN = false;
 
 //Windowed resolutions
 //Coord windowSize = { 224, 256 };		//1:1 scale
-Coord windowSize = { 448, 512 };		//2:1 scale
+//Coord windowSize = { 448, 512 };		//2:1 scale
 //Coord windowSize = { 672, 768 };		//3:1 scale
-//Coord windowSize = { 896, 1024 };		//4:1 scale
+Coord windowSize = { 896, 1024 };		//4:1 scale
 
 const double ASPECT = 1.142;
 const int ANIMATION_HZ = 1000 / 12;		//12fps
