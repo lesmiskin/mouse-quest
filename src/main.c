@@ -31,6 +31,75 @@ static const char *GAME_TITLE = "Mouse Quest";
 
 bool running = true;
 
+static int choosePos() {}
+
+static void generate() {
+	FILE *fp;
+	fp = fopen("C:\\Users\\lxm\\dev\\mq\\src\\LEVEL01.csv", "w");
+	if(fp == NULL) exit(-1);
+
+	// A nice set of enemies.
+	// Would be nice to also have RR and L's in the mix, too.
+	// Throw in bugs and viruses, that shoot (always slow, and one is OK).
+
+
+	bool wasLeft = false;
+	for(int i=0; i < 10; i++) {
+
+		char* position;
+
+		// Always make sure we spawn left then right.
+		int thisPos = wasLeft ? chance(75) ? 2 : 3 : chance(75) ? 1 : 0;
+		wasLeft = thisPos < 2;
+
+		switch(thisPos) {
+			case 0:
+				position = "LL";
+				break;
+			case 1:
+				position = "L";
+				break;
+			case 2:
+				position = "R";
+				break;
+			case 3:
+				position = "RR";
+				break;
+		}
+
+		fprintf(fp,
+			"%s,NA,%d,%f,%s,%s,0.075,220,%d\n",
+			randomMq(0,1) ? "DISK" : "DISK_BLUE", randomMq(4,12), randomMq(0,1) ? 2.4 : 1.7, randomMq(0,1) ? "SNAKE" : "COLUMN", position, randomMq(1750, 2250)
+		);
+
+		// Always make sure we spawn left then right.
+		thisPos = wasLeft ? chance(75) ? 2 : 3 : chance(75) ? 1 : 0;
+		wasLeft = thisPos < 2;
+
+		switch(thisPos) {
+			case 0:
+				position = "LL";
+				break;
+			case 1:
+				position = "L";
+				break;
+			case 2:
+				position = "R";
+				break;
+			case 3:
+				position = "RR";
+				break;
+		}
+
+		fprintf(fp,
+			"%s,NA,%d,%f,%s,%s,0.075,220,%d\n",
+			randomMq(0,1) ? "DISK" : "DISK_BLUE", randomMq(4,12), randomMq(0,1) ? 2.4 : 1.7, randomMq(0,1) ? "SNAKE" : "COLUMN", position, randomMq(2500, 4000)
+		);
+	}
+
+	fclose(fp);
+}
+
 static void initSDL() {
 	SDL_Init(SDL_INIT_VIDEO);
 
@@ -82,7 +151,20 @@ static void setWindowIcon() {
 #if defined(_WIN32)
 	int main(int argc, char *argv[]) {
 
-        // Windowed mode argument.
+		//Seed randomMq number generator
+		srand(time(NULL));
+
+		generate();
+		// Windowed mode argument.
+		if(argc > 1 && strcmp(argv[1], "-generate") == 0) {
+
+			if(argc > 2 && strcmp(argv[2], "-run") == 0) {
+			}else{
+				return 0;
+			}
+		}
+
+		// Windowed mode argument.
         if(argc > 1 && strcmp(argv[1], "-window") == 0) {
             FULLSCREEN = false;
             windowSize.x = 672;
@@ -91,9 +173,9 @@ static void setWindowIcon() {
 
 #else
 	int main()  {
+		//Seed randomMq number generator
+		srand(time(NULL));
 #endif
-	//Seed randomMq number generator
-	srand(time(NULL));
 
 	atexit(shutdownMain);
 

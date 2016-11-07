@@ -1,0 +1,284 @@
+# Enemies: VIRUS; BUG; CD; DISK; DISK_BLUE; MAGNET; CONE; BOSS; BOSS_INTRO
+# Patterns: COLUMN; SNAKE; SNAKE_REV; ROW; STRAFER; WARNING; BOSS_INTRO; BOSS
+# Positions: LL; L; LC; C; RC; R; RR; <int>
+# Speeds: SLOW; NORMAL; FAST; <float>
+
+# Enemy, Shoots, Quantity, Speed, Pattern, Position, Sine Frequency, Sine Amplitude, Delay
+
+# ========================================================================================
+
+# Rows of destruction.
+# Tempo.
+# Moving around the screen.
+# Challenge is in getting all the waves.
+# Ballet of queued-up homing shots.
+
+# Shots to animate.
+# Big explosion and continue screen.
+
+# IDEA: Angular enemies that can be destroyed in rows.
+# IDEA: Enemies that come together in a combined row.
+
+# Spawn weapons as own dropdowns.
+# Default weapon: Two shots that have light strength.
+# Weapon 2: Four shots (red)
+# Weapon 3: Six shots (green) plus two at angles.
+
+# Generator:
+# Idea of meta-patterns: You'll always get two or three normal patterns, and one fullscreen pattern.
+# Idea of themes within levels. First is sparse, second is medium, third is really busy.
+# 2 - 4 second pause between waves.
+# 50 waves. (LOVE how I can just crank this up).
+
+
+
+
+
+# Initial easy waves of disks.
+DISK,NA,5,1.7,COLUMN,L,0,0,2000
+DISK_BLUE,NA,5,1.7,COLUMN,R,0,0,2000
+
+# Center column of CD's.
+CD,NA,5,1.8,SNAKE,125,0.1,125,100
+CD,NA,5,1.8,SNAKE_REV,125,0.1,125,2500
+
+
+# Magnet columns.
+MAGNET,NA,6,1.7,SNAKE,L,0.075,220,100
+MAGNET,NA,6,1.7,SNAKE_REV,L,0.075,220,1750
+
+
+# A couple of short snakes.
+BUG,NA,6,1.7,SNAKE,R,0.075,220,2000
+VIRUS,NA,6,1.7,SNAKE,L,0.075,220,4000
+
+
+# Some very-fast disk columns.
+DISK,NA,5,2.2,COLUMN,LC,0,0,1000
+DISK_BLUE,NA,5,2.2,COLUMN,RR,0,0,1750
+DISK,NA,8,3.2,COLUMN,C,0,0,3000
+
+# ========================================================================================
+
+
+# OWN: Row of one-hit disk deltas.
+# BACKGROUND: Long slow trailing row of CD's.
+# BACKGROUND: Big block of slow space-invader rows.
+# FORE: Some fast columns interspersed with them.
+# FORE: Some foreground spinners that shoot.
+# FORE: Some slow-stop-spray viruses.
+# DNA strand crossovers.
+
+
+DISK_BLUE,NA,1,1.2,COLUMN,LL,0.1,120,0
+DISK_BLUE,NA,1,1.6,COLUMN,L,0.1,120,0
+DISK_BLUE,NA,1,2.0,COLUMN,LC,0.1,120,0
+DISK_BLUE,NA,1,2.4,COLUMN,C,0.1,120,0
+DISK_BLUE,NA,1,2.0,COLUMN,CR,0.1,120,0
+DISK_BLUE,NA,1,1.6,COLUMN,R,0.1,120,0
+DISK_BLUE,NA,1,1.2,COLUMN,RR,0.1,120,7000
+
+# ========================================================================================
+# ========================================================================================
+
+## Powerups to ultimately be spawned as explodable platforms.
+## Powerups get lost upon death, but can be picked up again.
+
+
+
+
+
+## Some tougher waves of snakes, one which shoots.
+#BUG,NA,5,1.6,SNAKE,LC,0.1,120,1750
+#VIRUS,SHOOTS,5,1.2,SNAKE,RR,0.1,120,5000
+#
+## A delta wave of blue disks.
+#DISK_BLUE,NA,1,1.0,COLUMN,LL,0.1,120,0
+#DISK_BLUE,NA,1,1.2,COLUMN,L,0.1,120,0
+#DISK_BLUE,NA,1,1.3,COLUMN,LC,0.1,120,0
+#DISK_BLUE,NA,1,1.4,COLUMN,C,0.1,120,0
+#DISK_BLUE,NA,1,1.3,COLUMN,CR,0.1,120,0
+#DISK_BLUE,NA,1,1.2,COLUMN,R,0.1,120,0
+#DISK_BLUE,NA,1,1.0,COLUMN,RR,0.1,120,7000
+
+
+# WHAT IS FUN TO PLAY:
+#     - ROWS OF ENEMIES IN COLUMNS.
+#     - BIG LONG SNAKES OF ENEMIES.
+#     - GOOD, UPBEAT TIMING BETWEEN COLUMNS.
+#     - REQUIRING THE PLAYER TO MOVE AROUND A LOT.
+#     - BEING ABLE TO HIT ROWS OF ENEMIES IN ONE GO.
+#
+# # WHAT IS VISUALLY EFFECTIVE:
+#     - COMPLEX AND INTERESTING PATTERNS (E.G. MAG_SPLIT)
+#     - DELTAS WITH FAST/SLOW ENDS TO THEM.
+#     - SWINGING SPACE-INVADER ROWS.
+#
+# # WHAT IS CLEVER BUT NOT ANNOYING:
+#     - CHANGING UP PREVIOUSLY-ESTABLISHED PATTERNS.
+#     - ADDING SHOOTERS TO AVOID SITTING IN ONE SPOT.
+#
+#
+#
+# # WHAT IS NOT FUN TO PLAY:
+#     - SINING STRAFERS THAT SHOOT.
+#     - SHOTS THAT ARE WAY TOO FAST TO DODGE.
+#
+
+
+
+
+
+
+
+##
+## Shots move slowly, and are easy to dodge.
+##
+
+# L: Down screen all the way, then angles up (sine) completely offscreen.
+# R: Down screen all the way, then angles up (sine) completely offscreen.
+# L: Column down the screen, then angles up (sine) completely offscreen.
+
+# Fast-moving dropper, shoots two shots at a time.
+# Three slow-moving droppers, in tri configuration, only first one shoots two shots fast.
+
+# A row of deltas, traveling medium speed down the screen. [need v. light health]
+
+# Interlaced L and R strafers, sining offscreen, medium-speed shooting rate.
+
+# Two columns of CDs with sining floppies next to them.
+# Another set of strafers follows in behind, overlapping the second CD row.
+
+## Dramatic pause.
+
+# Two columns of CDs with sining floppies next to them.
+# Two fast columns of CDs come in
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Initial easy waves of disks.
+#DISK,NA,5,1.7,COLUMN,L,0,0,2000
+#DISK_BLUE,NA,5,1.7,COLUMN,R,0,0,3000
+
+
+## Some tougher waves of snakes, one which shoots.
+#BUG,NA,5,1.6,SNAKE,LC,0.1,120,1750
+#VIRUS,SHOOTS,5,1.2,SNAKE,RR,0.1,120,5000
+#
+## A delta wave of blue disks.
+#DISK_BLUE,NA,1,1.0,COLUMN,LL,0.1,120,0
+#DISK_BLUE,NA,1,1.2,COLUMN,L,0.1,120,0
+#DISK_BLUE,NA,1,1.3,COLUMN,LC,0.1,120,0
+#DISK_BLUE,NA,1,1.4,COLUMN,C,0.1,120,0
+#DISK_BLUE,NA,1,1.3,COLUMN,CR,0.1,120,0
+#DISK_BLUE,NA,1,1.2,COLUMN,R,0.1,120,0
+#DISK_BLUE,NA,1,1.0,COLUMN,RR,0.1,120,7000
+#
+## An inverse-delta wave of blue disks.
+#DISK,NA,1,1.4,COLUMN,LL,0.1,120,0
+#DISK,NA,1,1.2,COLUMN,L,0.1,120,0
+#DISK,NA,1,1.1,COLUMN,LC,0.1,120,0
+#DISK,NA,1,1.0,COLUMN,C,0.1,120,0
+#DISK,NA,1,1.1,COLUMN,CR,0.1,120,0
+#DISK,NA,1,1.2,COLUMN,R,0.1,120,0
+#DISK,NA,1,1.4,COLUMN,RR,0.1,120,8000
+#
+## Fast bugs.
+#VIRUS,SHOOTS,2,2.25,SNAKE,L,0.1,120,2500
+#BUG,SHOOTS,2,2.25,SNAKE,CR,0.1,120,5000
+#
+## Row of cones
+#CONE,NA,4,1,COLUMN,C,0.1,120,250
+#CONE,NA,3,1,COLUMN,LC,0.1,120,0
+#CONE,NA,3,1,COLUMN,CR,0.1,120,250
+#CONE,NA,2,1,COLUMN,L,0.1,120,0
+#CONE,NA,2,1,COLUMN,R,0.1,120,250
+#CONE,NA,1,1,COLUMN,LL,0.1,120,0
+#CONE,NA,1,1,COLUMN,RR,0.1,120,7000
+#
+## Swirling magnets?
+#
+## The boss.
+#CD,NA,0,0,WARNING,C,0,0,0
+#BOSS_INTRO,NA,1,2.3,BOSS_INTRO,C,0,0,3000
+#BOSS,SHOOTS,1,0.8,BOSS,C,0,0,0
+#
+
+
+
+# ========================================================================================
+# LEVEL ONE
+# ========================================================================================
+
+
+
+
+
+## Final boss!
+#BOSS,NA,1,BOSS_INTRO,C,0,0,3500
+#BOSS,NA,1,BOSS,C,0,0,0
+
+#CD,NA,3,1,COLUMN,100,0.1,100,0
+#CD,NA,1,1,COLUMN,130,0.1,100,0
+#CD,NA,3,1,COLUMN,160,0.1,100,200
+#VIRUS,NA,1,1,COLUMN,130,0.1,100,200
+#CD,NA,1,1,COLUMN,130,0.1,100,0
+
+#BUG,NA,10,2,SNAKE_REV,C,0.1,100,1000
+
+#CD,NA,20,2,COLUMN,R,0.05,20,250
+#CD,NA,20,2,COLUMN,C,0.05,20,0
+
+#CD,NA,10,NORMAL,SNAKE_WIDE,R,0
+#CD,NA,10,SLOW,SNAKE_WIDE,LL,0
+#BUG,NA,10,SLOW,COLUMN,L,0
+#DISK,NA,10,NORMAL,COLUMN,LC,0
+#VIRUS,NA,10,FAST,COLUMN,C,0
+#DISK,NA,10,NORMAL,COLUMN,CR,0
+#BUG,NA,10,SLOW,COLUMN,R,0
+#CD,NA,10,SLOW,SNAKE,RR,0
+
+#BUG,SHOOTS,2,MAG_SPLIT,C,0
+#BOSS_INTRO,NA,10,COLUMN,R,0
+#BUG,NA,5,SNAKE,L,3000
+#
+## Main fleet.
+#CD,NA,2,SNAKE_WIDE,C,3000
+#CD,NA,2,SNAKE,R,6000
+#CD,NA,2,SNAKE,L,6000
+#CD,NA,2,SNAKE_WIDE,C,6000
+#CD,NA,2,STRAFER,L,4000
+#CD,NA,2,STRAFER,R,4000
+#CD,NA,2,PEELER,L,3500
+#CD,NA,2,PEELER,R,3500
+#CD,NA,2,SWIRLER,L,5000
+#CD,NA,2,SWIRLER,R,6000
+#CD,NA,2,WARNING,C,0
+#
+## Final boss!
+#BOSS,NA,1,BOSS_INTRO,C,3500
+#BOSS,NA,1,BOSS,C,0
