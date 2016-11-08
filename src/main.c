@@ -97,6 +97,9 @@ static void generate() {
 		);
 	}
 
+	// After every 5 waves, ramp up the frequency, shooter chance, and pattern difficulty.
+	// Now spawn a boss at the end (warning, intro and boss).
+
 	fclose(fp);
 }
 
