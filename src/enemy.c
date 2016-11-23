@@ -56,8 +56,9 @@ static EnemyShot enemyShots[MAX_SHOTS];
 static double rollSine[5] = { 0.0, 1.25, 2.5, 3.75, 5.0 };
 
 static double SHOT_BOSS_HZ = 100;
-static double SHOT_HZ = 750;
+static double SHOT_HZ = 500;
 static double SHOT_SPEED = 1;
+static double BOSS_SHOT_SPEED = 1.75;
 static double SHOT_DAMAGE = 1;
 
 const int ENEMY_BOUND = 26;
@@ -422,7 +423,7 @@ static void spawnShot(Enemy* enemy) {
 	play("Laser_Shoot34.wav");
 
 	Coord adjustedShotParallax = parallax(enemy->formationOrigin, PARALLAX_PAN, PARALLAX_LAYER_FOREGROUND, PARALLAX_XY, PARALLAX_ADDITIVE);
-	Coord homingStep = getStep(playerOrigin, adjustedShotParallax, SHOT_SPEED, true);
+	Coord homingStep = getStep(playerOrigin, adjustedShotParallax, enemy->type == ENEMY_BOSS ? BOSS_SHOT_SPEED : SHOT_SPEED, true);
 
 	//TODO: Remove initial texture (not needed - we animate)
 	SDL_Texture* texture = getTexture("virus-shot.png");

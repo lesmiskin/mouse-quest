@@ -42,14 +42,16 @@ void formationFrame(Enemy* e) {
 
 		// CURVE -------------------------------------------------
 		case P_PEEL_RIGHT:
-			if(scriptDue(e, 650)) {
-				e->origin.x = sineInc(e->origin.x, &e->swayIncX, -e->speedX, 7);
+			if(scriptDue(e, 1000)) {
+				e->origin.x = sineInc(e->origin.x, &e->swayIncX, e->frequency, -e->ampMult);
+//				e->origin.x = sineInc(e->origin.x, &e->swayIncX, -e->speedX, 7);
 			}
 			applyFormation(e);
 			break;
 		case P_PEEL_LEFT:
-			if(scriptDue(e, 650)) {
-				e->origin.x = sineInc(e->origin.x, &e->swayIncX, e->speedX, 7);
+			if(scriptDue(e, 1000)) {
+				e->origin.x = sineInc(e->origin.x, &e->swayIncX, e->frequency, e->ampMult);
+//				e->origin.x = sineInc(e->origin.x, &e->swayIncX, e->speedX, 7);
 			}
 			applyFormation(e);
 			break;
@@ -95,13 +97,14 @@ void formationFrame(Enemy* e) {
 		// STRAFER -------------------------------------------------
 		case P_STRAFE_RIGHT:
 			if(scriptDue(e, 500))
-				e->origin.x = sineInc(e->origin.x, &e->swayIncX, -e->speedX, 5);
+				e->origin.x += e->speedX;
 
 			applyFormation(e);
 			break;
 		case P_STRAFE_LEFT:
 			if(scriptDue(e, 500))
-				e->origin.x = sineInc(e->origin.x, &e->swayIncX, e->speedX, 5);
+				e->origin.x -= e->speedX;
+
 			applyFormation(e);
 			break;
 

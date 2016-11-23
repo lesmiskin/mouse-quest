@@ -384,17 +384,17 @@ void runLevel() {
 
             case STRAFER:
                 for(int i=0; i < map.qty; i++) {
-                    wave(i * spacing, W_COL, offscreenPos, -40,
-                         mapWaves[w].position == POS_L ? P_STRAFE_RIGHT : P_STRAFE_LEFT,
-						 map.enemyType, COMBAT_HOMING, false, map.speed, 0.004, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
+                    wave(ceil(i * spacing * 1.5), W_COL, offscreenPos, -40,
+                         mapWaves[w].position == POS_LL ? P_STRAFE_RIGHT : P_STRAFE_LEFT,
+						 map.enemyType, COMBAT_HOMING, false, map.speed, 1.5, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
                 }
                 break;
 
             case PEELER:
                 for(int i=0; i < map.qty; i++) {
-                    wave(i * spacing, W_COL, offscreenPos, NA,
-                         mapWaves[w].position == POS_L ? P_PEEL_RIGHT : P_PEEL_LEFT,
-						 map.enemyType, COMBAT_HOMING, false, map.speed, 0.008, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
+                    wave(i * spacing, W_COL, map.position, NA,
+                         mapWaves[w].position == POS_LL ? P_PEEL_RIGHT : P_PEEL_LEFT,
+						 map.enemyType, map.combat, false, map.speed, 0.008, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
                 }
                 break;
 

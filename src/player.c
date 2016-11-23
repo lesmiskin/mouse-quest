@@ -35,7 +35,7 @@ bool godMode = false;
 bool useMike;		//onscreen, responds to actions etc.
 bool hideMike;		//still there, but don't render this frame.
 Coord playerOrigin;
-double playerStrength = 0.5;
+double playerStrength = 3;
 double playerHealth;
 static long deathTime = 0;
 static const double PLAYER_MAX_SPEED = 4.0;
