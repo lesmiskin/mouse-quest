@@ -385,7 +385,7 @@ void runLevel() {
             case STRAFER:
                 for(int i=0; i < map.qty; i++) {
                     wave(ceil(i * spacing * 1.5), W_COL, offscreenPos, -40,
-                         mapWaves[w].position == POS_LL ? P_STRAFE_RIGHT : P_STRAFE_LEFT,
+                         mapWaves[w].position == POS_L ? P_STRAFE_RIGHT : P_STRAFE_LEFT,
 						 map.enemyType, COMBAT_HOMING, false, map.speed, 1.5, HEALTH_LIGHT, 1, map.frequency, map.ampMult);
                 }
                 break;
@@ -410,11 +410,11 @@ void runLevel() {
                 break;
 
             case BOSS_INTRO:
-                wave(0, W_COL, CENTER, 310, PATTERN_BOSS_INTRO, map.enemyType, COMBAT_IDLE, false, map.speed, 0, 200, 1, map.frequency, map.ampMult);
+                wave(0, W_COL, map.position, 310, PATTERN_BOSS_INTRO, map.enemyType, COMBAT_IDLE, false, map.speed, 0, 200, 1, map.frequency, map.ampMult);
                 break;
 
             case BOSS:
-                wave(0, W_COL, CENTER, NA, PATTERN_BOSS, map.enemyType, COMBAT_HOMING, false, map.speed, 1, 200, 1, map.frequency, map.ampMult);
+                wave(0, W_COL, map.position, NA, PATTERN_BOSS, map.enemyType, COMBAT_HOMING, false, map.speed, 1, 200, 1, map.frequency, map.ampMult);
                 break;
         }
 

@@ -136,7 +136,7 @@ void formationFrame(Enemy* e) {
 			}
 
 			// Sway him from side to side.
-			e->formationOrigin.x = sineInc(e->origin.x, &e->swayIncX, 0.04, 30);
+			e->formationOrigin.x = sineInc(e->origin.x, &e->swayIncX, e->frequency, e->ampMult);
 
 			break;
 
