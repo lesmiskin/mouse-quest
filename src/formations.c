@@ -96,13 +96,13 @@ void formationFrame(Enemy* e) {
 
 		// STRAFER -------------------------------------------------
 		case P_STRAFE_RIGHT:
-			if(scriptDue(e, 500))
+			if(scriptDue(e, 1000))
 				e->origin.x += e->speedX;
 
 			applyFormation(e);
 			break;
 		case P_STRAFE_LEFT:
-			if(scriptDue(e, 500))
+			if(scriptDue(e, 1000))
 				e->origin.x -= e->speedX;
 
 			applyFormation(e);
