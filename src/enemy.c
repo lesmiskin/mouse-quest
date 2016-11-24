@@ -78,6 +78,8 @@ static const int DEATH_FRAMES = 7;
 static const int MAX_VIRUS_SHOT_FRAMES = 4;
 static const int MAX_PLASMA_SHOT_FRAMES = 2;
 
+static bool bossDeathDir = false;
+
 bool invalidEnemy(Enemy *enemy) {
 	// TODO: Use OnScreen/InBounds()?
 
@@ -177,6 +179,10 @@ void enemyRenderFrame() {
 	//Render out not-null enemies wherever they may be.
 	for(int i=0; i < MAX_ENEMIES; i++) {
 		if(invalidEnemy(&enemies[i]) || !enemies[i].initialFrameChosen || enemies[i].inBackground) continue;
+		
+		// Permit skipping boss rendering (e.g. delay after visual death).
+		if(enemies[i].type == ENEMY_BOSS && !bossOnscreen) continue;
+
 		drawSpriteAbs(enemies[i].sprite, enemies[i].parallax);
 	}
 
@@ -218,7 +224,6 @@ void spawnBoom(Coord origin, double scale) {
 }
 
 void animateEnemy() {
-
 	// Booms
 	for(int i=0; i < MAX_BOOMS; i++) {
 		if (booms[i].origin.x == 0 && booms[i].origin.y == 0) continue;
@@ -467,8 +472,6 @@ void resetEnemies() {
 	bossHealth = 0;
 }
 
-static bool bossDeathDir = false;
-
 void enemyGameFrame() {
 
 	//Bob enemies in sine pattern.
@@ -516,7 +519,11 @@ void enemyGameFrame() {
 		// Boss explosions.
 		if(enemies[i].dying && enemies[i].type == ENEMY_BOSS) {
 			// Final death.
-			if(due(enemies[i].fatalTime, 2500)) {
+			if(due(enemies[i].fatalTime, 4500)) {
+				enemies[i] = nullEnemy();
+				triggerState(STATE_LEVEL_COMPLETE);
+				continue;
+			}else if(bossOnscreen && due(enemies[i].fatalTime, 3000)) {
                 // Final explosion to hide sprite vanishing.
                 spawnBoom(deriveCoord(enemies[i].formationOrigin, -20, -15), 1);
                 spawnBoom(deriveCoord(enemies[i].formationOrigin, 20, -15), 1);
@@ -525,19 +532,26 @@ void enemyGameFrame() {
                 spawnBoom(deriveCoord(enemies[i].formationOrigin, 35, 0), 1);
                 spawnBoom(deriveCoord(enemies[i].formationOrigin, -20, 15), 1);
                 spawnBoom(deriveCoord(enemies[i].formationOrigin, 20, 15), 1);
-
-                enemies[i] = nullEnemy();
 				bossOnscreen = false;
-				triggerState(STATE_LEVEL_COMPLETE);
-				continue;
 			}
 			// Explosion and shaking drama.
-			else if(enemies[i].dying && due(enemies[i].boomTime, 75)) {
+			else if(bossOnscreen && enemies[i].dying && due(enemies[i].boomTime, 75)) {
 				// Explosions.
 				spawnBoom(deriveCoord(enemies[i].formationOrigin, randomMq(-60, 60), randomMq(-15, 15)), 1);
 				enemies[i].boomTime = clock();
 
-				// Shaking.
+				// Spawn a coin.
+				for(int k=0; k < randomMq(1, 2); k++) {
+					throwItem(
+						deriveCoord(enemies[i].formationOrigin, randomMq(-50, 50), 15),
+						chance(75) ? TYPE_COIN : TYPE_FRUIT,
+						chance(50) ? -1 : 1,
+						randomMq(80, 140) / 100.0,
+						randomMq(2, 12) / 10.0
+					);
+				}
+
+				// Boss shaking.
 				enemies[i].formationOrigin.x += bossDeathDir ? 3 : -3;
 				enemies[i].formationOrigin.y += 0.5;	// slight drop down.
 				bossDeathDir = !bossDeathDir;

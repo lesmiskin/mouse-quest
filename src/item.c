@@ -32,6 +32,10 @@ typedef struct {
 	char* baseFrameName;
 	char* realFrameName;
 	bool traveling;
+	bool throwing;
+	int dir;
+	double power;
+	double xSpeed;
 } Item;
 
 #define MAX_ITEMS 100
@@ -118,7 +122,15 @@ bool canSpawn(ItemType type) {
 	}
 }
 
-void spawnItem(Coord coord, ItemType type) {
+void throwItem(Coord coord, ItemType type, int dir, double power, double xSpeed) {
+	int i = spawnItem(coord, type);
+	items[i].throwing = true;
+	items[i].dir = dir;
+	items[i].power = power;
+	items[i].xSpeed = xSpeed;
+}
+
+int spawnItem(Coord coord, ItemType type) {
 	//Stop spawning items after we've elapsed our total.
 	if(itemCount == MAX_ITEMS) itemCount = 0;
 
@@ -207,6 +219,8 @@ void spawnItem(Coord coord, ItemType type) {
 	if(shouldAnimate(powerup)) updateAnimationFrame(&powerup);
 
 	items[itemCount++] = powerup;
+	
+	return itemCount - 1;
 }
 
 void itemShadowFrame() {
@@ -280,12 +294,19 @@ void itemGameFrame() {
 			items[i].origin.y -= travelStep.y;
 			items[i].parallax = itemParallax(items[i].origin);
 			continue;
+		}else if(items[i].throwing) {
+			items[i].power -= 0.06;
+			items[i].origin.y -= items[i].power;
+			items[i].origin.x -= items[i].xSpeed * items[i].dir;
 		}
-
+		
 		//Scroll down screen
-		items[i].origin.y += ITEM_SPEED;
+		if(!items[i].throwing) {
+			items[i].origin.y += ITEM_SPEED;
+		}
+		
 		items[i].parallax = itemParallax(items[i].origin);
-
+		
 		//Sway in sine wave pattern
 		if(items[i].swing){
 			items[i].parallax.x = sineInc(items[i].origin.x, &items[i].swayInc, 0.05, 32);

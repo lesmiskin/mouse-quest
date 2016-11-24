@@ -275,3 +275,12 @@ Coord getStep(Coord a, Coord b, double speed, bool negativeMagic) {
 		(sin(angle) * (negativeMagic ? -speed : speed))
 	);
 }
+
+double getThrowPower() {
+	return 2.25;
+}
+Coord throwInc(double throwInc, int dir) {
+	double x = dir < 0 ? -1 : dir > 0 ? 1 : 0;
+	
+	return makeCoord(throwInc - 0.16, x);
+}

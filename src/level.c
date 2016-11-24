@@ -268,7 +268,8 @@ EnemyPatternDef getMapPattern(char *str) {
 void loadLevel() {
 	// Open the level file.
 #ifdef _WIN32
-	char* fileName = "C:\\Users\\lxm\\dev\\mq\\src\\LEVEL01.csv";
+//	char* fileName = "C:\\Users\\lxm\\dev\\mq\\src\\LEVEL01.csv";
+	char* fileName = "C:\\Users\\Les\\dev\\mouse-quest\\src\\LEVEL01.csv";
 #elif __linux__
 	char* fileName = "/home/les/dev/c/mouse-quest/src/LEVEL01.csv";
 #endif
@@ -414,7 +415,8 @@ void runLevel() {
                 break;
 
             case BOSS:
-                wave(0, W_COL, map.position, NA, PATTERN_BOSS, map.enemyType, COMBAT_HOMING, false, map.speed, 1, 200, 1, map.frequency, map.ampMult);
+				wave(0, W_COL, map.position, NA, PATTERN_BOSS, map.enemyType, COMBAT_HOMING, false, map.speed, 1, 200, 1, map.frequency, map.ampMult);
+//                wave(0, W_COL, map.position, NA, PATTERN_BOSS, map.enemyType, COMBAT_HOMING, false, map.speed, 1, 1, 1, map.frequency, map.ampMult);
                 break;
         }
 

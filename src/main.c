@@ -179,8 +179,8 @@ static void setWindowIcon() {
 				playerShadowFrame();
 				itemShadowFrame();
 			}
-			itemRenderFrame();
  			enemyRenderFrame();
+			itemRenderFrame();
 			pewRenderFrame();
 			scriptRenderFrame();
 			playerRenderFrame();

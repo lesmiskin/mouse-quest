@@ -94,4 +94,7 @@ extern double cosInc(double offset, double *sineInc, double speed, double magnit
 extern double getAngle(Coord a, Coord b);
 extern Coord getStep(Coord a, Coord b, double speed, bool negativeMagic);
 
+extern double getThrowPower();
+extern Coord throwInc(double throwInc, int dir);
+
 #endif
