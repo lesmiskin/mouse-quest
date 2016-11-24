@@ -78,6 +78,8 @@ static const int DEATH_FRAMES = 7;
 static const int MAX_VIRUS_SHOT_FRAMES = 4;
 static const int MAX_PLASMA_SHOT_FRAMES = 2;
 
+double dieSpin;
+
 static bool bossDeathDir = false;
 
 bool invalidEnemy(Enemy *enemy) {
@@ -138,7 +140,10 @@ void enemyShadowFrame() {
 	for(int i=0; i < MAX_ENEMIES; i++) {
 		if(invalidEnemy(&enemies[i]) || !enemies[i].initialFrameChosen) continue;
 
-		//Draw shadow, if a shadow version exists for the current frame.
+        // Permit skipping boss rendering (e.g. delay after visual death).
+        if(enemies[i].type == ENEMY_BOSS && !bossOnscreen) continue;
+
+        //Draw shadow, if a shadow version exists for the current frame.
 		SDL_Texture* shadowTexture = getTextureVersion(enemies[i].frameName, ASSET_SHADOW);
 		if(shadowTexture == NULL) continue;
 
@@ -146,7 +151,7 @@ void enemyShadowFrame() {
 		Coord shadowCoord = parallax(enemies[i].parallax, PARALLAX_SUN, PARALLAX_LAYER_SHADOW, PARALLAX_X, PARALLAX_SUBTRACTIVE);
 		shadowCoord.y += STATIC_SHADOW_OFFSET;
 
-		drawSpriteAbs(shadow, shadowCoord);
+		drawSpriteAbsRotated(shadow, shadowCoord, dieSpin);
 	}
 
 	//Shot shadows
@@ -183,7 +188,8 @@ void enemyRenderFrame() {
 		// Permit skipping boss rendering (e.g. delay after visual death).
 		if(enemies[i].type == ENEMY_BOSS && !bossOnscreen) continue;
 
-		drawSpriteAbs(enemies[i].sprite, enemies[i].parallax);
+        drawSpriteAbsRotated(enemies[i].sprite, enemies[i].parallax, dieSpin);
+//		drawSpriteAbs(enemies[i].sprite, enemies[i].parallax);
 	}
 
 	//Shots
@@ -470,6 +476,7 @@ void resetEnemies() {
 	boomCount = 0;
 	bossOnscreen = false;
 	bossHealth = 0;
+    dieSpin = 0;
 }
 
 void enemyGameFrame() {
@@ -496,8 +503,7 @@ void enemyGameFrame() {
 				if (enemies[i].health <= 0) {
 					if(enemies[i].type == ENEMY_BOSS) {
 						Mix_PauseMusic();
-						SDL_Texture* texture = getTextureVersion("keyboss-06.png", ASSET_DEFAULT);
-						enemies[i].sprite = makeSprite(texture, zeroCoord(), SDL_FLIP_NONE);
+						enemies[i].sprite = makeSimpleSprite("keyboss-05.png");
 					}else{
 						play(chance(50) ? "Explosion14.wav" : "Explosion3.wav");
 					}
@@ -519,11 +525,11 @@ void enemyGameFrame() {
 		// Boss explosions.
 		if(enemies[i].dying && enemies[i].type == ENEMY_BOSS) {
 			// Final death.
-			if(due(enemies[i].fatalTime, 4500)) {
+			if(due(enemies[i].fatalTime, 6500)) {
 				enemies[i] = nullEnemy();
 				triggerState(STATE_LEVEL_COMPLETE);
 				continue;
-			}else if(bossOnscreen && due(enemies[i].fatalTime, 3000)) {
+			}else if(bossOnscreen && due(enemies[i].fatalTime, 4000)) {
                 // Final explosion to hide sprite vanishing.
                 spawnBoom(deriveCoord(enemies[i].formationOrigin, -20, -15), 1);
                 spawnBoom(deriveCoord(enemies[i].formationOrigin, 20, -15), 1);
@@ -536,24 +542,44 @@ void enemyGameFrame() {
 			}
 			// Explosion and shaking drama.
 			else if(bossOnscreen && enemies[i].dying && due(enemies[i].boomTime, 75)) {
-				// Explosions.
-				spawnBoom(deriveCoord(enemies[i].formationOrigin, randomMq(-60, 60), randomMq(-15, 15)), 1);
-				enemies[i].boomTime = clock();
 
-				// Spawn a coin.
-				for(int k=0; k < randomMq(1, 2); k++) {
-					throwItem(
-						deriveCoord(enemies[i].formationOrigin, randomMq(-50, 50), randomMq(5, 15)),
-						chance(75) ? TYPE_COIN : TYPE_FRUIT,
-						chance(50) ? -1 : 1,
-						randomMq(160, 220) / 100.0,
-						randomMq(2, 16) / 10.0
-					);
-				}
+                if(due(enemies[i].fatalTime, 1000)) {
+
+                    // LOTS of explosions.
+                    for(int j=0; j < 2; j++) {
+                        spawnBoom(deriveCoord(enemies[i].formationOrigin, randomMq(-60, 60), randomMq(-15, 15)), 1);
+                        enemies[i].boomTime = clock();
+                    }
+
+                    // Pain face >D
+                    SDL_Texture* tex = getTextureVersion("keyboss-01.png", ASSET_HIT);
+                    enemies[i].sprite = makeSprite(tex, zeroCoord(), SDL_FLIP_NONE);
+
+                    // Throw some rewards out.
+                    if(chance(66)) {
+                        throwItem(
+                                deriveCoord(enemies[i].formationOrigin, randomMq(-50, 50), randomMq(5, 15)),
+                                chance(80) ? TYPE_COIN : TYPE_FRUIT,
+                                chance(50) ? -1 : 1,
+                                randomMq(160, 220) / 100.0,
+                                randomMq(2, 16) / 10.0
+                        );
+                    }
+
+                    // Shake 'n' bake.
+                    enemies[i].formationOrigin.x += bossDeathDir ? 3 : -3;
+                    enemies[i].formationOrigin.y += 2;	// slight drop down.
+                    dieSpin += 0.5;
+
+                }else{
+                    // Explosions.
+                    spawnBoom(deriveCoord(enemies[i].formationOrigin, randomMq(-60, 60), randomMq(-15, 15)), 1);
+                    enemies[i].boomTime = clock();
+
+                    enemies[i].formationOrigin.x += bossDeathDir ? 3 : -3;
+                }
 
 				// Boss shaking.
-				enemies[i].formationOrigin.x += bossDeathDir ? 3 : -3;
-				enemies[i].formationOrigin.y += 0.5;	// slight drop down.
 				bossDeathDir = !bossDeathDir;
 			}
 		}

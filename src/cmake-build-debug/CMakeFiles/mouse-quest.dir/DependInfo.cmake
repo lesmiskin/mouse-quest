@@ -4,22 +4,22 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "C:/Users/Les/dev/mouse-quest/src/assets.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/assets.c.obj"
-  "C:/Users/Les/dev/mouse-quest/src/background.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/background.c.obj"
-  "C:/Users/Les/dev/mouse-quest/src/common.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/common.c.obj"
-  "C:/Users/Les/dev/mouse-quest/src/enemy.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/enemy.c.obj"
-  "C:/Users/Les/dev/mouse-quest/src/formations.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/formations.c.obj"
-  "C:/Users/Les/dev/mouse-quest/src/hud.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/hud.c.obj"
-  "C:/Users/Les/dev/mouse-quest/src/input.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/input.c.obj"
-  "C:/Users/Les/dev/mouse-quest/src/item.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/item.c.obj"
-  "C:/Users/Les/dev/mouse-quest/src/level.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/level.c.obj"
-  "C:/Users/Les/dev/mouse-quest/src/main.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/main.c.obj"
-  "C:/Users/Les/dev/mouse-quest/src/player.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/player.c.obj"
-  "C:/Users/Les/dev/mouse-quest/src/renderer.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/renderer.c.obj"
-  "C:/Users/Les/dev/mouse-quest/src/scripting.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/scripting.c.obj"
-  "C:/Users/Les/dev/mouse-quest/src/scripts.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/scripts.c.obj"
-  "C:/Users/Les/dev/mouse-quest/src/sound.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/sound.c.obj"
-  "C:/Users/Les/dev/mouse-quest/src/weapon.c" "C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/weapon.c.obj"
+  "C:/Users/lxm/dev/mq/src/assets.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/assets.c.obj"
+  "C:/Users/lxm/dev/mq/src/background.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/background.c.obj"
+  "C:/Users/lxm/dev/mq/src/common.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/common.c.obj"
+  "C:/Users/lxm/dev/mq/src/enemy.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/enemy.c.obj"
+  "C:/Users/lxm/dev/mq/src/formations.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/formations.c.obj"
+  "C:/Users/lxm/dev/mq/src/hud.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/hud.c.obj"
+  "C:/Users/lxm/dev/mq/src/input.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/input.c.obj"
+  "C:/Users/lxm/dev/mq/src/item.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/item.c.obj"
+  "C:/Users/lxm/dev/mq/src/level.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/level.c.obj"
+  "C:/Users/lxm/dev/mq/src/main.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/main.c.obj"
+  "C:/Users/lxm/dev/mq/src/player.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/player.c.obj"
+  "C:/Users/lxm/dev/mq/src/renderer.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/renderer.c.obj"
+  "C:/Users/lxm/dev/mq/src/scripting.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/scripting.c.obj"
+  "C:/Users/lxm/dev/mq/src/scripts.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/scripts.c.obj"
+  "C:/Users/lxm/dev/mq/src/sound.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/sound.c.obj"
+  "C:/Users/lxm/dev/mq/src/weapon.c" "C:/Users/lxm/dev/mq/src/cmake-build-debug/CMakeFiles/mouse-quest.dir/weapon.c.obj"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

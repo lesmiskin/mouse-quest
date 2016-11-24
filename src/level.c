@@ -268,8 +268,8 @@ EnemyPatternDef getMapPattern(char *str) {
 void loadLevel() {
 	// Open the level file.
 #ifdef _WIN32
-//	char* fileName = "C:\\Users\\lxm\\dev\\mq\\src\\LEVEL01.csv";
-	char* fileName = "C:\\Users\\Les\\dev\\mouse-quest\\src\\LEVEL01.csv";
+	char* fileName = "C:\\Users\\lxm\\dev\\mq\\src\\LEVEL01.csv";
+//	char* fileName = "C:\\Users\\Les\\dev\\mouse-quest\\src\\LEVEL01.csv";
 #elif __linux__
 	char* fileName = "/home/les/dev/c/mouse-quest/src/LEVEL01.csv";
 #endif

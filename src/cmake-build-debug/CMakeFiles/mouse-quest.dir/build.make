@@ -42,10 +42,10 @@ RM = "C:\Program Files (x86)\JetBrains\CLion 2016.2.1\bin\cmake\bin\cmake.exe" -
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\Les\dev\mouse-quest\src
+CMAKE_SOURCE_DIR = C:\Users\lxm\dev\mq\src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\Les\dev\mouse-quest\src\cmake-build-debug
+CMAKE_BINARY_DIR = C:\Users\lxm\dev\mq\src\cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/mouse-quest.dir/depend.make
@@ -59,16 +59,16 @@ include CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/level.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/level.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/level.c.obj: ../level.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/mouse-quest.dir/level.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\level.c.obj   -c C:\Users\Les\dev\mouse-quest\src\level.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/mouse-quest.dir/level.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\level.c.obj   -c C:\Users\lxm\dev\mq\src\level.c
 
 CMakeFiles/mouse-quest.dir/level.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/level.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\level.c > CMakeFiles\mouse-quest.dir\level.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\level.c > CMakeFiles\mouse-quest.dir\level.c.i
 
 CMakeFiles/mouse-quest.dir/level.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/level.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\level.c -o CMakeFiles\mouse-quest.dir\level.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\level.c -o CMakeFiles\mouse-quest.dir\level.c.s
 
 CMakeFiles/mouse-quest.dir/level.c.obj.requires:
 
@@ -84,16 +84,16 @@ CMakeFiles/mouse-quest.dir/level.c.obj.provides.build: CMakeFiles/mouse-quest.di
 CMakeFiles/mouse-quest.dir/common.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/common.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/common.c.obj: ../common.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/mouse-quest.dir/common.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\common.c.obj   -c C:\Users\Les\dev\mouse-quest\src\common.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/mouse-quest.dir/common.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\common.c.obj   -c C:\Users\lxm\dev\mq\src\common.c
 
 CMakeFiles/mouse-quest.dir/common.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/common.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\common.c > CMakeFiles\mouse-quest.dir\common.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\common.c > CMakeFiles\mouse-quest.dir\common.c.i
 
 CMakeFiles/mouse-quest.dir/common.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/common.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\common.c -o CMakeFiles\mouse-quest.dir\common.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\common.c -o CMakeFiles\mouse-quest.dir\common.c.s
 
 CMakeFiles/mouse-quest.dir/common.c.obj.requires:
 
@@ -109,16 +109,16 @@ CMakeFiles/mouse-quest.dir/common.c.obj.provides.build: CMakeFiles/mouse-quest.d
 CMakeFiles/mouse-quest.dir/renderer.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/renderer.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/renderer.c.obj: ../renderer.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/mouse-quest.dir/renderer.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\renderer.c.obj   -c C:\Users\Les\dev\mouse-quest\src\renderer.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/mouse-quest.dir/renderer.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\renderer.c.obj   -c C:\Users\lxm\dev\mq\src\renderer.c
 
 CMakeFiles/mouse-quest.dir/renderer.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/renderer.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\renderer.c > CMakeFiles\mouse-quest.dir\renderer.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\renderer.c > CMakeFiles\mouse-quest.dir\renderer.c.i
 
 CMakeFiles/mouse-quest.dir/renderer.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/renderer.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\renderer.c -o CMakeFiles\mouse-quest.dir\renderer.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\renderer.c -o CMakeFiles\mouse-quest.dir\renderer.c.s
 
 CMakeFiles/mouse-quest.dir/renderer.c.obj.requires:
 
@@ -134,16 +134,16 @@ CMakeFiles/mouse-quest.dir/renderer.c.obj.provides.build: CMakeFiles/mouse-quest
 CMakeFiles/mouse-quest.dir/assets.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/assets.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/assets.c.obj: ../assets.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/mouse-quest.dir/assets.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\assets.c.obj   -c C:\Users\Les\dev\mouse-quest\src\assets.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/mouse-quest.dir/assets.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\assets.c.obj   -c C:\Users\lxm\dev\mq\src\assets.c
 
 CMakeFiles/mouse-quest.dir/assets.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/assets.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\assets.c > CMakeFiles\mouse-quest.dir\assets.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\assets.c > CMakeFiles\mouse-quest.dir\assets.c.i
 
 CMakeFiles/mouse-quest.dir/assets.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/assets.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\assets.c -o CMakeFiles\mouse-quest.dir\assets.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\assets.c -o CMakeFiles\mouse-quest.dir\assets.c.s
 
 CMakeFiles/mouse-quest.dir/assets.c.obj.requires:
 
@@ -159,16 +159,16 @@ CMakeFiles/mouse-quest.dir/assets.c.obj.provides.build: CMakeFiles/mouse-quest.d
 CMakeFiles/mouse-quest.dir/player.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/player.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/player.c.obj: ../player.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/mouse-quest.dir/player.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\player.c.obj   -c C:\Users\Les\dev\mouse-quest\src\player.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/mouse-quest.dir/player.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\player.c.obj   -c C:\Users\lxm\dev\mq\src\player.c
 
 CMakeFiles/mouse-quest.dir/player.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/player.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\player.c > CMakeFiles\mouse-quest.dir\player.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\player.c > CMakeFiles\mouse-quest.dir\player.c.i
 
 CMakeFiles/mouse-quest.dir/player.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/player.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\player.c -o CMakeFiles\mouse-quest.dir\player.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\player.c -o CMakeFiles\mouse-quest.dir\player.c.s
 
 CMakeFiles/mouse-quest.dir/player.c.obj.requires:
 
@@ -184,16 +184,16 @@ CMakeFiles/mouse-quest.dir/player.c.obj.provides.build: CMakeFiles/mouse-quest.d
 CMakeFiles/mouse-quest.dir/input.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/input.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/input.c.obj: ../input.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/mouse-quest.dir/input.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\input.c.obj   -c C:\Users\Les\dev\mouse-quest\src\input.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/mouse-quest.dir/input.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\input.c.obj   -c C:\Users\lxm\dev\mq\src\input.c
 
 CMakeFiles/mouse-quest.dir/input.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/input.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\input.c > CMakeFiles\mouse-quest.dir\input.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\input.c > CMakeFiles\mouse-quest.dir\input.c.i
 
 CMakeFiles/mouse-quest.dir/input.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/input.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\input.c -o CMakeFiles\mouse-quest.dir\input.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\input.c -o CMakeFiles\mouse-quest.dir\input.c.s
 
 CMakeFiles/mouse-quest.dir/input.c.obj.requires:
 
@@ -209,16 +209,16 @@ CMakeFiles/mouse-quest.dir/input.c.obj.provides.build: CMakeFiles/mouse-quest.di
 CMakeFiles/mouse-quest.dir/main.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/main.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/main.c.obj: ../main.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/mouse-quest.dir/main.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\main.c.obj   -c C:\Users\Les\dev\mouse-quest\src\main.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/mouse-quest.dir/main.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\main.c.obj   -c C:\Users\lxm\dev\mq\src\main.c
 
 CMakeFiles/mouse-quest.dir/main.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/main.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\main.c > CMakeFiles\mouse-quest.dir\main.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\main.c > CMakeFiles\mouse-quest.dir\main.c.i
 
 CMakeFiles/mouse-quest.dir/main.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/main.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\main.c -o CMakeFiles\mouse-quest.dir\main.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\main.c -o CMakeFiles\mouse-quest.dir\main.c.s
 
 CMakeFiles/mouse-quest.dir/main.c.obj.requires:
 
@@ -234,16 +234,16 @@ CMakeFiles/mouse-quest.dir/main.c.obj.provides.build: CMakeFiles/mouse-quest.dir
 CMakeFiles/mouse-quest.dir/background.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/background.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/background.c.obj: ../background.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/mouse-quest.dir/background.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\background.c.obj   -c C:\Users\Les\dev\mouse-quest\src\background.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/mouse-quest.dir/background.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\background.c.obj   -c C:\Users\lxm\dev\mq\src\background.c
 
 CMakeFiles/mouse-quest.dir/background.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/background.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\background.c > CMakeFiles\mouse-quest.dir\background.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\background.c > CMakeFiles\mouse-quest.dir\background.c.i
 
 CMakeFiles/mouse-quest.dir/background.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/background.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\background.c -o CMakeFiles\mouse-quest.dir\background.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\background.c -o CMakeFiles\mouse-quest.dir\background.c.s
 
 CMakeFiles/mouse-quest.dir/background.c.obj.requires:
 
@@ -259,16 +259,16 @@ CMakeFiles/mouse-quest.dir/background.c.obj.provides.build: CMakeFiles/mouse-que
 CMakeFiles/mouse-quest.dir/weapon.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/weapon.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/weapon.c.obj: ../weapon.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object CMakeFiles/mouse-quest.dir/weapon.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\weapon.c.obj   -c C:\Users\Les\dev\mouse-quest\src\weapon.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object CMakeFiles/mouse-quest.dir/weapon.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\weapon.c.obj   -c C:\Users\lxm\dev\mq\src\weapon.c
 
 CMakeFiles/mouse-quest.dir/weapon.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/weapon.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\weapon.c > CMakeFiles\mouse-quest.dir\weapon.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\weapon.c > CMakeFiles\mouse-quest.dir\weapon.c.i
 
 CMakeFiles/mouse-quest.dir/weapon.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/weapon.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\weapon.c -o CMakeFiles\mouse-quest.dir\weapon.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\weapon.c -o CMakeFiles\mouse-quest.dir\weapon.c.s
 
 CMakeFiles/mouse-quest.dir/weapon.c.obj.requires:
 
@@ -284,16 +284,16 @@ CMakeFiles/mouse-quest.dir/weapon.c.obj.provides.build: CMakeFiles/mouse-quest.d
 CMakeFiles/mouse-quest.dir/enemy.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/enemy.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/enemy.c.obj: ../enemy.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building C object CMakeFiles/mouse-quest.dir/enemy.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\enemy.c.obj   -c C:\Users\Les\dev\mouse-quest\src\enemy.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building C object CMakeFiles/mouse-quest.dir/enemy.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\enemy.c.obj   -c C:\Users\lxm\dev\mq\src\enemy.c
 
 CMakeFiles/mouse-quest.dir/enemy.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/enemy.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\enemy.c > CMakeFiles\mouse-quest.dir\enemy.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\enemy.c > CMakeFiles\mouse-quest.dir\enemy.c.i
 
 CMakeFiles/mouse-quest.dir/enemy.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/enemy.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\enemy.c -o CMakeFiles\mouse-quest.dir\enemy.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\enemy.c -o CMakeFiles\mouse-quest.dir\enemy.c.s
 
 CMakeFiles/mouse-quest.dir/enemy.c.obj.requires:
 
@@ -309,16 +309,16 @@ CMakeFiles/mouse-quest.dir/enemy.c.obj.provides.build: CMakeFiles/mouse-quest.di
 CMakeFiles/mouse-quest.dir/formations.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/formations.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/formations.c.obj: ../formations.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building C object CMakeFiles/mouse-quest.dir/formations.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\formations.c.obj   -c C:\Users\Les\dev\mouse-quest\src\formations.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building C object CMakeFiles/mouse-quest.dir/formations.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\formations.c.obj   -c C:\Users\lxm\dev\mq\src\formations.c
 
 CMakeFiles/mouse-quest.dir/formations.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/formations.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\formations.c > CMakeFiles\mouse-quest.dir\formations.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\formations.c > CMakeFiles\mouse-quest.dir\formations.c.i
 
 CMakeFiles/mouse-quest.dir/formations.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/formations.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\formations.c -o CMakeFiles\mouse-quest.dir\formations.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\formations.c -o CMakeFiles\mouse-quest.dir\formations.c.s
 
 CMakeFiles/mouse-quest.dir/formations.c.obj.requires:
 
@@ -334,16 +334,16 @@ CMakeFiles/mouse-quest.dir/formations.c.obj.provides.build: CMakeFiles/mouse-que
 CMakeFiles/mouse-quest.dir/scripting.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/scripting.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/scripting.c.obj: ../scripting.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building C object CMakeFiles/mouse-quest.dir/scripting.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\scripting.c.obj   -c C:\Users\Les\dev\mouse-quest\src\scripting.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building C object CMakeFiles/mouse-quest.dir/scripting.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\scripting.c.obj   -c C:\Users\lxm\dev\mq\src\scripting.c
 
 CMakeFiles/mouse-quest.dir/scripting.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/scripting.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\scripting.c > CMakeFiles\mouse-quest.dir\scripting.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\scripting.c > CMakeFiles\mouse-quest.dir\scripting.c.i
 
 CMakeFiles/mouse-quest.dir/scripting.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/scripting.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\scripting.c -o CMakeFiles\mouse-quest.dir\scripting.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\scripting.c -o CMakeFiles\mouse-quest.dir\scripting.c.s
 
 CMakeFiles/mouse-quest.dir/scripting.c.obj.requires:
 
@@ -359,16 +359,16 @@ CMakeFiles/mouse-quest.dir/scripting.c.obj.provides.build: CMakeFiles/mouse-ques
 CMakeFiles/mouse-quest.dir/scripts.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/scripts.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/scripts.c.obj: ../scripts.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building C object CMakeFiles/mouse-quest.dir/scripts.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\scripts.c.obj   -c C:\Users\Les\dev\mouse-quest\src\scripts.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building C object CMakeFiles/mouse-quest.dir/scripts.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\scripts.c.obj   -c C:\Users\lxm\dev\mq\src\scripts.c
 
 CMakeFiles/mouse-quest.dir/scripts.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/scripts.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\scripts.c > CMakeFiles\mouse-quest.dir\scripts.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\scripts.c > CMakeFiles\mouse-quest.dir\scripts.c.i
 
 CMakeFiles/mouse-quest.dir/scripts.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/scripts.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\scripts.c -o CMakeFiles\mouse-quest.dir\scripts.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\scripts.c -o CMakeFiles\mouse-quest.dir\scripts.c.s
 
 CMakeFiles/mouse-quest.dir/scripts.c.obj.requires:
 
@@ -384,16 +384,16 @@ CMakeFiles/mouse-quest.dir/scripts.c.obj.provides.build: CMakeFiles/mouse-quest.
 CMakeFiles/mouse-quest.dir/hud.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/hud.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/hud.c.obj: ../hud.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building C object CMakeFiles/mouse-quest.dir/hud.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\hud.c.obj   -c C:\Users\Les\dev\mouse-quest\src\hud.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building C object CMakeFiles/mouse-quest.dir/hud.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\hud.c.obj   -c C:\Users\lxm\dev\mq\src\hud.c
 
 CMakeFiles/mouse-quest.dir/hud.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/hud.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\hud.c > CMakeFiles\mouse-quest.dir\hud.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\hud.c > CMakeFiles\mouse-quest.dir\hud.c.i
 
 CMakeFiles/mouse-quest.dir/hud.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/hud.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\hud.c -o CMakeFiles\mouse-quest.dir\hud.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\hud.c -o CMakeFiles\mouse-quest.dir\hud.c.s
 
 CMakeFiles/mouse-quest.dir/hud.c.obj.requires:
 
@@ -409,16 +409,16 @@ CMakeFiles/mouse-quest.dir/hud.c.obj.provides.build: CMakeFiles/mouse-quest.dir/
 CMakeFiles/mouse-quest.dir/item.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/item.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/item.c.obj: ../item.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building C object CMakeFiles/mouse-quest.dir/item.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\item.c.obj   -c C:\Users\Les\dev\mouse-quest\src\item.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building C object CMakeFiles/mouse-quest.dir/item.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\item.c.obj   -c C:\Users\lxm\dev\mq\src\item.c
 
 CMakeFiles/mouse-quest.dir/item.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/item.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\item.c > CMakeFiles\mouse-quest.dir\item.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\item.c > CMakeFiles\mouse-quest.dir\item.c.i
 
 CMakeFiles/mouse-quest.dir/item.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/item.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\item.c -o CMakeFiles\mouse-quest.dir\item.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\item.c -o CMakeFiles\mouse-quest.dir\item.c.s
 
 CMakeFiles/mouse-quest.dir/item.c.obj.requires:
 
@@ -434,16 +434,16 @@ CMakeFiles/mouse-quest.dir/item.c.obj.provides.build: CMakeFiles/mouse-quest.dir
 CMakeFiles/mouse-quest.dir/sound.c.obj: CMakeFiles/mouse-quest.dir/flags.make
 CMakeFiles/mouse-quest.dir/sound.c.obj: CMakeFiles/mouse-quest.dir/includes_C.rsp
 CMakeFiles/mouse-quest.dir/sound.c.obj: ../sound.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building C object CMakeFiles/mouse-quest.dir/sound.c.obj"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\sound.c.obj   -c C:\Users\Les\dev\mouse-quest\src\sound.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building C object CMakeFiles/mouse-quest.dir/sound.c.obj"
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\mouse-quest.dir\sound.c.obj   -c C:\Users\lxm\dev\mq\src\sound.c
 
 CMakeFiles/mouse-quest.dir/sound.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/mouse-quest.dir/sound.c.i"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\Les\dev\mouse-quest\src\sound.c > CMakeFiles\mouse-quest.dir\sound.c.i
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\lxm\dev\mq\src\sound.c > CMakeFiles\mouse-quest.dir\sound.c.i
 
 CMakeFiles/mouse-quest.dir/sound.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/mouse-quest.dir/sound.c.s"
-	C:\MinGW\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\Les\dev\mouse-quest\src\sound.c -o CMakeFiles\mouse-quest.dir\sound.c.s
+	C:\PROGRA~2\HASKEL~1\802E01~1.1\mingw\bin\gcc.exe  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\lxm\dev\mq\src\sound.c -o CMakeFiles\mouse-quest.dir\sound.c.s
 
 CMakeFiles/mouse-quest.dir/sound.c.obj.requires:
 
@@ -496,13 +496,13 @@ mouse__quest_EXTERNAL_OBJECTS =
 ../mouse-quest.exe: CMakeFiles/mouse-quest.dir/sound.c.obj
 ../mouse-quest.exe: CMakeFiles/mouse-quest.dir/build.make
 ../mouse-quest.exe: C:/mingw_dev_lib/i686-w64-mingw32/lib/libSDL2main.a
-../mouse-quest.exe: C:/Windows/SDL2.dll
-../mouse-quest.exe: C:/Windows/SDL2_image.dll
-../mouse-quest.exe: C:/Windows/SDL2_mixer.dll
+../mouse-quest.exe: C:/mingw_dev_lib/i686-w64-mingw32/lib/libSDL2.dll.a
+../mouse-quest.exe: C:/mingw_dev_lib/i686-w64-mingw32/lib/libSDL2_image.dll.a
+../mouse-quest.exe: C:/mingw_dev_lib/i686-w64-mingw32/lib/libSDL2_mixer.dll.a
 ../mouse-quest.exe: CMakeFiles/mouse-quest.dir/linklibs.rsp
 ../mouse-quest.exe: CMakeFiles/mouse-quest.dir/objects1.rsp
 ../mouse-quest.exe: CMakeFiles/mouse-quest.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Linking C executable ..\mouse-quest.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Linking C executable ..\mouse-quest.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\mouse-quest.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -534,6 +534,6 @@ CMakeFiles/mouse-quest.dir/clean:
 .PHONY : CMakeFiles/mouse-quest.dir/clean
 
 CMakeFiles/mouse-quest.dir/depend:
-	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" C:\Users\Les\dev\mouse-quest\src C:\Users\Les\dev\mouse-quest\src C:\Users\Les\dev\mouse-quest\src\cmake-build-debug C:\Users\Les\dev\mouse-quest\src\cmake-build-debug C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles\mouse-quest.dir\DependInfo.cmake --color=$(COLOR)
+	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" C:\Users\lxm\dev\mq\src C:\Users\lxm\dev\mq\src C:\Users\lxm\dev\mq\src\cmake-build-debug C:\Users\lxm\dev\mq\src\cmake-build-debug C:\Users\lxm\dev\mq\src\cmake-build-debug\CMakeFiles\mouse-quest.dir\DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/mouse-quest.dir/depend
 
