@@ -543,11 +543,11 @@ void enemyGameFrame() {
 				// Spawn a coin.
 				for(int k=0; k < randomMq(1, 2); k++) {
 					throwItem(
-						deriveCoord(enemies[i].formationOrigin, randomMq(-50, 50), 15),
+						deriveCoord(enemies[i].formationOrigin, randomMq(-50, 50), randomMq(5, 15)),
 						chance(75) ? TYPE_COIN : TYPE_FRUIT,
 						chance(50) ? -1 : 1,
-						randomMq(80, 140) / 100.0,
-						randomMq(2, 12) / 10.0
+						randomMq(160, 220) / 100.0,
+						randomMq(2, 16) / 10.0
 					);
 				}
 

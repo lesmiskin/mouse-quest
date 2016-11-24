@@ -415,8 +415,8 @@ void runLevel() {
                 break;
 
             case BOSS:
-				wave(0, W_COL, map.position, NA, PATTERN_BOSS, map.enemyType, COMBAT_HOMING, false, map.speed, 1, 200, 1, map.frequency, map.ampMult);
-//                wave(0, W_COL, map.position, NA, PATTERN_BOSS, map.enemyType, COMBAT_HOMING, false, map.speed, 1, 1, 1, map.frequency, map.ampMult);
+//				wave(0, W_COL, map.position, NA, PATTERN_BOSS, map.enemyType, COMBAT_HOMING, false, map.speed, 1, 200, 1, map.frequency, map.ampMult);
+                wave(0, W_COL, map.position, NA, PATTERN_BOSS, map.enemyType, COMBAT_HOMING, false, map.speed, 1, 1, 1, map.frequency, map.ampMult);
                 break;
         }
 
