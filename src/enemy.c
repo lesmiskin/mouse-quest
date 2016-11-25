@@ -558,7 +558,7 @@ void enemyGameFrame() {
 			// Explosion and shaking drama.
 			else if(bossOnscreen && enemies[i].dying && due(enemies[i].boomTime, 75)) {
 
-                if(due(enemies[i].fatalTime, 0)) {
+                if(due(enemies[i].fatalTime, 1000)) {
 
                     // LOTS of explosions.
                     for(int j=0; j < 2; j++) {
@@ -582,9 +582,9 @@ void enemyGameFrame() {
 
                     // Shake 'n' bake.
                     enemies[i].formationOrigin.x += bossDeathDir ? 3 : -3;      // shake from left to right.
+                    enemies[i].formationOrigin.y += 2;	                    	// drop down gradually.
                     enemies[i].formationOrigin.x += 0.5;                        // slide across a bit as we tilt.
-                    enemies[i].formationOrigin.y += 1.75;	                    // drop down gradually.
-                    dieSpin += 0.6;                                             // tilt (timber!!!)
+                    dieSpin += 0.8;                                             // tilt (timber!!!)
 
                 }else{
                     // Explosions.
