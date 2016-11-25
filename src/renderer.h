@@ -64,6 +64,7 @@ extern void shutdownRenderer();
 extern void faderRenderFrame();
 extern bool isFading();
 extern void fadeIn();
+extern void fadeInWhite();
 extern void fadeOut();
 
 typedef enum {

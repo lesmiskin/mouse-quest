@@ -18,11 +18,13 @@ static const double PIXEL_SCALE = 1;			//pixel doubling for assets.
 
 // Fader
 const FadeMode FADE_BOTH = FADE_IN | FADE_OUT;
-static SDL_Texture* fadeOverlay;
+static SDL_Texture* blackFader;
+static SDL_Texture* whiteFader;
 static const int FADE_DURATION = 1000;
 static int fadeAlphaInc;
 static FadeMode currentFadeMode;
 static int currentFadeAlpha;
+static bool fadeWhite;
 
 // Screenshots
 static SDL_Texture *shotBuffer;
@@ -212,6 +214,12 @@ bool isFading() {
 	return currentFadeAlpha > 0 && currentFadeAlpha < 255;
 }
 
+void fadeInWhite() {
+    currentFadeMode = FADE_IN;
+    currentFadeAlpha = 255;
+    fadeWhite = true;
+}
+
 void fadeIn() {
 	currentFadeMode = FADE_IN;
 	currentFadeAlpha = 255;
@@ -220,35 +228,43 @@ void fadeIn() {
 void fadeOut() {
 	currentFadeMode = FADE_OUT;
 	currentFadeAlpha = 0;
+    fadeWhite = false;
+}
+
+static SDL_Texture* makeFader(int r, int g, int b) {
+//	Create tile map canvas texture.
+    SDL_Texture* fadeOverlay = SDL_CreateTexture(
+        renderer,
+        SDL_PIXELFORMAT_ARGB8888,
+        SDL_TEXTUREACCESS_TARGET,
+        (int)pixelGrid.x, (int)pixelGrid.y
+    );
+
+    //Allow the texture to blend into other things when rendered.
+    SDL_SetTextureBlendMode(fadeOverlay, SDL_BLENDMODE_BLEND);
+
+    //Change renderer context to output onto the tilemap.
+    SDL_Texture* oldTarget = SDL_GetRenderTarget(renderer);
+    SDL_SetRenderTarget(renderer, fadeOverlay);
+
+    //Can either render a texture with an alpha value, and alter the alpha value of it,
+    // or render a solid texture, and just change the transparency with AlphaMod.
+
+    //Render a solid colour, with full opaqueness (we will do alpha blending at render-time, at variable amount)
+    SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+    SDL_RenderClear(renderer);
+
+    //Restore render homeTarget to the buffer.
+    SDL_SetRenderTarget(renderer, oldTarget);
+
+    return fadeOverlay;
 }
 
 static void initFader() {
 	fadeAlphaInc = (255 * RENDER_HZ) / (double)FADE_DURATION;
 
-//	Create tile map canvas texture.
-	fadeOverlay = SDL_CreateTexture(
-		renderer,
-		SDL_PIXELFORMAT_ARGB8888,
-		SDL_TEXTUREACCESS_TARGET,
-		(int)pixelGrid.x, (int)pixelGrid.y
-	);
-
-	//Allow the texture to blend into other things when rendered.
-	SDL_SetTextureBlendMode(fadeOverlay, SDL_BLENDMODE_BLEND);
-
-	//Change renderer context to output onto the tilemap.
-	SDL_Texture* oldTarget = SDL_GetRenderTarget(renderer);
-	SDL_SetRenderTarget(renderer, fadeOverlay);
-
-	//Can either render a texture with an alpha value, and alter the alpha value of it,
-	// or render a solid texture, and just change the transparency with AlphaMod.
-
-	//Render a solid colour, with full opaqueness (we will do alpha blending at render-time, at variable amount)
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
-
-	//Restore render homeTarget to the buffer.
-	SDL_SetRenderTarget(renderer, oldTarget);
+    blackFader = makeFader(0, 0, 0);
+    whiteFader = makeFader(255, 255, 255);
 }
 
 void faderRenderFrame() {
@@ -275,8 +291,9 @@ void faderRenderFrame() {
 			break;
 	}
 
-	SDL_SetTextureAlphaMod(fadeOverlay, currentFadeAlpha);
-	SDL_RenderCopy(renderer, fadeOverlay, NULL, NULL);
+    SDL_Texture* useFader = fadeWhite ? whiteFader : blackFader;
+	SDL_SetTextureAlphaMod(useFader, currentFadeAlpha);
+	SDL_RenderCopy(renderer, useFader, NULL, NULL);
 }
 
 void toggleFullscreen() {

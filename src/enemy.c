@@ -522,14 +522,18 @@ void enemyGameFrame() {
 		//Skip zeroed.
 		if(invalidEnemy(&enemies[i])) continue;
 
+        bool bake = false;
+
 		// Boss explosions.
 		if(enemies[i].dying && enemies[i].type == ENEMY_BOSS) {
 			// Final death.
-			if(due(enemies[i].fatalTime, 6500)) {
+			if(due(enemies[i].fatalTime, 5500)) {
 				enemies[i] = nullEnemy();
 				triggerState(STATE_LEVEL_COMPLETE);
 				continue;
-			}else if(bossOnscreen && due(enemies[i].fatalTime, 4000)) {
+			}else if(bossOnscreen && due(enemies[i].fatalTime, 3000)) {
+                fadeInWhite();
+
                 // Final explosion to hide sprite vanishing.
                 spawnBoom(deriveCoord(enemies[i].formationOrigin, -20, -15), 1);
                 spawnBoom(deriveCoord(enemies[i].formationOrigin, 20, -15), 1);
@@ -538,12 +542,23 @@ void enemyGameFrame() {
                 spawnBoom(deriveCoord(enemies[i].formationOrigin, 35, 0), 1);
                 spawnBoom(deriveCoord(enemies[i].formationOrigin, -20, 15), 1);
                 spawnBoom(deriveCoord(enemies[i].formationOrigin, 20, 15), 1);
-				bossOnscreen = false;
+                bossOnscreen = false;
+
+                // Toss out rewards ;)
+                for(int k=0; k < 20; k++) {
+                    throwItem(
+                        deriveCoord(enemies[i].formationOrigin, randomMq(-50, 50), randomMq(5, 15)),
+                        chance(80) ? TYPE_COIN : TYPE_FRUIT,
+                        chance(50) ? -1 : 1,
+                        randomMq(160, 220) / 100.0,
+                        randomMq(2, 16) / 10.0
+                    );
+                }
 			}
 			// Explosion and shaking drama.
 			else if(bossOnscreen && enemies[i].dying && due(enemies[i].boomTime, 75)) {
 
-                if(due(enemies[i].fatalTime, 1000)) {
+                if(due(enemies[i].fatalTime, 0)) {
 
                     // LOTS of explosions.
                     for(int j=0; j < 2; j++) {
@@ -551,25 +566,25 @@ void enemyGameFrame() {
                         enemies[i].boomTime = clock();
                     }
 
+                    if(chance(25)) {
+                        throwItem(
+                            deriveCoord(enemies[i].formationOrigin, randomMq(-40, 40), 10),
+                            TYPE_COIN,
+                            chance(50) ? -1 : 1,
+                            randomMq(100, 160) / 100.0,
+                            randomMq(1, 4) / 10.0
+                        );
+                    }
+
                     // Pain face >D
                     SDL_Texture* tex = getTextureVersion("keyboss-01.png", ASSET_HIT);
                     enemies[i].sprite = makeSprite(tex, zeroCoord(), SDL_FLIP_NONE);
 
-                    // Throw some rewards out.
-                    if(chance(66)) {
-                        throwItem(
-                                deriveCoord(enemies[i].formationOrigin, randomMq(-50, 50), randomMq(5, 15)),
-                                chance(80) ? TYPE_COIN : TYPE_FRUIT,
-                                chance(50) ? -1 : 1,
-                                randomMq(160, 220) / 100.0,
-                                randomMq(2, 16) / 10.0
-                        );
-                    }
-
                     // Shake 'n' bake.
-                    enemies[i].formationOrigin.x += bossDeathDir ? 3 : -3;
-                    enemies[i].formationOrigin.y += 2;	// slight drop down.
-                    dieSpin += 0.5;
+                    enemies[i].formationOrigin.x += bossDeathDir ? 3 : -3;      // shake from left to right.
+                    enemies[i].formationOrigin.x += 0.5;                        // slide across a bit as we tilt.
+                    enemies[i].formationOrigin.y += 1.75;	                    // drop down gradually.
+                    dieSpin += 0.6;                                             // tilt (timber!!!)
 
                 }else{
                     // Explosions.
