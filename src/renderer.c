@@ -228,7 +228,6 @@ void fadeIn() {
 void fadeOut() {
 	currentFadeMode = FADE_OUT;
 	currentFadeAlpha = 0;
-    fadeWhite = false;
 }
 
 static SDL_Texture* makeFader(int r, int g, int b) {
@@ -276,6 +275,7 @@ void faderRenderFrame() {
 			if((currentFadeAlpha - fadeAlphaInc) <= 0) {
 				currentFadeMode = FADE_NONE;
 				currentFadeAlpha = 0;
+                fadeWhite = false;
 				return;
 			}else{
 				currentFadeAlpha -= fadeAlphaInc;
@@ -285,6 +285,7 @@ void faderRenderFrame() {
 			if(currentFadeAlpha >= 255) {
 				currentFadeMode = FADE_NONE;
 				currentFadeAlpha = 255;
+                fadeWhite = false;
 			}else{
 				currentFadeAlpha += 5;
 			}
