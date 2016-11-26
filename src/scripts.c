@@ -76,6 +76,7 @@ void scriptGameFrame() {
 					break;
 				case END_WARP_CUE:
 					play("warp.wav");
+					forcedFrame = "mike-01.png";
 					break;
 				case END_WARP:
 					playerOrigin.y -= 4.0;
@@ -156,6 +157,7 @@ void scriptGameFrame() {
 					break;
 				case INTRO_BATTLE_MIKE_DEPART_CUE:
 					play("warp.wav");
+					forcedFrame = "mike-01.png";
 					break;
 				case INTRO_BATTLE_MIKE_DEPART:
 					playerOrigin.y -= 4.0;

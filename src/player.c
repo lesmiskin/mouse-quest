@@ -37,6 +37,8 @@ bool hideMike;		//still there, but don't render this frame.
 Coord playerOrigin;
 double playerStrength = 3;
 double playerHealth;
+char* forcedFrame;
+
 static long deathTime = 0;
 static const double PLAYER_MAX_SPEED = 4.0;
 //static const double MOMENTUM_INC_DIVISOR = 6.5;	//works well with joystick.
@@ -224,7 +226,7 @@ void playerAnimate() {
 				animGroupName = "mike-shoot-%02d.png";
 			}
 		}
-			//Regular idle.
+		//Regular idle.
 		else{
 			if(leanDirection == LEAN_LEFT) {
 				animGroupName = "mike-lean-left-%02d.png";
@@ -237,10 +239,10 @@ void playerAnimate() {
 			}
 		}
 	}
-
+	
 	//Select animation frame from above group, and draw.
 	sprintf(frameFile, animGroupName, animationInc);
-
+	
 	//Remember what frame we're on for shadow drawing.
 	frameName = realloc(frameName, strlen(frameFile) + 1);
 	strcpy(frameName, frameFile);
@@ -273,7 +275,7 @@ void playerRenderFrame() {
 	if((playerState&PSTATE_DEAD) > 0) return;
 
 	switch(gameState) {
-		case STATE_TITLE:
+		case STATE_TITLE: {
 			playerOrigin.y = 220;
 
 			Sprite bubbleSprite = makeSprite(getTexture("speech-coin.png"), zeroCoord(), SDL_FLIP_NONE);
@@ -281,8 +283,8 @@ void playerRenderFrame() {
 			position.y -= 16;
 			drawSprite(bubbleSprite, position);
 			break;
-
-		case STATE_GAME:
+		}
+		case STATE_GAME:{
 			if(!bubbleFinished) {
 				if(timer(&bubbleLastTime, toMilliseconds(BUBBLE_TIME_SECONDS))) {
 					bubbleFinished = true;
@@ -295,10 +297,17 @@ void playerRenderFrame() {
 				}
 			}
 			break;
+		}
 	}
 
-	//Draw him.
-	drawSpriteAbs(bodySprite, playerOrigin);
+	Sprite useSprite = bodySprite;
+	
+	// Forced frame override.
+	if(forcedFrame != NULL) {
+		useSprite = makeSimpleSprite(forcedFrame);
+	}
+	
+	drawSpriteAbs(useSprite, playerOrigin);
 }
 
 static void applyMomentum() {
@@ -438,7 +447,9 @@ void resetPlayer() {
 	pain = false;
 	bubbleFinished = false;
 	animationInc = 0;
-
+	forcedFrame = malloc(sizeof(char) * 50);
+	forcedFrame = NULL;
+	
 	playerOrigin = makeCoord(
 		(screenBounds.x / 2),
 		(int)(screenBounds.y * 0.9)

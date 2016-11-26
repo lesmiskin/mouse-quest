@@ -32,5 +32,6 @@ extern void playerShadowFrame();
 extern void playerRenderFrame();
 extern void playerGameFrame();
 extern void resetPlayer();
+extern char* forcedFrame;
 
 #endif
