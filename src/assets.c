@@ -444,6 +444,7 @@ static void loadSounds() {
 	const int SOUND_VOLUME = 12;
 
 	SoundDef defs[] = {
+		{ "boss-blow.wav", SOUND_VOLUME * 4 },
 		{ "mike-die.wav", SOUND_VOLUME * 4 },
 		{ "intro-presents.wav", SOUND_VOLUME * 2 },
 		{ "warning.wav", SOUND_VOLUME * 2.25 },
@@ -499,7 +500,8 @@ static void loadMusic() {
 		"tension.ogg",
 		"intro-battle-3.ogg",
 		"level-01c.ogg",
-		"title.ogg"
+		"title.ogg",
+		"win-shorter.ogg"
 	};
 
 	musicCount = sizeof(defs) / sizeof(char*);

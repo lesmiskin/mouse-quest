@@ -487,7 +487,7 @@ void enemyGameFrame() {
 		case STATE_TITLE:
 			for(int i=0; i < enemyCount; i++) {
 				//Increment, looping on 2Pi radians (360 degrees)
-				enemies[i].parallax.y = sineInc(enemies[i].origin.y, &rollSine[i], 0.125, 8);
+				enemies[i].parallax.y = sineInc(enemies[i].origin.y, &rollSine[i], 0.125, 50);
 			}
 	}
 
@@ -533,6 +533,9 @@ void enemyGameFrame() {
 				continue;
 			}else if(bossOnscreen && due(enemies[i].fatalTime, 3000)) {
                 fadeInWhite();
+				
+				playImportant("boss-blow.wav");
+				playMusic("win-shorter.ogg", 1);
 
                 // Final explosion to hide sprite vanishing.
                 spawnBoom(deriveCoord(enemies[i].formationOrigin, -20, -15), 1);
@@ -582,7 +585,7 @@ void enemyGameFrame() {
 
                     // Shake 'n' bake.
                     enemies[i].formationOrigin.x += bossDeathDir ? 3 : -3;      // shake from left to right.
-                    enemies[i].formationOrigin.y -= 0.5;	                    	// drop down gradually.
+                    enemies[i].formationOrigin.y -= 0.1;	                    	// drop down gradually.
 //                    enemies[i].formationOrigin.x += 0.5;                        // slide across a bit as we tilt.
 //                    dieSpin += 0.8;                                             // tilt (timber!!!)
 
