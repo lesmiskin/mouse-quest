@@ -15,6 +15,7 @@ extern void spawnPlume(PlumeType type);
 extern int score;
 extern int topScore;
 extern int coins;
+extern int fruit;
 extern void raiseScore(unsigned amount, bool plume);
 extern void hudGameFrame();
 extern void hudRenderFrame();

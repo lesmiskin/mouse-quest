@@ -22,6 +22,7 @@ typedef struct {
 int score;
 int topScore;
 int coins = 0;
+int fruit = 0;
 static ScorePlume plumes[MAX_PLUMES];
 static int plumeInc = 0;
 static Sprite life, lifeHalf/*, lifeNone*/;
@@ -187,17 +188,19 @@ void hudInit() {
 void hudReset() {
 }
 
-void writeText(int amount, Coord pos) {
+void writeText(int amount, Coord pos, bool doubleSize) {
 	//Algorithm for digit iteration of an int (source: http://stackoverflow.com/a/8671947)
 	//Note: The algorithm iterates from lowest to highest, so we print the digits in reverse to compensate.
 
+	double scale = doubleSize ? 2 : 1;
+
 	if(amount == 0) {
-		drawSpriteAbs(letters[0], pos);
+		drawSpriteAbsRotated2(letters[0], pos, 0, scale, scale);
 	}else{
 		while(amount != 0) {
-			drawSpriteAbs(letters[amount % 10], pos);
+			drawSpriteAbsRotated2(letters[amount % 10], pos, 0, scale, scale);
 			amount /= 10;
-			pos.x -= LETTER_WIDTH;
+			pos.x -= (LETTER_WIDTH * scale);
 		}
 	}
 }
@@ -206,11 +209,11 @@ void showDebugStats() {
 	Coord underLife = makeCoord(10, 27);
 
 	//Show player X coordinate:
-	writeText(playerOrigin.x, deriveCoord(underLife, 10, 20));
+	writeText(playerOrigin.x, deriveCoord(underLife, 10, 20), false);
 
 	if(enemies[0].health > 0) {
-		writeText(enemies[0].origin.x, deriveCoord(underLife, 10, 30));
-		writeText(enemies[0].parallax.x, deriveCoord(underLife, 10, 40));
+		writeText(enemies[0].origin.x, deriveCoord(underLife, 10, 30), false);
+		writeText(enemies[0].parallax.x, deriveCoord(underLife, 10, 40), false);
 	}
 }
 
@@ -262,20 +265,34 @@ void hudRenderFrame() {
 
 //	showDebugStats();
 
+	if(gameState == STATE_STATS) {
+		drawSpriteAbsRotated2(makeSimpleSprite("text-coins.png"), makeCoord(120, 50), 0, 1, 1);
+		drawSpriteAbsRotated2(makeSimpleSprite("text-treats.png"), makeCoord(123, 60), 0, 1, 1);
+		drawSpriteAbsRotated2(makeSimpleSprite("text-score.png"), makeCoord(121, 75), 0, 1, 1);
+
+		drawSpriteAbsRotated2(makeSimpleSprite("font-x.png"), makeCoord(100, 50), 0, 1, 1);
+		writeText(coins, makeCoord(93, 50), false);
+		drawSpriteAbsRotated2(makeSimpleSprite("font-x.png"), makeCoord(100, 60), 0, 1, 1);
+		writeText(fruit, makeCoord(93, 60), false);
+
+		writeText(score, makeCoord(93, 75), false);
+		return;
+	}
+
 	//Show score and coin HUD during the game, and game over sequences.
 	if(	gameState == STATE_GAME ||
 		gameState == STATE_LEVEL_COMPLETE ||
 		gameState == STATE_GAME_OVER
 	) {
 		//Score HUD
-		writeText(score, makeCoord(pixelGrid.x - 5, 10));
+		writeText(score, makeCoord(pixelGrid.x - 5, 10), false);
 
 		//Draw coin status
 		Sprite coin = makeSprite(getTexture("coin-05.png"), zeroCoord(), SDL_FLIP_NONE);
 		drawSpriteAbs(coin, underScore);
 		Sprite x = makeSprite(getTexture("font-x.png"), zeroCoord(), SDL_FLIP_NONE);
 		drawSpriteAbs(x, deriveCoord(underScore, -9, -1));
-		writeText(coins, deriveCoord(underScore, -14, -1));
+		writeText(coins, deriveCoord(underScore, -14, -1), false);
 	}
 
 	//Only show if playing, and *hide* if dying.
@@ -317,7 +334,7 @@ void hudRenderFrame() {
 
 		switch(plumes[i].type) {
 			case PLUME_SCORE: {
-				writeText(plumes[i].score, plumes[i].parallax);
+				writeText(plumes[i].score, plumes[i].parallax, false);
 				break;
 			}
 			case PLUME_LASER: {
@@ -350,6 +367,7 @@ void hudRenderFrame() {
 void resetHud() {
 	score = 0;
 	coins = 0;
+	fruit = 0;
 	coinInserting = false;
 	coinX = 0;
 	coinY = 0;

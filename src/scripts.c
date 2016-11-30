@@ -45,6 +45,11 @@ typedef enum {
 } EndCues;
 
 typedef enum {
+	STATS_LOOP,
+	STATS_END
+} StatCues ;
+
+typedef enum {
 	INTRO_CUE,
 	INTRO_LOGO,
 	INTRO_BATTLE_CUE,
@@ -69,6 +74,9 @@ void scriptGameFrame() {
 	}
 
 	switch(gameState) {
+		case STATE_STATS:
+			break;
+
 		case STATE_LEVEL_COMPLETE:
 			switch(scriptStatus.sceneNumber){
 				case END_SMILE_CUE:
@@ -303,7 +311,7 @@ void scriptRenderFrame() {
 }
 
 void initScripts() {
-	Script intro, title, game, gameOver, coin, end;
+	Script intro, title, game, gameOver, coin, end, stats;
 
 	//Introduction script.
 	intro.scenes[INTRO_CUE] = 						newCueStep();
@@ -348,8 +356,13 @@ void initScripts() {
 	end.scenes[END_SMILE_CUE] = 					newCueStep();
 	end.scenes[END_SMILE] = 						newTimedStep(SCENE_LOOP, 1000, FADE_NONE);
 	end.scenes[END_WARP_CUE] = 						newCueStep();
-	end.scenes[END_WARP] = 							newTimedStep(SCENE_LOOP, 1250, FADE_OUT);
-	end.scenes[END_FINISH] = 						newStateStep(STATE_TITLE);
+	end.scenes[END_WARP] = 							newTimedStep(SCENE_LOOP, 1250, FADE_NONE);
+	end.scenes[END_FINISH] = 						newStateStep(STATE_STATS);
 	end.totalScenes = 6;
 	scripts[STATE_LEVEL_COMPLETE] = end;
+
+	stats.scenes[STATS_LOOP] = 						newTimedStep(SCENE_LOOP, 10000, FADE_OUT);
+	stats.scenes[STATS_END] = 						newStateStep(STATE_TITLE);
+	stats.totalScenes = 2;
+	scripts[STATE_STATS] = stats;
 }

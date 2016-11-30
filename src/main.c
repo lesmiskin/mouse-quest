@@ -133,7 +133,8 @@ static void setWindowIcon() {
 	levelInit();
 
 #ifdef DEBUG_SKIP_TO_GAME
-	triggerState(STATE_GAME);
+//	triggerState(STATE_GAME);
+	triggerState(STATE_STATS);
 #else
 	triggerState(STATE_TITLE);
 #endif

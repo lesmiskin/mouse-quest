@@ -325,6 +325,7 @@ void itemGameFrame() {
 				case TYPE_FRUIT:
 					play("Pickup_Coin34.wav");
 					raiseScore(100, true);
+					fruit++;
 					break;
 				case TYPE_WEAPON:
 					play("Powerup8.wav");

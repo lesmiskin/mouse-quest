@@ -148,6 +148,10 @@ static void loadImages() {
 	AssetDef definitions[] = {
 		// HUD
         { "text-keyface.png", false, false, false, false, false },
+		{ "text-coins.png", false, false, false, false, false },
+		{ "text-treats.png", false, false, false, false, false },
+		{ "text-bonus.png", false, false, false, false, false },
+		{ "text-score.png", false, false, false, false, false },
 		{ "health-bar.png", false, false, false, false, false },
 		{ "health-bar-bg.png", false, false, false, false, false },
 		{ "text-laser-upgraded.png", false, true, false, false, false },
