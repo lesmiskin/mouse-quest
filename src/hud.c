@@ -260,6 +260,11 @@ void insertCoin() {
 //	play("Pickup_Coin34b.wav");
 }
 
+int coinInc = 0;
+int fruitInc = 0;
+int scoreInc = 0;
+int statsInc = 0;
+
 void hudRenderFrame() {
 	Coord underScore = makeCoord(pixelGrid.x - 7, 26);
 
@@ -267,15 +272,37 @@ void hudRenderFrame() {
 
 	if(gameState == STATE_STATS) {
 		drawSpriteAbsRotated2(makeSimpleSprite("text-coins.png"), makeCoord(120, 50), 0, 1, 1);
-		drawSpriteAbsRotated2(makeSimpleSprite("text-treats.png"), makeCoord(123, 60), 0, 1, 1);
-		drawSpriteAbsRotated2(makeSimpleSprite("text-score.png"), makeCoord(121, 75), 0, 1, 1);
-
 		drawSpriteAbsRotated2(makeSimpleSprite("font-x.png"), makeCoord(100, 50), 0, 1, 1);
-		writeText(coins, makeCoord(93, 50), false);
-		drawSpriteAbsRotated2(makeSimpleSprite("font-x.png"), makeCoord(100, 60), 0, 1, 1);
-		writeText(fruit, makeCoord(93, 60), false);
+		writeText(coinInc, makeCoord(93, 50), false);
 
-		writeText(score, makeCoord(93, 75), false);
+		if(coinInc == coins) {
+			statsInc++;
+		}else{
+			coinInc++;
+		}
+
+		if(statsInc >= 1) {
+			drawSpriteAbsRotated2(makeSimpleSprite("text-treats.png"), makeCoord(123, 60), 0, 1, 1);
+			drawSpriteAbsRotated2(makeSimpleSprite("font-x.png"), makeCoord(100, 60), 0, 1, 1);
+			writeText(fruitInc, makeCoord(93, 60), false);
+
+			if(fruitInc == fruit) {
+				statsInc++;
+			}else{
+				fruitInc++;
+			}
+		}
+		if(statsInc >= 1) {
+			drawSpriteAbsRotated2(makeSimpleSprite("text-score.png"), makeCoord(121, 75), 0, 1, 1);
+			writeText(scoreInc, makeCoord(93, 75), false);
+
+			if(scoreInc == score) {
+				statsInc++;
+			}else{
+				scoreInc++;
+			}
+		}
+
 		return;
 	}
 
