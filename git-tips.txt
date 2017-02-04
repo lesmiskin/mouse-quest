@@ -1,12 +1,14 @@
-Make a branch
+MAKE BRANCH
 git checkout -b BRANCH_NAME
 
-First commit on the new branch (adds the branch)
+FIRST COMMIT
 git commit -a -m 'This is a test'
+
+FIRST PUSH
+git push --set-upstream origin RandomQuest
 
 CHANGE TO ANOTHER BRANCH
 git checkout BRANCH_NAME
 
 GO BACK TO A PREVIOUS COMMIT
 git reset CHANGESET_HASH
-
