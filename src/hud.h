@@ -7,10 +7,10 @@ typedef enum {
 	PLUME_POWER
 } PlumeType;
 
+extern bool waveCompleteOn;
 extern void insertCoin();
 extern void persistentHudRenderFrame();
 extern void toggleWarning();
-extern void hudReset();
 extern void spawnPlume(PlumeType type);
 extern int score;
 extern int topScore;
@@ -20,6 +20,6 @@ extern void hudGameFrame();
 extern void hudRenderFrame();
 extern void hudInit();
 extern void hudAnimateFrame();
-extern void resetHud();
+extern void resetHud(bool keepScore);
 
 #endif

@@ -22,6 +22,7 @@ typedef struct {
 int score;
 int topScore;
 int coins = 0;
+bool waveCompleteOn;
 static ScorePlume plumes[MAX_PLUMES];
 static int plumeInc = 0;
 static Sprite life, lifeHalf/*, lifeNone*/;
@@ -181,10 +182,7 @@ void hudInit() {
 		letters[i] = makeSimpleSprite(textureName);
 	}
 
-	hudReset();
-}
-
-void hudReset() {
+	resetHud(false);
 }
 
 void writeText(int amount, Coord pos) {
@@ -225,6 +223,13 @@ void toggleWarning() {
 	// Force initial display
 	play("warning.wav");
 	warningShowing = true;
+}
+
+void renderWaveComplete() {
+	if(!waveCompleteOn) return;
+	
+	Sprite complete = makeSprite(getTexture("wave-complete.png"), zeroCoord(), SDL_FLIP_NONE);
+	drawSpriteAbs(complete, makeCoord(screenBounds.x/2, screenBounds.y/3));
 }
 
 void renderWarning() {
@@ -277,6 +282,8 @@ void hudRenderFrame() {
 		drawSpriteAbs(x, deriveCoord(underScore, -9, -1));
 		writeText(coins, deriveCoord(underScore, -14, -1));
 	}
+
+	renderWaveComplete();
 
 	//Only show if playing, and *hide* if dying.
 	if(gameState != STATE_GAME) return;
@@ -347,8 +354,10 @@ void hudRenderFrame() {
 	}
 }
 
-void resetHud() {
-	score = 0;
+void resetHud(bool keepScore) {
+	if(!keepScore) {
+		score = 0;
+	}
 	coins = 0;
 	coinInserting = false;
 	coinX = 0;

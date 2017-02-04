@@ -22,6 +22,8 @@ typedef enum {
 	ENEMY_BOSS_INTRO
 } EnemyType;
 
+#define ENEMY_TYPES 5
+
 typedef enum {
 	PATTERN_NONE,
 	PATTERN_BOSS,
@@ -91,6 +93,7 @@ typedef struct {
 	bool inBackground;
 } Enemy;
 
+extern bool noEnemiesLeft();
 extern double bossHealth;
 extern bool bossOnscreen;
 extern void spawnBoom(Coord origin, double scale);

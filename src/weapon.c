@@ -10,7 +10,7 @@
 #include "hud.h"
 #include "myc.h"
 
-#define MAX_SHOTS 20
+#define MAX_SHOTS 100
 
 typedef enum {
 	NORTH,

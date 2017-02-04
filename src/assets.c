@@ -184,6 +184,7 @@ static void loadImages() {
         { "life-half.png", false, false, false, false, false },
         { "life-none.png", false, false, false, false, false },
         { "level-1.png", false, false, false, false, false },
+		{ "wave-complete.png", false, false, false, false, false },
         { "game-over.png", false, false, false, false, false },
         { "title.png", false, false, false, false, false },
         { "lm-presents.png", false, false, false, false, false },

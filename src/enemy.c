@@ -8,9 +8,10 @@
 #include "item.h"
 #include "hud.h"
 #include "sound.h"
+#include "weapon.h"
 
 #define MAX_SHOTS 500
-#define MAX_SPAWNS 10
+#define MAX_SPAWNS 20
 #define MAX_BOOMS 20
 
 typedef struct {
@@ -46,6 +47,7 @@ const double HEALTH_LIGHT = 3.0;
 const double HEALTH_HEAVY = 5.0;
 bool bossOnscreen = false;
 double bossHealth = 0;
+int enemiesKilled = 0;
 
 static int boomCount;
 static Boom booms[MAX_BOOMS];
@@ -97,6 +99,16 @@ static bool invalidEnemyShot(EnemyShot *enemyShot) {
 			 enemyShot->parallax.x > screenBounds.x + ENEMY_SHOT_BOUND/2 ||
 			 enemyShot->parallax.x < 0 - ENEMY_SHOT_BOUND/2
 			);
+}
+
+bool noEnemiesLeft() {
+	for(int i=0; i < enemyCount; i++) {
+		if(!invalidEnemy(&enemies[i])) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 static Enemy nullEnemy() {
@@ -215,6 +227,8 @@ void spawnBoom(Coord origin, double scale) {
 	booms[boomCount] = boom;
 }
 
+int lastCoinPickup = 0;
+
 void animateEnemy() {
 
 	// Booms
@@ -252,14 +266,24 @@ void animateEnemy() {
 
 				//Spawn powerup (only in-game, and punish collisions)
 				if(gameState == STATE_GAME && !enemies[i].collided){
-//					if(chance(5) && canSpawn(TYPE_WEAPON)) {
-//						spawnItem(enemies[i].formationOrigin, TYPE_WEAPON);
-//					}else if(chance(3) && canSpawn(TYPE_HEALTH)) {
-//						spawnItem(enemies[i].formationOrigin, TYPE_HEALTH);
-//					}else if(chance(15)){
-//						spawnItem(enemies[i].formationOrigin, TYPE_FRUIT);
-//					}else{
-					spawnItem(enemies[i].formationOrigin, TYPE_COIN);
+
+					// Spawn a powerup each 50 coins.
+					if(coins-lastCoinPickup >= 24) {
+	 					// Give player a weapon upgrade, or a health bonus if hurt.
+						if(playerHealth < playerStrength) {
+							spawnItem(enemies[i].formationOrigin, TYPE_HEALTH, true);
+						}else if(!atMaxWeapon()){
+							spawnItem(enemies[i].formationOrigin, TYPE_WEAPON, true);
+						}else{
+							spawnItem(deriveCoord(enemies[i].formationOrigin, -10, -11), TYPE_FRUIT, true);
+							spawnItem(deriveCoord(enemies[i].formationOrigin, 10, 11), TYPE_FRUIT, true);
+							spawnItem(deriveCoord(enemies[i].formationOrigin, -10, 11), TYPE_FRUIT, true);
+							spawnItem(deriveCoord(enemies[i].formationOrigin, 10, -11), TYPE_FRUIT, true);
+						}
+						lastCoinPickup = coins;
+					}else{
+						spawnItem(enemies[i].formationOrigin, TYPE_COIN, false);
+					}
 				}
 			}
 			//Zero if completely dead.
@@ -456,6 +480,7 @@ void resetEnemies() {
 	boomCount = 0;
 	bossOnscreen = false;
 	bossHealth = 0;
+	enemiesKilled = 0;
 }
 
 static bool bossDeathDir = false;
@@ -493,6 +518,7 @@ void enemyGameFrame() {
 					enemies[i].dying = true;
 					enemies[i].fatalTime = clock();
 					enemies[i].boomTime = clock();
+					enemiesKilled++;
 				}
 			}
 	}
@@ -519,7 +545,7 @@ void enemyGameFrame() {
 
                 enemies[i] = nullEnemy();
 				bossOnscreen = false;
-				triggerState(STATE_LEVEL_COMPLETE);
+				triggerState(STATE_END_GAME);
 				continue;
 			}
 			// Explosion and shaking drama.

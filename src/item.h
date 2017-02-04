@@ -10,9 +10,10 @@ typedef enum {
 	TYPE_HEALTH
 } ItemType;
 
+extern bool noItemsLeft();
 extern void shutdownInput();
 extern bool canSpawn(ItemType type);
-extern void spawnItem(Coord coord, ItemType type);
+extern void spawnItem(Coord coord, ItemType type, bool sway);
 extern void itemInit();
 extern void itemGameFrame();
 extern void itemShadowFrame();

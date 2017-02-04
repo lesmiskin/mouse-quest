@@ -1,7 +1,7 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
-#define MAX_WEAPONS 4
+#define MAX_WEAPONS 3
 
 extern bool canFireInLevel;
 extern int weaponInc;

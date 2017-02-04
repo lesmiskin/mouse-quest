@@ -91,6 +91,16 @@ static ItemSpawnPolicy getSpawnPolicyForType(ItemType type) {
 	}
 }
 
+bool noItemsLeft() {
+	for(int i=0; i < itemCount; i++) {
+		if(!invalidPowerup(&items[i])) {
+			return false;
+		}
+	}
+	
+	return true;
+}
+
 bool canSpawn(ItemType type) {
 
 	switch(type) {
@@ -118,11 +128,10 @@ bool canSpawn(ItemType type) {
 	}
 }
 
-void spawnItem(Coord coord, ItemType type) {
+void spawnItem(Coord coord, ItemType type, bool sway) {
 	//Stop spawning items after we've elapsed our total.
 	if(itemCount == MAX_ITEMS) itemCount = 0;
 
-	bool swing;
 	int maxAnims = 1;
 	AnimationStyle animRate;
 
@@ -132,7 +141,6 @@ void spawnItem(Coord coord, ItemType type) {
 
 	switch(type) {
 		case TYPE_COIN:
-			swing = false;
 			maxAnims = 12;
 			animRate = ANIM_SEQUENCE;
 			strcpy(baseFrameName, "coin-");
@@ -151,13 +159,11 @@ void spawnItem(Coord coord, ItemType type) {
 				strcpy(realFrameName, "pineapple-");
 			}
 
-			swing = false;
 			animRate = ANIM_BOOLEAN;
 			maxAnims = 2;
 			break;
 		}
 		case TYPE_WEAPON:
-			swing = true;
 			animRate = ANIM_BOOLEAN;
 
 			char* filename = NULL;
@@ -182,7 +188,6 @@ void spawnItem(Coord coord, ItemType type) {
 			strcpy(realFrameName, filename);
 			break;
 		case TYPE_HEALTH:
-			swing = true;
 			animRate = ANIM_BOOLEAN;
 			maxAnims = 2;
 			strcpy(baseFrameName, "battery-pack-");
@@ -196,7 +201,7 @@ void spawnItem(Coord coord, ItemType type) {
 		coord,
 		itemParallax(coord),
 		0,
-		swing,
+		sway,
 		1,
 		maxAnims,
 		animRate,

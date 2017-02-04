@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 //#define DEBUG_WINDOW_T500
-//#define DEBUG_SKIP_TO_GAME
+#define DEBUG_SKIP_TO_GAME
 //#define DEBUG_CHEATS
 
 extern const bool ENABLE_PARALLAX;
@@ -26,7 +26,8 @@ typedef enum {
 	STATE_GAME = 2,
 	STATE_GAME_OVER = 3,
 	STATE_COIN = 4,
-	STATE_LEVEL_COMPLETE = 5
+	STATE_LEVEL_COMPLETE = 5,
+	STATE_END_GAME = 6
 } GameState;
 GameState gameState;
 

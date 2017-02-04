@@ -1,4 +1,5 @@
 #include <time.h>
+#include <stdlib.h>
 #include "renderer.h"
 #include "assets.h"
 #include "input.h"
@@ -36,6 +37,7 @@ typedef enum {
 } CoinCues;
 
 typedef enum {
+	END_PAUSE_CUE,
 	END_PAUSE,
 	END_SMILE_CUE,
 	END_SMILE,
@@ -70,7 +72,12 @@ void scriptGameFrame() {
 
 	switch(gameState) {
 		case STATE_LEVEL_COMPLETE:
+		case STATE_END_GAME:
 			switch(scriptStatus.sceneNumber){
+				case END_PAUSE_CUE:
+					Mix_PauseMusic();
+					play("intro-presents.wav");
+					break;
 				case END_SMILE_CUE:
 					smile();
 					break;
@@ -162,6 +169,8 @@ void scriptGameFrame() {
 					break;
 			}
 			break;
+			
+		//
 
 		case STATE_TITLE:
 			switch(scriptStatus.sceneNumber) {
@@ -172,13 +181,14 @@ void scriptGameFrame() {
 					resetEnemies();
 					resetBackground();
 					resetItems();
-					resetHud();
+					resetHud(false);
 					useMike = true;
 //					staticBackground = true;
 					game_messageTime = clock();
 					title_logoLocation = makeCoord((screenBounds.x/2) - 3, screenBounds.y/4);
 					title_logoSprite = makeSprite(getTexture("title.png"), zeroCoord(), SDL_FLIP_NONE);
 					showBackground = true;
+					waveCompleteOn = false;
 
 					//Enemy roll call.
 					int spacer = -10;
@@ -201,15 +211,23 @@ void scriptGameFrame() {
 
 		case STATE_GAME:
 			if(!sceneInitialised()) {
-				resetLevel();
+				
+				// Remember that we may have come in from a level change, so reset coins (but not score!)
+				resetHud(true);
+				game_messageTime = clock();
 				resetPlayer();
 				resetEnemies();
 				resetBackground();
 				resetItems();
-				hudReset();
+				
+				resetLevel();
+				levelInit();
+				
+				waveCompleteOn = false;
 				useMike = true;
 				playMusic("level-01c.ogg", -1);
 			}
+			
 			//Skip to titlescreen if fire button pressed.
 			if(checkCommand(CMD_PLAYER_SKIP_TO_TITLE)) {
 				triggerState(STATE_TITLE);
@@ -251,13 +269,27 @@ void scriptRenderFrame() {
 			}
 			break;
 		}
-		case STATE_LEVEL_COMPLETE:
+		
+		case STATE_END_GAME: {
 			switch(scriptStatus.sceneNumber) {
 				case END_WARP:
 					superFrame();
 					break;
 			}
 			break;
+		}
+		case STATE_LEVEL_COMPLETE: {
+			switch(scriptStatus.sceneNumber) {
+				case END_WARP:
+					superFrame();
+					break;
+			}
+
+			// Show LEVEL COMPLETE message
+			waveCompleteOn = true;
+
+			break;
+		}
 		case STATE_INTRO:
 			switch(scriptStatus.sceneNumber) {
 				//Show "Les Miskin presents"
@@ -300,7 +332,7 @@ void scriptRenderFrame() {
 }
 
 void initScripts() {
-	Script intro, title, game, gameOver, coin, end;
+	Script intro, title, game, gameOver, coin, level, end;
 
 	//Introduction script.
 	intro.scenes[INTRO_CUE] = 						newCueStep();
@@ -340,13 +372,24 @@ void initScripts() {
 	coin.scenes[COIN_END_CUE] = 					newCueStep();
 	coin.totalScenes = 3;
 	scripts[STATE_COIN] = coin;
-
+	
+	level.scenes[END_PAUSE_CUE] = 					newCueStep();
+	level.scenes[END_PAUSE] = 						newTimedStep(SCENE_LOOP, 1000, FADE_NONE);
+	level.scenes[END_SMILE_CUE] = 					newCueStep();
+	level.scenes[END_SMILE] = 						newTimedStep(SCENE_LOOP, 1000, FADE_NONE);
+	level.scenes[END_WARP_CUE] = 					newCueStep();
+	level.scenes[END_WARP] = 						newTimedStep(SCENE_LOOP, 1250, FADE_OUT);
+	level.scenes[END_FINISH] = 						newStateStep(STATE_GAME);
+	level.totalScenes = 7;
+	scripts[STATE_LEVEL_COMPLETE] = level;
+	
+	end.scenes[END_PAUSE_CUE] = 					newCueStep();
 	end.scenes[END_PAUSE] = 						newTimedStep(SCENE_LOOP, 1000, FADE_NONE);
 	end.scenes[END_SMILE_CUE] = 					newCueStep();
 	end.scenes[END_SMILE] = 						newTimedStep(SCENE_LOOP, 1000, FADE_NONE);
 	end.scenes[END_WARP_CUE] = 						newCueStep();
 	end.scenes[END_WARP] = 							newTimedStep(SCENE_LOOP, 1250, FADE_OUT);
 	end.scenes[END_FINISH] = 						newStateStep(STATE_TITLE);
-	end.totalScenes = 6;
-	scripts[STATE_LEVEL_COMPLETE] = end;
+	end.totalScenes = 7;
+	scripts[STATE_END_GAME] = end;
 }

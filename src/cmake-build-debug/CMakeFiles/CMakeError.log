@@ -1,0 +1,19 @@
+Determining if the include file pthread.h exists failed with the following output:
+Change Dir: C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/MinGW/bin/mingw32-make.exe" "cmTC_48cc1/fast"
+C:/MinGW/bin/mingw32-make.exe -f CMakeFiles\cmTC_48cc1.dir\build.make CMakeFiles/cmTC_48cc1.dir/build
+mingw32-make.exe[1]: Entering directory 'C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_48cc1.dir/CheckIncludeFile.c.obj
+C:\MinGW\bin\gcc.exe    -std=c11    -o CMakeFiles\cmTC_48cc1.dir\CheckIncludeFile.c.obj   -c C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles\CMakeTmp\CheckIncludeFile.c
+C:\Users\Les\dev\mouse-quest\src\cmake-build-debug\CMakeFiles\CMakeTmp\CheckIncludeFile.c:1:21: fatal error: pthread.h: No such file or directory
+ #include <pthread.h>
+                     ^
+compilation terminated.
+CMakeFiles\cmTC_48cc1.dir\build.make:64: recipe for target 'CMakeFiles/cmTC_48cc1.dir/CheckIncludeFile.c.obj' failed
+mingw32-make.exe[1]: *** [CMakeFiles/cmTC_48cc1.dir/CheckIncludeFile.c.obj] Error 1
+mingw32-make.exe[1]: Leaving directory 'C:/Users/Les/dev/mouse-quest/src/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:125: recipe for target 'cmTC_48cc1/fast' failed
+mingw32-make.exe: *** [cmTC_48cc1/fast] Error 2
+
+
