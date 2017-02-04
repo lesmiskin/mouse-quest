@@ -1,0 +1,12 @@
+Make a branch
+git checkout -b BRANCH_NAME
+
+First commit on the new branch (adds the branch)
+git commit -a -m 'This is a test'
+
+CHANGE TO ANOTHER BRANCH
+git checkout BRANCH_NAME
+
+GO BACK TO A PREVIOUS COMMIT
+git reset CHANGESET_HASH
+
