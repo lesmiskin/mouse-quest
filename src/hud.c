@@ -87,6 +87,19 @@ bool isNullPlume(ScorePlume *plume) {
 	return plume->spawnTime == 0;
 }
 
+typedef struct {
+	Coord origin;
+	int frame;
+	int color;
+	double speed;
+} Fetti;
+
+#define MAX_FETTI 300
+
+static Fetti fetti[MAX_FETTI];
+static long fettiTime;
+static int fettiInc;
+
 void hudGameFrame() {
 	for(int i=0; i < MAX_PLUMES; i++) {
 		if(isNullPlume(&plumes[i])) continue;
@@ -98,9 +111,33 @@ void hudGameFrame() {
 
 		plumes[i].parallax.y -= 0.75;
 	}
+
+	// Spawn fetti, and rain down.
+	if(gameState == STATE_LEVEL_COMPLETE) {
+		if(due(fettiTime, 100) && fettiInc < MAX_FETTI) {
+			Fetti f = {
+				makeCoord(randomMq(0, screenBounds.x), 0),
+				randomMq(0, 1),
+				randomMq(0, 3),
+				randomMq(20, 25) / 10
+			};
+			fetti[fettiInc++] = f;
+		}
+
+		for(int i=0; i < MAX_FETTI; i++) {
+			fetti[i].origin.y += fetti[i].speed;
+		}
+	}
 }
 
 void hudAnimateFrame() {
+	// Animate the 'fetti.
+	if(gameState == STATE_LEVEL_COMPLETE) {
+		for(int i=0; i < MAX_FETTI; i++) {
+			fetti[i].frame = fetti[i].frame == 0 ? 1 : 0;
+		}
+	}
+
 	// Insert coin flash
 	if (gameState == STATE_COIN || gameState == STATE_TITLE || gameState == STATE_INTRO) {
 		// Two flashing speeds depending on what mode we're in.
@@ -263,6 +300,31 @@ void insertCoin() {
 }
 
 void hudRenderFrame() {
+	// Render fetti.
+	if(gameState == STATE_LEVEL_COMPLETE) {
+		for(int i=0; i < MAX_FETTI; i++) {
+			char* filename = NULL;
+			switch(fetti[i].color) {
+				case 0:
+					filename = "fetti-red.png";
+					break;
+				case 1:
+					filename = "fetti-yellow.png";
+					break;
+				case 2:
+					filename = "fetti-green.png";
+					break;
+				case 3:
+					filename = "fetti-blue.png";
+					break;
+			}
+			SDL_RendererFlip flip = fetti[i].frame == 0 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+			Sprite s = makeSprite(getTexture(filename), zeroCoord(), flip);
+			double angle = chance(50) ? 0 : 90;
+			drawSpriteAbsRotated(s, fetti[i].origin, angle);
+		}
+	}
+
 	Coord underScore = makeCoord(pixelGrid.x - 7, 26);
 
 //	showDebugStats();
@@ -358,6 +420,8 @@ void resetHud(bool keepScore) {
 	if(!keepScore) {
 		score = 0;
 	}
+	memset(fetti, 0, sizeof(fetti));
+	fettiInc = 0;
 	coins = 0;
 	coinInserting = false;
 	coinX = 0;

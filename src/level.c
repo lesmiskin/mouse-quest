@@ -122,7 +122,7 @@ int level = 0;
 void levelInit() {
 	const int CENTER = 135;
 	int wavesPerLevel = 2;
-	
+
 	// Fruit spawns on conclusion of wave destruction (four or more).
 	// Fireworks effects on level conclusion.
 	// LEVEL X message.

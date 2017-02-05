@@ -189,7 +189,12 @@ static void loadImages() {
         { "title.png", false, false, false, false, false },
         { "lm-presents.png", false, false, false, false, false },
 
-        // Items
+		{ "fetti-blue.png", false, false, false, false, false },
+		{ "fetti-green.png", false, false, false, false, false },
+		{ "fetti-red.png", false, false, false, false, false },
+		{ "fetti-yellow.png", false, false, false, false, false },
+		
+		// Items
         { "coin-01.png", false, true, false, true, false },
         { "coin-02.png", false, true, false, true, false },
         { "coin-03.png", false, true, false, true, false },

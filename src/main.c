@@ -117,6 +117,8 @@ static void setWindowIcon() {
 #else
 	triggerState(STATE_TITLE);
 #endif
+		
+//	triggerState(STATE_LEVEL_COMPLETE);
 
 	long lastRenderFrameTime = clock();
 	long lastGameFrameTime = lastRenderFrameTime;
