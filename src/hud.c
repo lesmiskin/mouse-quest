@@ -53,6 +53,20 @@ static float coinY = 0;
 static float coinThrowPower;
 static bool coinIn = false;
 
+#define MAX_FETTI 300
+
+typedef struct {
+	Coord origin;
+	int frame;
+	int color;
+	double speed;
+} Fetti;
+
+static bool fettiFrameSkip;
+static Fetti fetti[MAX_FETTI];
+static long fettiTime;
+static int fettiInc;
+
 void spawnScorePlume(PlumeType type, int score) {
 	if(plumeInc+1 == MAX_PLUMES) plumeInc = 0;
 
@@ -87,19 +101,6 @@ bool isNullPlume(ScorePlume *plume) {
 	return plume->spawnTime == 0;
 }
 
-typedef struct {
-	Coord origin;
-	int frame;
-	int color;
-	double speed;
-} Fetti;
-
-#define MAX_FETTI 300
-
-static Fetti fetti[MAX_FETTI];
-static long fettiTime;
-static int fettiInc;
-
 void hudGameFrame() {
 	for(int i=0; i < MAX_PLUMES; i++) {
 		if(isNullPlume(&plumes[i])) continue;
@@ -119,7 +120,7 @@ void hudGameFrame() {
 				makeCoord(randomMq(0, screenBounds.x), 0),
 				randomMq(0, 1),
 				randomMq(0, 3),
-				randomMq(20, 25) / 10
+				randomMq(15, 25) / 10.0
 			};
 			fetti[fettiInc++] = f;
 		}
@@ -131,12 +132,13 @@ void hudGameFrame() {
 }
 
 void hudAnimateFrame() {
-	// Animate the 'fetti.
-	if(gameState == STATE_LEVEL_COMPLETE) {
+	// Animate the 'fetti (animated only every other frame for hacky slowness).
+	if(gameState == STATE_LEVEL_COMPLETE && !fettiFrameSkip) {
 		for(int i=0; i < MAX_FETTI; i++) {
 			fetti[i].frame = fetti[i].frame == 0 ? 1 : 0;
 		}
 	}
+	fettiFrameSkip = !fettiFrameSkip;
 
 	// Insert coin flash
 	if (gameState == STATE_COIN || gameState == STATE_TITLE || gameState == STATE_INTRO) {
@@ -299,7 +301,7 @@ void insertCoin() {
 //	play("Pickup_Coin34b.wav");
 }
 
-void hudRenderFrame() {
+void hudRenderFrameBackground() {
 	// Render fetti.
 	if(gameState == STATE_LEVEL_COMPLETE) {
 		for(int i=0; i < MAX_FETTI; i++) {
@@ -324,6 +326,9 @@ void hudRenderFrame() {
 			drawSpriteAbsRotated(s, fetti[i].origin, angle);
 		}
 	}
+}
+
+void hudRenderFrame() {
 
 	Coord underScore = makeCoord(pixelGrid.x - 7, 26);
 

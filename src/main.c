@@ -165,6 +165,7 @@ static void setWindowIcon() {
  			enemyRenderFrame();
 			pewRenderFrame();
 			scriptRenderFrame();
+			hudRenderFrameBackground();
 			playerRenderFrame();
 			hudRenderFrame();
 			faderRenderFrame();
