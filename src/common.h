@@ -39,6 +39,10 @@ extern void triggerState(GameState newState);
 typedef struct {
 	double x, y;
 } Coord;
+typedef struct {
+	int first, second;
+} Pair;
+extern Pair makePair(int first, int second);
 extern Coord scaleCoord(Coord subject, double scalar);
 extern Coord makeCoord(double x, double y);
 extern Coord deriveCoord(Coord original, double xOffset, double yOffset);

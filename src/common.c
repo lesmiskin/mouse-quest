@@ -70,6 +70,11 @@ bool chance(int probability) {
 }
 
 //Constructors
+Pair makePair(int first, int second) {
+	Pair p = { first, second };
+	return p;
+}
+
 Coord makeCoord(double x, double y) {
 	Coord coord = { x, y };
 	return coord;
