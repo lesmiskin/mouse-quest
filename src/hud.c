@@ -7,6 +7,7 @@
 #include "enemy.h"
 #include "sound.h"
 #include "myc.h"
+#include "level.h"
 
 #define NUM_HEARTS 3
 #define MAX_PLUMES 10
@@ -328,10 +329,47 @@ void hudRenderFrameBackground() {
 	}
 }
 
+void renderPlumes() {
+	//Plumes
+	for(int i=0; i < MAX_PLUMES; i++) {
+		if(isNullPlume(&plumes[i])) continue;
+		
+		switch(plumes[i].type) {
+			case PLUME_SCORE: {
+				writeText(plumes[i].score, plumes[i].parallax);
+				break;
+			}
+			case PLUME_LASER: {
+				Sprite plume = makeSimpleSprite("text-laser-upgraded.png");
+				drawSpriteAbs(plume, plumes[i].parallax);
+				break;
+			}
+			case PLUME_POWER: {
+				Sprite plume = makeSimpleSprite("text-full-power.png");
+				drawSpriteAbs(plume, plumes[i].parallax);
+				break;
+			}
+		}
+	}
+}
+
 void hudRenderFrame() {
 
 	Coord underScore = makeCoord(pixelGrid.x - 7, 26);
 
+	// Show WAVE X message on level start.
+	if(gameState == STATE_GAME && !due(levelTime, 2000)) {
+		Sprite waveSprite = makeSimpleSprite("wave-x.png");
+		drawSprite(waveSprite, makeCoord(screenBounds.x/2, screenBounds.y/3));
+
+		char number[10];
+		sprintf(number, "gold-%d.png", level);
+		
+		Sprite numberSprite = makeSimpleSprite(number);
+		drawSprite(numberSprite, makeCoord(screenBounds.x/2 + 16, screenBounds.y/3));
+	}
+	
+	
 //	showDebugStats();
 
 	//Show score and coin HUD during the game, and game over sequences.
@@ -348,6 +386,8 @@ void hudRenderFrame() {
 		Sprite x = makeSprite(getTexture("font-x.png"), zeroCoord(), SDL_FLIP_NONE);
 		drawSpriteAbs(x, deriveCoord(underScore, -9, -1));
 		writeText(coins, deriveCoord(underScore, -14, -1));
+		
+		renderPlumes();
 	}
 
 	renderWaveComplete();
@@ -382,28 +422,6 @@ void hudRenderFrame() {
 			Sprite lifeNone = makeSprite(getTexture(noneName), zeroCoord(), SDL_FLIP_NONE);
 
 			drawSpriteAbs(lifeNone, lifePositions[bar]);
-		}
-	}
-
-	//Plumes
-	for(int i=0; i < MAX_PLUMES; i++) {
-		if(isNullPlume(&plumes[i])) continue;
-
-		switch(plumes[i].type) {
-			case PLUME_SCORE: {
-				writeText(plumes[i].score, plumes[i].parallax);
-				break;
-			}
-			case PLUME_LASER: {
-				Sprite plume = makeSimpleSprite("text-laser-upgraded.png");
-				drawSpriteAbs(plume, plumes[i].parallax);
-				break;
-			}
-			case PLUME_POWER: {
-				Sprite plume = makeSimpleSprite("text-full-power.png");
-				drawSpriteAbs(plume, plumes[i].parallax);
-				break;
-			}
 		}
 	}
 

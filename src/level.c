@@ -36,6 +36,8 @@ int waveInc = 0;
 int waveAddInc = 0;
 const int NA = -50;
 const int ENEMY_SPACE = 35;
+long levelTime = 0;
+int level = 0;
 
 bool invalidWave(WaveTrigger *wave) {
 	return wave->Health == 0 && !wave->Pause && !wave->WaveType == W_WARNING;
@@ -117,21 +119,20 @@ void levelGameFrame() {
 	}
 }
 
-int level = 0;
-
 void levelInit() {
 	const int CENTER = 135;
 	int wavesPerLevel = 2;
-
-	// Fruit spawns on conclusion of wave destruction (four or more).
-	// Fireworks effects on level conclusion.
+	
 	// LEVEL X message.
+	// Fruit spawns on conclusion of wave destruction (four or more).
 	// Variables tweak up with each level.
-
 	// When hurt, your powerup should drop off at 50% transparency, with a chance to pickup.
-	// Restore shot icon.
-	// Reward icon flashes when powerup is due.
+	
+	// BUG: Mike is invisible sometimes when ending (e.g. when in pain).
+	// BUG: Enemy shots stay onscreen during ending.
 
+	// Restore shot icon for current weapon.
+	// Reward icon flashes when powerup is due.
 	// Level one: singles, columns, swirlers.
 	// Level two: singles, columns, swirlers, snakes.
 	// Level three: singles, columns, swirlers, snakes, peelers.
@@ -172,7 +173,6 @@ void levelInit() {
 
 			// Otherwise, change level.
 			}else {
-				level++;
 				levelChange();
 			}
 			
@@ -185,6 +185,6 @@ void levelInit() {
 void resetLevel() {
 	gameTime = clock();
 	waveInc = 0;
-	level = 0;
 	waveAddInc = 0;
+	levelTime = clock();
 }

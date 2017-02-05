@@ -189,6 +189,18 @@ static void loadImages() {
         { "title.png", false, false, false, false, false },
         { "lm-presents.png", false, false, false, false, false },
 
+		{ "gold-1.png", false, false, false, false, false },
+		{ "gold-2.png", false, false, false, false, false },
+		{ "gold-3.png", false, false, false, false, false },
+		{ "gold-4.png", false, false, false, false, false },
+		{ "gold-5.png", false, false, false, false, false },
+		{ "gold-6.png", false, false, false, false, false },
+		{ "gold-7.png", false, false, false, false, false },
+		{ "gold-8.png", false, false, false, false, false },
+		{ "gold-9.png", false, false, false, false, false },
+		{ "gold-0.png", false, false, false, false, false },
+		{ "wave-x.png", false, false, false, false, false },
+
 		{ "fetti-blue.png", false, false, false, false, false },
 		{ "fetti-green.png", false, false, false, false, false },
 		{ "fetti-red.png", false, false, false, false, false },

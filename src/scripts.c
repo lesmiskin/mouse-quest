@@ -75,6 +75,7 @@ void scriptGameFrame() {
 		case STATE_END_GAME:
 			switch(scriptStatus.sceneNumber){
 				case END_PAUSE_CUE:
+					pain = false;	// make sure Mike is visible during end sequence.
 					Mix_PauseMusic();
 					play("intro-presents.wav");
 					break;
@@ -170,8 +171,6 @@ void scriptGameFrame() {
 			}
 			break;
 			
-		//
-
 		case STATE_TITLE:
 			switch(scriptStatus.sceneNumber) {
 				case TITLE_CUE:
@@ -189,6 +188,7 @@ void scriptGameFrame() {
 					title_logoSprite = makeSprite(getTexture("title.png"), zeroCoord(), SDL_FLIP_NONE);
 					showBackground = true;
 					waveCompleteOn = false;
+					level = 0;
 
 					//Enemy roll call.
 					int spacer = -10;
@@ -222,7 +222,9 @@ void scriptGameFrame() {
 				
 				resetLevel();
 				levelInit();
-				
+
+				level++;
+
 				waveCompleteOn = false;
 				useMike = true;
 				playMusic("level-01c.ogg", -1);

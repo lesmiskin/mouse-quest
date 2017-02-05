@@ -523,7 +523,7 @@ void enemyGameFrame() {
 			}
 	}
 
-	if(gameState != STATE_GAME && gameState != STATE_GAME_OVER) return;
+	if(gameState != STATE_GAME && gameState != STATE_GAME_OVER && gameState != STATE_LEVEL_COMPLETE) return;
 
 	//Scroll the enemies down the screen
 	for(int i=0; i < MAX_ENEMIES; i++) {
