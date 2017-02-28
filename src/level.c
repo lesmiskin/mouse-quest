@@ -79,13 +79,17 @@ void w_column(int x, int y, EnemyPattern movement, EnemyType type, EnemyCombat c
 	int startY = y > NA ? y : NA; //respect Y if given, otherwise normal offscreen pos.
 	int sineInc = 0;
 
-	//Ensure "swayiness" is distributed throughout total quantity.
-	double sineIncInc = qty / 3.14;
+	// Set the swaying property if our pattern dictates this.
+	// NB: Ensure "swayiness" is distributed throughout total quantity (done through += in the inner loop)
+	double sineIncInc = 0;
+	if(movement == PATTERN_SNAKE) {
+		sineIncInc = qty / 3.14;
+	}
 
 	for(int i=0; i < qty; i++) {
 		spawnEnemy(x, startY, type, movement, combat, speed, speedX, sineInc, health);
 		startY -= 35;
-		if(async) sineInc += sineIncInc;
+		/*if(async) */sineInc += sineIncInc;
 	}
 }
 
@@ -122,8 +126,13 @@ void levelGameFrame() {
 typedef struct {
 	int waves;
 	Pair density;
-	int exoticChance;
-	int longChance;
+	bool useBoss;
+	int shootChance;
+	int singleChance;
+	int columnChance;
+	int snakeChance;
+	Pair columnRange;
+	Pair snakeRange;
 } Level;
 
 #define MAX_LEVELS 5
@@ -132,95 +141,87 @@ Level levels[MAX_LEVELS];
 
 void loadLevels() {
 	Level level1 = {
-		1,
+		30,
 		makePair(1000, 2000),
+		false,
 		0,
-		0
+		0,
+		0,
+		100,
+		makePair(2, 3),
+		makePair(3, 6)
 	};
 	levels[0] = level1;
 	
 	Level level2 = {
-		2,
-		makePair(1000, 2000),
+		50,
+		makePair(1000, 1500),
+		false,
 		0,
-		0
+		40,
+		40,
+		20,
+		makePair(3, 6),
+		makePair(4, 5)
 	};
 	levels[1] = level2;
 	
 	Level level3 = {
-		3,
-		makePair(1000, 2000),
+		75,
+		makePair(750, 1250),
+		true,
 		0,
-		0
+		33,
+		33,
+		33,
+		makePair(4, 7),
+		makePair(6, 8)
 	};
 	levels[2] = level3;
-	
-	Level level4 = {
-		4,
-		makePair(1000, 2000),
-		0,
-		0
-	};
-	levels[3] = level4;
-	
-	Level level5 = {
-		5,
-		makePair(1000, 2000),
-		0,
-		0
-	};
-	levels[4] = level5;
 }
 
 void levelInit() {
 	const int CENTER = 135;
-	int wavesPerLevel = 2;
 
 	loadLevels();
 
-	// Variables tweak up with each level.
 	// Fruit spawns on conclusion of wave destruction (four or more).
 	// Wave complete message on boss death.
 	// Reintroduce boss white-out on death.
 	// Swap confetti for coins on boss death.
-	// Restore shot icon for current weapon.
-	// When hurt, your powerup should drop off at 50% transparency, with a chance to pickup.
-	// Reward icon flashes when powerup is due.
-	// Level one: singles, columns, swirlers.
-	// Level two: singles, columns, swirlers, snakes.
-	// Level three: singles, columns, swirlers, snakes, peelers.
 
-//	typedef struct {
-//		int waves;
-//		Coord density;
-//		int exoticChance;
-//		int longChance;
-//	} Level;
-	
 	Level thisLevel = levels[level];
 
 	for(int i=0; i < thisLevel.waves; i++) {
 		// Position across the screen.
 		int xPos = randomMq(16, (int)screenBounds.x - 16);
 		EnemyType type = (EnemyType)randomMq(0, ENEMY_TYPES);
-		EnemyCombat shoots = chance(5) ? COMBAT_HOMING : COMBAT_IDLE;
-		int qty = randomMq(1, 4);
-		int delay = qty == 1 ? thisLevel.density.first : thisLevel.density.second;
+
+		// Delay between waves.
+		int delay = chance(50) ? thisLevel.density.first : thisLevel.density.second;
+
+		// Speed.
 		double speed = randomMq(100, 150) / 100.0;
 
-		// Fast column of enemies crop up occasionally.
-		double fast = 2.4;
-		double useSpeed = chance(5) ? fast : speed;
-		if(useSpeed == fast) {
-			qty = 4;
-			shoots = COMBAT_IDLE;
+		// Configuration chances.
+		int qty;
+		EnemyPattern pattern;
+		if(chance(thisLevel.singleChance)) {
+			qty = 1;
+			pattern = PATTERN_NONE;
+		}else if(chance(thisLevel.columnChance)) {
+			qty = randomMq(thisLevel.columnRange.first, thisLevel.columnRange.second);
+			pattern = PATTERN_NONE;
+		}else if(chance(thisLevel.snakeChance)) {
+			qty = randomMq(thisLevel.snakeRange.first, thisLevel.snakeRange.second);
+			pattern = PATTERN_SNAKE;
 		}
 
-		// wave(int spawnTime, WaveType waveType, int x, int y, EnemyPattern movement,
-		// 		EnemyType type, EnemyCombat combat, bool async, double speed, double speedX,
-		// 		double health, int qty) {
+		// Shoot chance.
+		EnemyCombat shoots = chance(thisLevel.shootChance) ? COMBAT_HOMING : COMBAT_IDLE;
 
-		wave(0, W_COL, xPos, NA, PATTERN_NONE, type, shoots, false, useSpeed, 1, HEALTH_LIGHT, qty);
+		// Spawn it.
+		wave(0, W_COL, xPos, NA, pattern, type, shoots, false, speed, 1, HEALTH_LIGHT, qty);
 
 		// End of level trigger.
 		if(i == thisLevel.waves-1) {

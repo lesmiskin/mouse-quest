@@ -58,7 +58,7 @@ static EnemyShot enemyShots[MAX_SHOTS];
 static double rollSine[5] = { 0.0, 1.25, 2.5, 3.75, 5.0 };
 
 static double SHOT_BOSS_HZ = 100;
-static double SHOT_HZ = 750;
+static double SHOT_HZ = 1000;
 static double SHOT_SPEED = 2;
 static double SHOT_DAMAGE = 1;
 
