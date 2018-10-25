@@ -1,0 +1,18 @@
+Visual and audio assets
+-----------------------
+The PNG, OGG, and WAV files supplied with the game are licensed under 
+CC BY-NC-SA 4.0. See 'licenses/LICENSE-MEDIA.txt' or 
+<https://creativecommons.org/licenses/by-nc-sa/4.0/>.
+
+Other game files and source code
+--------------------------------
+All other files supplied with the game which are not listed above, 
+including source if you received it, are licensed under CC BY-NC-ND 4.0. 
+See 'licenses/LICENSE-DEFAULT.txt' or 
+<https://creativecommons.org/licenses/by-nc-nd/4.0/>.
+
+Third-party software
+--------------------
+SDL 2.0 runtime environment: See 'licenses/SDL2'.
+SDL Mixer 2.0: See 'licenses/SDL2-Mixer'.
+SDL Image 2.0: See 'licenses/SDL2-Image'.
